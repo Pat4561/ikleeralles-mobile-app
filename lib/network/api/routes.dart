@@ -4,5 +4,6 @@ class Routes {
   static String myExercisesLists = "list/me";
   static String myFolders = "folder/me";
   static String auth = "auth/login";
+  static String levels = "levels";
 
 }

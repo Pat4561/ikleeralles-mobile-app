@@ -8,6 +8,18 @@ class ParsingOperation<T> {
 
   ParsingOperation (this.response, { this.toObject });
 
+
+  List<T> asPrimitiveList() {
+    String body = response.body;
+    if (body != null) {
+      List jsonObj = json.decode(body);
+      if (jsonObj != null) {
+        return jsonObj.map((e) => e as T).toList();
+      }
+    }
+    return [];
+  }
+
   List<T> asList() {
     String body = response.body;
     List<T> items = [];

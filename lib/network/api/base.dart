@@ -5,6 +5,7 @@ import 'package:ikleeralles/network/models/login_result.dart';
 import 'package:ikleeralles/network/models/user_result.dart';
 import 'package:ikleeralles/network/models/folder.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
+import 'package:ikleeralles/network/parsing_operation.dart';
 
 class Api {
 
@@ -39,6 +40,13 @@ class Api {
       route: Routes.userInfo,
       toObject: (Map map) => UserResult(map)
     );
+  }
+
+  Future<List<String>> getLevels() async {
+    var response = await RequestHelper.executeRequest(
+      route: Routes.levels
+    );
+    return ParsingOperation<String>(response).asPrimitiveList();
   }
 
 
