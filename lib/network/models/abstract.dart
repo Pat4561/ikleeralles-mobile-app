@@ -30,10 +30,14 @@ abstract class ObjectBase extends ParsableObject {
   }
 
   DateTime parseDate(String dateStr) {
+    if (dateStr == null)
+      return null;
     return parsingDateFormat.parse(dateStr);
   }
 
   String toDateStr(DateTime date) {
+    if (date == null)
+      return null;
     return parsingDateFormat.format(date);
   }
 

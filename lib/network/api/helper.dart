@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'package:ikleeralles/network/api/request.dart';
 import 'package:ikleeralles/network/api/url.dart';
+import 'package:ikleeralles/network/models/login_result.dart';
 import 'package:ikleeralles/network/parsing_operation.dart';
 
 enum RequestMethod {
@@ -10,11 +11,17 @@ enum RequestMethod {
 
 class RequestHelper {
 
-  static Future<Response> executeRequest({ String route,  RequestMethod method = RequestMethod.get, Map body }) async {
-    var request = ApiRequest(
-        ApiUrl(
-            route
-        )
+  ApiRequest apiRequest({ String route }) {
+    return ApiRequest(
+      ApiUrl(
+        route
+      )
+    );
+  }
+
+  Future<Response> executeRequest({ String route,  RequestMethod method = RequestMethod.get, Map<String, dynamic> body }) async {
+    var request = apiRequest(
+      route: route
     );
     Response response;
     if (method == RequestMethod.get) {
@@ -25,7 +32,7 @@ class RequestHelper {
     return response;
   }
 
-  static Future<T> singleObjectRequest<T>({ String route, T Function(Map) toObject, RequestMethod method = RequestMethod.get, Map body}) async {
+  Future<T> singleObjectRequest<T>({ String route, T Function(Map) toObject, RequestMethod method = RequestMethod.get, Map<String, dynamic> body}) async {
 
     var response = await executeRequest(
         route: route,
@@ -38,7 +45,7 @@ class RequestHelper {
     }).singleObject();
   }
 
-  static Future<List<T>> multiObjectsRequest<T>({ String route, T Function(Map) toObject, RequestMethod method = RequestMethod.get, Map body}) async {
+  Future<List<T>> multiObjectsRequest<T>({ String route, T Function(Map) toObject, RequestMethod method = RequestMethod.get, Map<String, dynamic> body}) async {
     var response = await executeRequest(
         route: route,
         method: method,
@@ -50,5 +57,23 @@ class RequestHelper {
     }).asList();
   }
 
+
+}
+
+class SecuredRequestHelper extends RequestHelper {
+
+  final LoginResult loginResult;
+
+  SecuredRequestHelper (this.loginResult);
+
+  @override
+  ApiRequest apiRequest({String route}) {
+    return SecuredApiRequest(
+        ApiUrl(
+            route
+        ),
+        loginResult: this.loginResult
+    );
+  }
 
 }
