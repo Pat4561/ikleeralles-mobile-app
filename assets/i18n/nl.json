@@ -1,0 +1,9 @@
+{
+  "usernameOrEmail": "Gebruikersnaam of emailadres",
+  "usernameHint": "Bijv. deurmanhimself",
+  "password": "Wachtwoord",
+  "forgotPassword": "Wachtwoord vergeten?",
+  "signIn": "Aanmelden",
+  "createAnAccount": "Maak een account aan",
+  "emptyTextError": "Vul dit veld in"
+}
