@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'package:ikleeralles/network/api/request.dart';
 import 'package:ikleeralles/network/api/url.dart';
+import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
 import 'package:ikleeralles/network/parsing_operation.dart';
 
@@ -62,9 +63,9 @@ class RequestHelper {
 
 class SecuredRequestHelper extends RequestHelper {
 
-  final LoginResult loginResult;
+  final AccessToken accessToken;
 
-  SecuredRequestHelper (this.loginResult);
+  SecuredRequestHelper (this.accessToken);
 
   @override
   ApiRequest apiRequest({String route}) {
@@ -72,7 +73,7 @@ class SecuredRequestHelper extends RequestHelper {
         ApiUrl(
             route
         ),
-        loginResult: this.loginResult
+        accessToken: accessToken
     );
   }
 

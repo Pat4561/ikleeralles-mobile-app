@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/network/api/url.dart';
+import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
 
 class ApiRequest {
@@ -23,10 +24,10 @@ class ApiRequest {
 
 class SecuredApiRequest extends ApiRequest {
 
-  SecuredApiRequest (ApiUrl url, { @required LoginResult loginResult,  Map<String, String> additionalHeaders }) : super(url, headers: additionalHeaders) {
+  SecuredApiRequest (ApiUrl url, { @required AccessToken accessToken,  Map<String, String> additionalHeaders }) : super(url, headers: additionalHeaders) {
     if (this.headers == null)
       this.headers = {};
-    this.headers["Authorization"] = "Bearer ${loginResult.accessToken}";
+    this.headers["Authorization"] = "Bearer ${accessToken.token}";
   }
 
 }

@@ -1,5 +1,6 @@
 import 'package:ikleeralles/network/api/routes.dart';
 import 'package:ikleeralles/network/api/helper.dart';
+import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/keys.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
 import 'package:ikleeralles/network/models/user_result.dart';
@@ -69,13 +70,13 @@ class Api {
 
 class SecuredApi extends Api {
 
-  final LoginResult loginResult;
+  final AccessToken accessToken;
 
-  SecuredApi (this.loginResult);
+  SecuredApi (this.accessToken);
 
   @override
   RequestHelper createRequestHelper() {
-    return SecuredRequestHelper(this.loginResult);
+    return SecuredRequestHelper(this.accessToken);
   }
 
 }

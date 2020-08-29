@@ -41,5 +41,16 @@ class TranslationKeys {
   static String signIn = "signIn";
   static String createAnAccount = "createAnAccount";
   static String emptyTextError = "emptyTextError";
+  static String register = "register";
+  static String okay = "okay";
+  static String emailSent = "emailSent";
+  static String recoverEmailSentMessage = "recoverEmailSentMessage";
+  static String loginError = "loginError";
+  static String registrationError = "registrationError";
 
+}
+
+class WebUrls {
+  static String register = "https://www.ikleeralles.nl/aanmelden";
+  static String forgotPassword = "https://www.ikleeralles.nl/requestpassword";
 }

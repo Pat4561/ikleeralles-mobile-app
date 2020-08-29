@@ -16,4 +16,8 @@ class ObjectKeys {
   static String translated = "translated";
   static String year = "year";
   static String level = "level";
+  static String eventType = "eventType";
+  static String meta = "meta";
+  static String loginResult = "loginResult";
+  static String credentials = "credentials";
 }

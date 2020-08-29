@@ -5,5 +5,11 @@
   "forgotPassword": "Wachtwoord vergeten?",
   "signIn": "Aanmelden",
   "createAnAccount": "Maak een account aan",
-  "emptyTextError": "Vul dit veld in"
+  "emptyTextError": "Vul dit veld in",
+  "register": "Registreren",
+  "okay": "Oke",
+  "emailSent": "Email verstuurd",
+  "recoverEmailSentMessage": "Er is een email naar het adres dat bij je account hoort verstuurd om je wachtwoord te herstellen",
+  "loginError": "Er kon niet worden ingelogd, check je gegevens en of je verbinding hebt",
+  "registrationError": "Registratie kon niet worden voltooid, check of je verbinding hebt"
 }

@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/managers/login.dart';
+import 'package:ikleeralles/network/auth/userinfo.dart';
+import 'package:ikleeralles/network/models/login_result.dart';
+import 'package:ikleeralles/pages/webview.dart';
+import 'package:ikleeralles/ui/alert.dart';
 import 'package:ikleeralles/ui/hyperlink.dart';
 import 'package:ikleeralles/ui/logo.dart';
+import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/textfield.dart';
 import 'package:ikleeralles/ui/button.dart';
-
-//TODO: manager class and open webviews and response codes
 
 class LoginPage extends StatefulWidget {
 
@@ -17,10 +22,17 @@ class LoginPage extends StatefulWidget {
 
 }
 
+//TODO: Show a loading overlay, and redirect to the home screen
+
 class LoginPageState extends State<LoginPage> {
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+
+  final TextEditingController usernameTextController = TextEditingController();
+  final TextEditingController passwordTextController = TextEditingController();
+
+  final LoginManager loginManager = LoginManager();
 
   Validators _validators;
 
@@ -97,18 +109,70 @@ class LoginPageState extends State<LoginPage> {
     _validators = Validators(this.context);
   }
 
-  void onForgotPasswordPressed() {
+  void onWebEventReceived(BuildContext webPageContext, Map map) {
+    loginManager.handleWebEvent(
+        map,
+        onPasswordForgot: () {
 
+          FlutterWebviewPlugin().hide();
+          SimpleAlert.show(
+              webPageContext,
+              title: FlutterI18n.translate(webPageContext, TranslationKeys.emailSent),
+              message: FlutterI18n.translate(webPageContext, TranslationKeys.recoverEmailSentMessage),
+              onOkayPressed: (BuildContext alertContext) {
+                Navigator.of(alertContext).pop();
+                Navigator.of(webPageContext).pop();
+              }
+          );
+
+        },
+        onRegisteredAccount: (LoginResult loginResult, Credentials credentials) {
+          Navigator.of(webPageContext).pop();
+          loginManager.register(
+            loginResult: loginResult,
+            credentials: credentials
+          ).catchError((e) {
+            showSnackBar(buildContext: context, message: FlutterI18n.translate(context, TranslationKeys.registrationError), isError: true);
+          });
+        }
+    );
+  }
+
+  void onForgotPasswordPressed() {
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) {
+          return WebViewPage(
+              title: FlutterI18n.translate(context, TranslationKeys.forgotPassword),
+              url: WebUrls.forgotPassword,
+              onEventReceived: onWebEventReceived,
+          );
+        }
+    ));
   }
 
   void onSignInPressed() {
     if (loginFormKey.currentState.validate()) {
       loginFormKey.currentState.save();
     }
+
+    loginManager.login(
+      usernameOrEmail: this.usernameTextController.text,
+      password: this.passwordTextController.text,
+    ).catchError((e) {
+      showSnackBar(buildContext: context, message: FlutterI18n.translate(context, TranslationKeys.loginError), isError: true);
+    });
   }
 
   void onCreateAccountPressed() {
-
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (BuildContext context) {
+        return WebViewPage(
+            title: FlutterI18n.translate(context, TranslationKeys.register),
+            url: WebUrls.register,
+            onEventReceived: onWebEventReceived,
+        );
+      }
+    ));
   }
 
   @override

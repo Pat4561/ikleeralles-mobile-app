@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/pages/login.dart';
 
@@ -42,7 +43,12 @@ class MainApp extends StatelessWidget {
         // closer together (more dense) than on mobile platforms.
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: LoginPage()
+      home: LoginPage(),
+      localizationsDelegates: [
+        this.flutterI18nDelegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
+      ],
     );
   }
 }

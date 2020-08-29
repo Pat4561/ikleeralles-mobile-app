@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ikleeralles/network/api/base.dart';
+import 'package:ikleeralles/network/auth/userinfo.dart';
 
 void main() {
 
@@ -8,8 +9,8 @@ void main() {
         username: "deurmanhimself",
         password: "Swaps_07"
     );
-    var lists = await SecuredApi(loginResult).getExercisesLists();
-    var folders = await SecuredApi(loginResult).getFolders();
+    var lists = await SecuredApi(AccessToken(loginResult.accessToken)).getExercisesLists();
+    var folders = await SecuredApi(AccessToken(loginResult.accessToken)).getFolders();
     
   });
 

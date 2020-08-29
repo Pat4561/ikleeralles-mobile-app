@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ikleeralles/network/api/base.dart';
+import 'package:ikleeralles/network/auth/userinfo.dart';
 
 void main() {
 
@@ -20,11 +21,13 @@ void main() {
   });
 
   test("Login with correct data and parse user info", () async {
+
     var result = await Api().authorize(
         username: "deurmanhimself",
         password: "Swaps_07"
     );
-    var userResult = await SecuredApi(result).getUser();
+
+    var userResult = await SecuredApi(AccessToken(result.accessToken)).getUser();
     print(userResult.toMap());
   });
 
