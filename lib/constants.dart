@@ -47,6 +47,7 @@ class TranslationKeys {
   static String recoverEmailSentMessage = "recoverEmailSentMessage";
   static String loginError = "loginError";
   static String registrationError = "registrationError";
+  static String loadingInProgress = "loadingInProgress";
 
 }
 

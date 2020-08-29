@@ -2,16 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/managers/extensions.dart';
 import 'package:ikleeralles/managers/login.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
 import 'package:ikleeralles/pages/webview.dart';
 import 'package:ikleeralles/ui/alert.dart';
 import 'package:ikleeralles/ui/hyperlink.dart';
+import 'package:ikleeralles/ui/loading_overlay.dart';
 import 'package:ikleeralles/ui/logo.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/textfield.dart';
 import 'package:ikleeralles/ui/button.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class LoginPage extends StatefulWidget {
 
@@ -179,44 +182,59 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
-        backgroundColor: BrandColors.themeColor,
-        body: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.all(15),
-                constraints: BoxConstraints(
-                    maxWidth: 350
-                ),
-                child: Form(
-                  key: loginFormKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      wrapElement(verticalMargin: 35, child: Logo(fontSize: 60)),
-                      wrapElement(
-                          verticalMargin: 6,
-                          child: usernameTextField()
+        backgroundColor: BrandColors  .themeColor,
+        body: Stack(
+          children: <Widget>[
+            Center(
+                child: SingleChildScrollView(
+                  child: Container(
+                      margin: EdgeInsets.all(15),
+                      constraints: BoxConstraints(
+                          maxWidth: 350
                       ),
-                      wrapElement(
-                          verticalMargin: 6,
-                          child: passwordTextField()
-                      ),
-                      wrapElement(
-                          verticalMargin: 25,
-                          child: signInButton()
-                      ),
-                      wrapElement(
-                          verticalMargin: 0,
-                          child: Center(
-                              child: signUpButton()
-                          )
+                      child: Form(
+                        key: loginFormKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            wrapElement(verticalMargin: 35, child: Logo(fontSize: 60)),
+                            wrapElement(
+                                verticalMargin: 6,
+                                child: usernameTextField()
+                            ),
+                            wrapElement(
+                                verticalMargin: 6,
+                                child: passwordTextField()
+                            ),
+                            wrapElement(
+                                verticalMargin: 25,
+                                child: signInButton()
+                            ),
+                            wrapElement(
+                                verticalMargin: 0,
+                                child: Center(
+                                    child: signUpButton()
+                                )
+                            )
+                          ],
+                        ),
                       )
-                    ],
                   ),
                 )
-              ),
+            ),
+            ScopedModel(
+              model: loginManager.loadingDelegate,
+              child: ScopedModelDescendant<LoadingDelegate>(
+                  builder: (BuildContext context, Widget widget, LoadingDelegate loadingDelegate) {
+                    return Visibility(
+                      visible: loginManager.loadingDelegate.isLoading,
+                      child: LoadingOverlay(),
+                    );
+                  }
+              )
             )
+          ],
         )
     );
   }
