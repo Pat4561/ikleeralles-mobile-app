@@ -4,8 +4,10 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/managers/extensions.dart';
 import 'package:ikleeralles/managers/login.dart';
+import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
+import 'package:ikleeralles/pages/home.dart';
 import 'package:ikleeralles/pages/webview.dart';
 import 'package:ikleeralles/ui/alert.dart';
 import 'package:ikleeralles/ui/hyperlink.dart';
@@ -25,7 +27,7 @@ class LoginPage extends StatefulWidget {
 
 }
 
-//TODO: Show a loading overlay, and redirect to the home screen
+//TODO: Subscribe to the valuenotifier and redirect
 
 class LoginPageState extends State<LoginPage> {
 
@@ -53,6 +55,7 @@ class LoginPageState extends State<LoginPage> {
       labelText: FlutterI18n.translate(context, TranslationKeys.usernameOrEmail),
       hintText: FlutterI18n.translate(context, TranslationKeys.usernameHint),
       validator: _validators.notEmptyValidator,
+      textEditingController: usernameTextController,
     );
   }
 
@@ -63,6 +66,8 @@ class LoginPageState extends State<LoginPage> {
         ThemedTextField(
           labelText: FlutterI18n.translate(context, TranslationKeys.password),
           hintText: "******",
+          textEditingController: passwordTextController,
+          obscureText: true,
           validator: _validators.notEmptyValidator,
         ),
         Align(
@@ -106,10 +111,35 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
+  void redirectToLogin() {
+    if (AuthService().userInfo != null)
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (BuildContext context) {
+            return HomePage();
+          }
+        ),
+        (route) => false
+      );
+  }
+
   @override
   void initState() {
     super.initState();
     _validators = Validators(this.context);
+
+    AuthService().listen(
+      redirectToLogin
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    AuthService().unListen(
+      redirectToLogin
+    );
   }
 
   void onWebEventReceived(BuildContext webPageContext, Map map) {
@@ -135,7 +165,7 @@ class LoginPageState extends State<LoginPage> {
             loginResult: loginResult,
             credentials: credentials
           ).catchError((e) {
-            showSnackBar(buildContext: context, message: FlutterI18n.translate(context, TranslationKeys.registrationError), isError: true);
+            showSnackBar(scaffoldKey: scaffoldKey, message: FlutterI18n.translate(context, TranslationKeys.registrationError), isError: true);
           });
         }
     );
@@ -156,14 +186,16 @@ class LoginPageState extends State<LoginPage> {
   void onSignInPressed() {
     if (loginFormKey.currentState.validate()) {
       loginFormKey.currentState.save();
+
+      loginManager.login(
+        usernameOrEmail: this.usernameTextController.text,
+        password: this.passwordTextController.text,
+      ).catchError((e) {
+        showSnackBar(scaffoldKey: scaffoldKey, message: FlutterI18n.translate(context, TranslationKeys.loginError), isError: true);
+      });
     }
 
-    loginManager.login(
-      usernameOrEmail: this.usernameTextController.text,
-      password: this.passwordTextController.text,
-    ).catchError((e) {
-      showSnackBar(buildContext: context, message: FlutterI18n.translate(context, TranslationKeys.loginError), isError: true);
-    });
+
   }
 
   void onCreateAccountPressed() {

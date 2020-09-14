@@ -9,8 +9,8 @@ class Validators {
   Validators (this.buildContext);
 
   String notEmptyValidator(String value) {
-    if (value != null)
-      return FlutterI18n.translate(this.buildContext, TranslationKeys.emptyTextError);
+    if (value != null && value.isNotEmpty)
+      return null;
     return FlutterI18n.translate(this.buildContext, TranslationKeys.emptyTextError);
   }
 

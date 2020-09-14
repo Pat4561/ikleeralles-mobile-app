@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/api/base.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
@@ -21,6 +21,14 @@ class AuthService {
 
   AuthService._internal();
 
+  void listen( Function() onUserInfoUpdated ) {
+    this._userInfoValueNotifier.addListener(onUserInfoUpdated);
+  }
+
+  void unListen( Function() onUserInfoUpdated ) {
+    this._userInfoValueNotifier.removeListener(onUserInfoUpdated);
+  }
+
   Future login({ String usernameOrEmail, String password }) async {
 
     var loginResult = await Api().authorize(
@@ -37,6 +45,7 @@ class AuthService {
         credentials: credentials
     );
     updateUserInfo(userInfo);
+
   }
 
   //The webview should return a loginresult and credentials
@@ -49,6 +58,7 @@ class AuthService {
         credentials: credentials
     );
     updateUserInfo(userInfo);
+
   }
 
 

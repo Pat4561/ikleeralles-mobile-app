@@ -1,3 +1,4 @@
+import 'package:ikleeralles/exceptions.dart';
 import 'package:ikleeralles/network/api/routes.dart';
 import 'package:ikleeralles/network/api/helper.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
@@ -7,6 +8,8 @@ import 'package:ikleeralles/network/models/user_result.dart';
 import 'package:ikleeralles/network/models/folder.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/network/parsing_operation.dart';
+
+
 
 class Api {
 
@@ -21,7 +24,7 @@ class Api {
   }
 
   Future<LoginResult> authorize({ String username, String password }) async {
-    return requestHelper.singleObjectRequest<LoginResult>(
+    var result = await requestHelper.singleObjectRequest<LoginResult>(
       route: Routes.auth,
       body: {
         AuthKeys.username: username,
@@ -35,6 +38,9 @@ class Api {
         return null;
       }
     );
+    if (result == null)
+      throw InvalidCredentialsException();
+    return result;
   }
 
   Future<List<Folder>> getFolders() async {
