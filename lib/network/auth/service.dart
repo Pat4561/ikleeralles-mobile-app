@@ -5,12 +5,12 @@ import 'package:ikleeralles/network/models/login_result.dart';
 class AuthService {
 
 
-  ValueNotifier<UserInfo> _userInfoValueNotifier = ValueNotifier<UserInfo>(null);
+  final ValueNotifier<UserInfo> userInfoValueNotifier = ValueNotifier<UserInfo>(null);
 
-  UserInfo get userInfo => _userInfoValueNotifier.value;
+  UserInfo get userInfo => userInfoValueNotifier.value;
 
   void updateUserInfo(UserInfo userInfo) {
-    this._userInfoValueNotifier.value = userInfo;
+    this.userInfoValueNotifier.value = userInfo;
   }
 
   static final AuthService _instance = AuthService._internal();
@@ -22,11 +22,11 @@ class AuthService {
   AuthService._internal();
 
   void listen( Function() onUserInfoUpdated ) {
-    this._userInfoValueNotifier.addListener(onUserInfoUpdated);
+    this.userInfoValueNotifier.addListener(onUserInfoUpdated);
   }
 
   void unListen( Function() onUserInfoUpdated ) {
-    this._userInfoValueNotifier.removeListener(onUserInfoUpdated);
+    this.userInfoValueNotifier.removeListener(onUserInfoUpdated);
   }
 
   Future login({ String usernameOrEmail, String password }) async {

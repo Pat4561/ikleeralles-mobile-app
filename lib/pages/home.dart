@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ikleeralles/ui/appbar.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -14,7 +15,9 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: ThemedAppBar(
+        title: "Mijn lijsten",
+      ),
       body: Container(),
 
     );
