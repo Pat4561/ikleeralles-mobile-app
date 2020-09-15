@@ -265,7 +265,14 @@ class ExerciseListCell extends StatelessWidget {
           ),
           title: "BS4",
           subTitle: "Spanish - English",
-          trailing: Container(),
+          trailing: Text(
+            "1 jaar geleden",
+            style: TextStyle(
+                fontSize: 11,
+                fontFamily: Fonts.ubuntu,
+                color: BrandColors.textColorLighter
+            ),
+          ),
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(6)),
