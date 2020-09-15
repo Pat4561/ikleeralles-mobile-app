@@ -12,5 +12,11 @@
   "recoverEmailSentMessage": "Er is een email naar het adres dat bij je account hoort verstuurd om je wachtwoord te herstellen",
   "loginError": "Er kon niet worden ingelogd, check je gegevens en of je verbinding hebt",
   "registrationError": "Registratie kon niet worden voltooid, check of je verbinding hebt",
-  "loadingInProgress": "Bezig met laden..."
+  "loadingInProgress": "Bezig met laden...",
+  "itemsBadge": "{count} items",
+  "myLists": "Mijn lijsten",
+  "trashCan": "Prullenbak",
+  "myFolders": "Mijn mappen",
+  "publicLists": "Publieke lijsten",
+  "publicListsDescription": "Zoek in meer dan 10.000 openbare overhoringen"
 }
