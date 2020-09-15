@@ -86,8 +86,9 @@ class InnerCell extends StatelessWidget {
 abstract class ActionCell extends StatelessWidget {
 
   final Function onPressed;
+  final double iconSize;
 
-  ActionCell ({ this.onPressed });
+  ActionCell ({ this.onPressed, this.iconSize = 25 });
 
   Widget badge(BuildContext context, { @required int count  }) {
     return Container(
@@ -122,8 +123,21 @@ abstract class ActionCell extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(12)),
             child: InnerCell(
-              leading: SvgPicture.asset(
-                  iconAssetPath
+              leading: Container(
+                width: iconSize,
+                height: iconSize,
+                child: Stack(
+                  children: <Widget>[
+                    Align(
+                      alignment: Alignment.center,
+                      child: SvgPicture.asset(
+                        iconAssetPath,
+                        width: iconSize,
+                        height: iconSize,
+                      ),
+                    )
+                  ],
+                ),
               ),
               title: title,
               subTitle: subTitle,
@@ -187,6 +201,88 @@ class TrashActionCell extends ActionCell {
 
 }
 
+class ThemedCheckBox extends StatelessWidget {
+
+  final double size;
+  final bool isSelected;
+  final Function(bool) onChange;
+
+  ThemedCheckBox ({ this.size = 25, @required this.isSelected, @required this.onChange });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: Container(
+        width: size,
+        height: size,
+        child: Stack(
+          children: <Widget>[
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                width: size,
+                height: size,
+                padding: EdgeInsets.all(2),
+                child: Container(decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isSelected ? BrandColors.checkboxSelectedColor: BrandColors.checkboxColor
+                )),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                        color: isSelected ? BrandColors.checkboxSelectedColor : BrandColors.checkboxColor,
+                        width: 3
+                    )
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+      onTap: () {
+        this.onChange(!isSelected);
+      },
+    );
+  }
+
+}
+
+class ExerciseListCell extends StatelessWidget {
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(child: InkWell(
+      borderRadius: BorderRadius.all(Radius.circular(6)),
+      child: Container(
+        child: InnerCell(
+          leading: ThemedCheckBox(
+            size: 25,
+            isSelected: true,
+            onChange: (newValue) {
+
+            }
+          ),
+          title: "BS4",
+          subTitle: "Spanish - English",
+          trailing: Container(),
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(6)),
+          border: Border.all(
+            color: BrandColors.borderColor,
+            width: 1
+          )
+        ),
+      ),
+      onTap: () {
+
+      },
+    ), color: Colors.white);
+  }
+
+}
+
 class HomePageState extends State<HomePage> {
 
   void _onTrashPressed() {
@@ -223,7 +319,8 @@ class HomePageState extends State<HomePage> {
             ),
             PublicListsActionCell(
               onPressed: _onPublicListsPressed,
-            )
+            ),
+            ExerciseListCell()
           ],
         ),
         color: Colors.white,
