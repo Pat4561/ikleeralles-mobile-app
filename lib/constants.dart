@@ -58,6 +58,9 @@ class TranslationKeys {
   static const String myFolders = "myFolders";
   static const String publicLists = "publicLists";
   static const String publicListsDescription = "publicListsDescription";
+  static const String selectAll = "selectAll";
+  static const String unSelectAll = "unSelectAll";
+  static const String selectedLists = "selectedLists";
 
 }
 
@@ -70,4 +73,9 @@ class AssetPaths {
   static const String internet = 'assets/svg/internet.svg';
   static const String rootDirectory = 'assets/svg/root_directory.svg';
   static const String trash = 'assets/svg/trash.svg';
+  static const String trashSolid = 'assets/svg/trash_solid.svg';
+  static const String add = 'assets/svg/add.svg';
+  static const String start = 'assets/svg/start.svg';
+  static const String merge = 'assets/svg/merge.svg';
+
 }

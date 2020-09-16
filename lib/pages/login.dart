@@ -14,8 +14,8 @@ import 'package:ikleeralles/ui/hyperlink.dart';
 import 'package:ikleeralles/ui/loading_overlay.dart';
 import 'package:ikleeralles/ui/logo.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
-import 'package:ikleeralles/ui/textfield.dart';
-import 'package:ikleeralles/ui/button.dart';
+import 'file:///C:/Users/Lenna/IkLeerAlles/lib/ui/themed/textfield.dart';
+import 'file:///C:/Users/Lenna/IkLeerAlles/lib/ui/themed/button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class LoginPage extends StatefulWidget {
