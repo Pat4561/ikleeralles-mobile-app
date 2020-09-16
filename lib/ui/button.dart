@@ -7,22 +7,23 @@ class ThemedButton extends StatelessWidget {
   final Color buttonColor;
   final Color labelColor;
   final double fontSize;
+  final bool filled;
   final Function() onPressed;
   final EdgeInsets contentPadding;
   final BorderSide borderSide;
   final BorderRadius borderRadius;
 
 
-  ThemedButton (this.labelText, { this.onPressed, this.contentPadding, this.buttonColor, this.fontSize, this.labelColor, this.borderSide, this.borderRadius });
+  ThemedButton (this.labelText, { this.onPressed, this.contentPadding, this.buttonColor, this.fontSize, this.labelColor, this.borderSide, this.borderRadius, this.filled = true });
 
   @override
   Widget build(BuildContext context) {
     return FlatButton(
-      color: buttonColor,
+      color: filled ? buttonColor : Colors.transparent,
       padding: contentPadding,
       shape: RoundedRectangleBorder(
           borderRadius: borderRadius ?? BorderRadius.all(Radius.circular(0)),
-          side: borderSide ?? BorderSide.none
+          side: borderSide ?? filled ? BorderSide.none : BorderSide(color: buttonColor),
       ),
       child: Text(
         labelText,
@@ -30,7 +31,7 @@ class ThemedButton extends StatelessWidget {
             fontSize: fontSize,
             fontWeight: FontWeight.w600,
             fontFamily: Fonts.ubuntu,
-            color: labelColor ?? Colors.white
+            color: labelColor ?? filled ? Colors.white : buttonColor
         ),
       ),
       onPressed: onPressed,

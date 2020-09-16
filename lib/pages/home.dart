@@ -4,6 +4,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/ui/appbar.dart';
+import 'package:ikleeralles/ui/button.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -327,7 +328,27 @@ class HomePageState extends State<HomePage> {
             PublicListsActionCell(
               onPressed: _onPublicListsPressed,
             ),
-            ExerciseListCell()
+            ExerciseListCell(),
+            Container(child: Row(
+              children: <Widget>[
+                SizedBox(
+                  height: 28,
+                  child: ThemedButton(
+                    "Alles deselecteren",
+                    contentPadding: EdgeInsets.symmetric(
+                        vertical: 0,
+                        horizontal: 15
+                    ),
+                    buttonColor: BrandColors.themeColor,
+                    filled: false,
+                    borderRadius: BorderRadius.circular(10),
+                    onPressed: () {
+
+                    },
+                  ),
+                )
+              ],
+            ), margin: EdgeInsets.symmetric(vertical: 20))
           ],
         ),
         color: Colors.white,
