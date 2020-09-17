@@ -61,6 +61,11 @@ class TranslationKeys {
   static const String selectAll = "selectAll";
   static const String unSelectAll = "unSelectAll";
   static const String selectedLists = "selectedLists";
+  static const String busyLoading = "busyLoading";
+  static const String error = "error";
+  static const String errorSubTitle = "errorSubTitle";
+  static const String noResults = "noResults";
+  static const String noResultsSubTitle = "noResultsSubTitle";
 
 }
 

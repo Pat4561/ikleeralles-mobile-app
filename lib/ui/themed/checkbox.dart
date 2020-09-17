@@ -25,7 +25,7 @@ class ThemedCheckBox extends StatelessWidget {
                 padding: EdgeInsets.all(2),
                 child: Container(decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: isSelected ? BrandColors.checkboxSelectedColor: BrandColors.checkboxColor
+                    color: isSelected ? BrandColors.checkboxSelectedColor: Colors.transparent
                 )),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,

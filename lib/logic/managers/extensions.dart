@@ -24,3 +24,29 @@ class LoadingDelegate extends Model {
     future.whenComplete(() => isLoading = false);
   }
 }
+
+class SelectionManager<T> extends Model {
+
+  List<T> objects = new List<T>();
+
+  void toggle(T object) {
+    if (objects.contains(object)) {
+      objects.remove(object);
+    } else {
+      objects.add(object);
+    }
+    notifyListeners();
+  }
+
+  void selectAll(List<T> objects) {
+    this.objects = [];
+    this.objects.addAll(objects);
+    notifyListeners();
+  }
+
+  void unSelectAll() {
+    this.objects = [];
+    notifyListeners();
+  }
+
+}

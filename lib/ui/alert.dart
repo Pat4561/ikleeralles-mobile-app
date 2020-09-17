@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
-import 'file:///C:/Users/Lenna/IkLeerAlles/lib/ui/themed/button.dart';
+import 'package:ikleeralles/ui/themed/button.dart';
 
 class SimpleAlert {
 

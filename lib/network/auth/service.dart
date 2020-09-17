@@ -7,10 +7,17 @@ class AuthService {
 
   final ValueNotifier<UserInfo> userInfoValueNotifier = ValueNotifier<UserInfo>(null);
 
+  SecuredApi _securedApi;
+
+  SecuredApi get securedApi => _securedApi;
+
   UserInfo get userInfo => userInfoValueNotifier.value;
 
   void updateUserInfo(UserInfo userInfo) {
     this.userInfoValueNotifier.value = userInfo;
+    this._securedApi = SecuredApi(
+      userInfo.accessToken
+    );
   }
 
   static final AuthService _instance = AuthService._internal();

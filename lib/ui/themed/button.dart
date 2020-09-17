@@ -23,7 +23,7 @@ class ThemedButton extends StatelessWidget {
       padding: contentPadding,
       shape: RoundedRectangleBorder(
           borderRadius: borderRadius ?? BorderRadius.all(Radius.circular(0)),
-          side: borderSide ?? filled ? BorderSide.none : BorderSide(color: buttonColor),
+          side: borderSide ?? (filled ? BorderSide.none : BorderSide(color: buttonColor)),
       ),
       child: Text(
         labelText,
@@ -31,7 +31,7 @@ class ThemedButton extends StatelessWidget {
             fontSize: fontSize,
             fontWeight: FontWeight.w600,
             fontFamily: Fonts.ubuntu,
-            color: labelColor ?? filled ? Colors.white : buttonColor
+            color: labelColor ?? (filled ? Colors.white : buttonColor)
         ),
       ),
       onPressed: onPressed,

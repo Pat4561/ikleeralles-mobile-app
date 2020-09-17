@@ -50,9 +50,16 @@ class Api {
     );
   }
 
-  Future<List<ExerciseList>> getExercisesLists() async {
+  Future<List<ExerciseList>> getTrash() async {
     return requestHelper.multiObjectsRequest<ExerciseList>(
-        route: Routes.myExercisesLists,
+        route: Routes.deletedExerciseLists,
+        toObject: (Map map) => ExerciseList(map)
+    );
+  }
+
+  Future<List<ExerciseList>> getExerciseLists({ int folderId }) async {
+    return requestHelper.multiObjectsRequest<ExerciseList>(
+        route: folderId == null ? Routes.myExerciseLists : Routes.exerciseListsByFolder(folderId),
         toObject: (Map map) => ExerciseList(map)
     );
   }

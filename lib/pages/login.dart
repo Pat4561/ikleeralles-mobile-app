@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:ikleeralles/constants.dart';
-import 'package:ikleeralles/managers/extensions.dart';
-import 'package:ikleeralles/managers/login.dart';
+import 'package:ikleeralles/logic/managers/extensions.dart';
+import 'package:ikleeralles/logic/managers/login.dart';
 import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
@@ -14,8 +14,8 @@ import 'package:ikleeralles/ui/hyperlink.dart';
 import 'package:ikleeralles/ui/loading_overlay.dart';
 import 'package:ikleeralles/ui/logo.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
-import 'file:///C:/Users/Lenna/IkLeerAlles/lib/ui/themed/textfield.dart';
-import 'file:///C:/Users/Lenna/IkLeerAlles/lib/ui/themed/button.dart';
+import 'package:ikleeralles/ui/themed/textfield.dart';
+import 'package:ikleeralles/ui/themed/button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class LoginPage extends StatefulWidget {
