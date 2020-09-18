@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ikleeralles/constants.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/operations/abstract.dart';
@@ -71,14 +72,15 @@ abstract class OperationBasedTableState<T extends StatefulWidget> extends State<
         builder: (BuildContext context, Widget widget, OperationManager _operationManager) {
           return RefreshIndicator(
             onRefresh: _onRefresh,
-            child: Stack(
-              children: <Widget>[
-                background(context),
-                Container(
-                  color: backgroundColor,
-                  child: list(context),
-                )
-              ],
+            color: BrandColors.secondaryButtonColor,
+            child: Container(
+              color: Colors.white,
+              child: Stack(
+                children: <Widget>[
+                  background(context),
+                  list(context),
+                ],
+              ),
             ),
           );
         },

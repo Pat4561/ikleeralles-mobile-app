@@ -14,6 +14,7 @@ import 'package:ikleeralles/ui/themed/button.dart';
 
 class ExercisesTable extends StatefulWidget {
 
+  final int folderId;
   final Function onTrashPressed;
   final Function onMyFolderPressed;
   final Function onPublicListsPressed;
@@ -21,7 +22,7 @@ class ExercisesTable extends StatefulWidget {
   final EdgeInsets tablePadding;
   final SelectionManager selectionManager;
 
-  ExercisesTable ({ this.onTrashPressed, this.onMyFolderPressed, this.onPublicListsPressed, @required this.selectionManager, @required this.onExerciseListPressed, this.tablePadding, Key key }) : super(key: key);
+  ExercisesTable ({ this.folderId, this.onTrashPressed, this.onMyFolderPressed, this.onPublicListsPressed, @required this.selectionManager, @required this.onExerciseListPressed, this.tablePadding, Key key }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -64,7 +65,9 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
 
   @override
   Operation newOperation() {
-    return ExercisesDownloadOperation();
+    return ExercisesDownloadOperation(
+      folderId: widget.folderId
+    );
   }
 
   @override
@@ -119,7 +122,7 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
   @override
   Widget list(BuildContext context) {
     if (operationManager.currentState.result == null) {
-      return Container();
+      return ListView();
     } else {
       return listBuilder(context, operationManager.currentState.result);
     }
@@ -169,16 +172,16 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
           if (section == 0) {
             if (row == 0) {
               return Visibility(child: actionCell(
-                TrashActionCell()
+                TrashActionCell(onPressed: widget.onTrashPressed)
               ), visible: widget.onTrashPressed != null);
             } else if (row == 1) {
               return Visibility(child: actionCell(
-                MyFoldersActionCell()
+                MyFoldersActionCell(onPressed: widget.onMyFolderPressed)
               ), visible: widget.onMyFolderPressed != null);
             } else if (row == 2) {
               return Visibility(
                 child: actionCell(
-                    PublicListsActionCell()
+                    PublicListsActionCell(onPressed: widget.onPublicListsPressed)
                 ),
                 visible: widget.onPublicListsPressed != null,
               );

@@ -115,7 +115,12 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onMyFoldersPressed() {
-
+    showBottomSheet(
+      builder: (BuildContext context) {
+        return Container();
+      },
+      context: context
+    );
   }
 
   void _onPublicListsPressed() {

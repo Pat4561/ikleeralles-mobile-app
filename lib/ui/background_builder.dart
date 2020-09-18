@@ -52,7 +52,8 @@ class BackgroundBuilder {
           Container(
             margin: EdgeInsets.only(top: 15),
             child: Text(
-              title,
+              subTitle,
+              textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 15,
                   fontFamily: Fonts.ubuntu
