@@ -48,7 +48,8 @@ class BackgroundBuilder {
               title,
               style: TextStyle(
                   fontSize: 18  ,
-                  fontFamily: Fonts.montserrat
+                  fontFamily: Fonts.montserrat,
+                fontWeight: FontWeight.w600
               ),
             ),
           ),

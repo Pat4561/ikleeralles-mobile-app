@@ -57,10 +57,17 @@ class Api {
     );
   }
 
-  Future<List<ExerciseList>> getExerciseLists({ int folderId }) async {
+  Future<List<ExerciseList>> getExerciseLists() async {
     return requestHelper.multiObjectsRequest<ExerciseList>(
-        route: folderId == null ? Routes.myExerciseLists : Routes.exerciseListsByFolder(folderId),
+        route: Routes.myExerciseLists,
         toObject: (Map map) => ExerciseList(map)
+    );
+  }
+
+  Future<Folder> getFolder(int folderId) async {
+    return requestHelper.singleObjectRequest<Folder>(
+        route: Routes.folder(folderId),
+        toObject: (Map map) => Folder(map)
     );
   }
 

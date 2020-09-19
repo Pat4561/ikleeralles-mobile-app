@@ -6,6 +6,6 @@ class Routes {
   static String auth = "auth/login";
   static String levels = "levels";
   static String deletedExerciseLists = "list/deleted";
-  static String exerciseListsByFolder(int folderId) => "folder/$folderId";
+  static String folder(int folderId) => "folder/$folderId";
 
 }

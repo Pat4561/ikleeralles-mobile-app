@@ -20,4 +20,5 @@ class ObjectKeys {
   static String meta = "meta";
   static String loginResult = "loginResult";
   static String credentials = "credentials";
+  static String lists = "lists";
 }

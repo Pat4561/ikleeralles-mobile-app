@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_stetho/flutter_stetho.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/pages/login.dart';
 
@@ -11,6 +12,7 @@ Future main() async {
       path: MainApp.localizationAssetPath,
       forcedLocale: new Locale('nl'));
   WidgetsFlutterBinding.ensureInitialized();//For testing cases
+  Stetho.initialize();
   await flutterI18nDelegate.load(null);
   runApp(MainApp(flutterI18nDelegate));
 }

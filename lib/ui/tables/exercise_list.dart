@@ -20,8 +20,9 @@ class ExercisesTable extends OperationBasedTable {
   final Function(ExerciseList) onExerciseListPressed;
   final EdgeInsets tablePadding;
   final SelectionManager selectionManager;
+  final bool showBackground;
 
-  ExercisesTable ({ this.folderId, this.onTrashPressed, this.onMyFolderPressed, this.onPublicListsPressed,
+  ExercisesTable ({ this.folderId, this.onTrashPressed, this.onMyFolderPressed, this.onPublicListsPressed, this.showBackground = false,
     @required OperationManager operationManager, @required this.selectionManager, @required this.onExerciseListPressed, this.tablePadding, Key key }) : super(operationManager, key: key);
 
   @override
@@ -67,7 +68,7 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
   @override
   Widget background(BuildContext context){
     Widget background = super.background(context);
-    if (widget.operationManager.currentState.result == null) {
+    if (widget.operationManager.currentState.result == null || widget.showBackground) {
       return background;
     }
     return Container();
@@ -172,7 +173,7 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
               ),
               child: Row(
                 children: <Widget>[
-                  MultiSelectionButton(
+                  Visibility(child: MultiSelectionButton(
                     allSelected: () {
                       if (widget.operationManager.currentState.result != null) {
                         var length = widget.operationManager.currentState.result.length;
@@ -187,7 +188,7 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
                         widget.selectionManager.unSelectAll();
                       }
                     },
-                  )
+                  ), visible: widget.operationManager.currentState.result.length > 0)
                 ],
               ),
             );
