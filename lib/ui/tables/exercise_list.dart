@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
-import 'package:ikleeralles/logic/operations/exercises.dart';
+import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/background_builder.dart';
 import 'package:ikleeralles/ui/cells/actions.dart';
 import 'package:ikleeralles/ui/cells/exercise_list.dart';
 import 'package:ikleeralles/ui/tables/base.dart';
 import 'package:ikleeralles/ui/tables/operation_based.dart';
-import 'package:ikleeralles/logic/operations/abstract.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
 
-class ExercisesTable extends StatefulWidget {
+class ExercisesTable extends OperationBasedTable {
 
   final int folderId;
   final Function onTrashPressed;
@@ -22,7 +21,8 @@ class ExercisesTable extends StatefulWidget {
   final EdgeInsets tablePadding;
   final SelectionManager selectionManager;
 
-  ExercisesTable ({ this.folderId, this.onTrashPressed, this.onMyFolderPressed, this.onPublicListsPressed, @required this.selectionManager, @required this.onExerciseListPressed, this.tablePadding, Key key }) : super(key: key);
+  ExercisesTable ({ this.folderId, this.onTrashPressed, this.onMyFolderPressed, this.onPublicListsPressed,
+    @required OperationManager operationManager, @required this.selectionManager, @required this.onExerciseListPressed, this.tablePadding, Key key }) : super(operationManager, key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -63,17 +63,11 @@ class MultiSelectionButton extends StatelessWidget {
 
 class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
 
-  @override
-  Operation newOperation() {
-    return ExercisesDownloadOperation(
-      folderId: widget.folderId
-    );
-  }
 
   @override
   Widget background(BuildContext context){
     Widget background = super.background(context);
-    if (operationManager.currentState.result == null) {
+    if (widget.operationManager.currentState.result == null) {
       return background;
     }
     return Container();
@@ -81,55 +75,30 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
 
   @override
   Widget noResultsBackgroundBuilder(BuildContext context) {
-    return BackgroundBuilder.buildWithTitles(
-      title: FlutterI18n.translate(context, TranslationKeys.noResults),
-      subTitle: FlutterI18n.translate(context, TranslationKeys.noResultsSubTitle),
-    );
+    return BackgroundBuilder.defaults.noResults(context);
   }
 
   @override
   Widget loadingBackgroundBuilder(BuildContext context) {
-    return BackgroundBuilder.buildWithColumn(
-      children: [
-        Container(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(BrandColors.secondaryButtonColor),
-            strokeWidth: 3,
-          ),
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 15),
-          child: Text(
-            FlutterI18n.translate(context, TranslationKeys.busyLoading),
-            style: TextStyle(
-              fontSize: 18,
-              fontFamily: Fonts.montserrat
-            ),
-          ),
-        ),
-      ]
-    );
+    return BackgroundBuilder.defaults.loadingDetailed(context);
   }
 
   @override
   Widget errorBackgroundBuilder(BuildContext context, error) {
-    return BackgroundBuilder.buildWithTitles(
-      title: FlutterI18n.translate(context, TranslationKeys.error),
-      subTitle: FlutterI18n.translate(context, TranslationKeys.errorSubTitle),
-    );
+    return BackgroundBuilder.defaults.error(context);
   }
 
   @override
   Widget list(BuildContext context) {
-    if (operationManager.currentState.result == null) {
+    if (widget.operationManager.currentState.result == null) {
       return ListView();
     } else {
-      return listBuilder(context, operationManager.currentState.result);
+      return listBuilder(context, widget.operationManager.currentState.result);
     }
   }
 
   Widget objectCell(int row) {
-    ExerciseList exerciseList = operationManager.currentState.result[row];
+    ExerciseList exerciseList = widget.operationManager.currentState.result[row];
     return Container(
       child: ExerciseListCell(
           exerciseList,
@@ -165,7 +134,7 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
           if (section == 0) {
             return 3;
           } else if (section == 1) {
-            return operationManager.currentState.result.length;
+            return widget.operationManager.currentState.result.length;
           }
         },
         itemBuilder: (BuildContext context, int row, int section) {
@@ -205,15 +174,15 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
                 children: <Widget>[
                   MultiSelectionButton(
                     allSelected: () {
-                      if (operationManager.currentState.result != null) {
-                        var length = operationManager.currentState.result.length;
+                      if (widget.operationManager.currentState.result != null) {
+                        var length = widget.operationManager.currentState.result.length;
                         return length == widget.selectionManager.objects.length && length > 0;
                       }
                       return false;
                     }(),
                     onChange: (allSelected) {
                       if (allSelected) {
-                        widget.selectionManager.selectAll(operationManager.currentState.result);
+                        widget.selectionManager.selectAll(widget.operationManager.currentState.result);
                       } else {
                         widget.selectionManager.unSelectAll();
                       }

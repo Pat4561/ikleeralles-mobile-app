@@ -1,12 +1,18 @@
 import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
+import 'package:ikleeralles/network/models/folder.dart';
+import 'package:ikleeralles/ui/bottomsheets/folders.dart';
+import 'package:ikleeralles/ui/bottomsheets/trash.dart';
 import 'package:ikleeralles/ui/tables/exercise_list.dart';
+import 'package:ikleeralles/ui/tables/folders.dart';
+import 'package:ikleeralles/ui/tables/trash.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -87,11 +93,29 @@ class SelectionBar extends StatelessWidget {
 
 }
 
+class ExerciseListPageState<T extends StatefulWidget> extends State<T> {
+
+  final SelectionManager<ExerciseList> selectionManager = SelectionManager<ExerciseList>();
+
+  final GlobalKey<ExercisesTableState> exercisesTableKey = GlobalKey<ExercisesTableState>();
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+
+
+}
+
 class _HomePageState extends State<HomePage> {
 
   final SelectionManager<ExerciseList> selectionManager = SelectionManager<ExerciseList>();
 
   final GlobalKey<ExercisesTableState> exercisesTableKey = GlobalKey<ExercisesTableState>();
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final GlobalKey<FoldersTableState> foldersTableKey = GlobalKey<FoldersTableState>();
+
+  final GlobalKey<TrashTableState> trashTableKey = GlobalKey<TrashTableState>();
 
   @override
   void initState() {
@@ -114,20 +138,39 @@ class _HomePageState extends State<HomePage> {
 
   }
 
-  void _onMyFoldersPressed() {
-    showBottomSheet(
-      builder: (BuildContext context) {
-        return Container();
-      },
-      context: context
-    );
+  void _onRecoverPressed(ExerciseList exerciseList) {
+
   }
 
-  void _onPublicListsPressed() {
+  void _onFolderPressed(Folder folder) {
 
+  }
+
+  void _onDeleteFolderPressed(Folder folder) {
+
+  }
+
+  void _createFolderPressed() {
+
+  }
+
+  void _onMyFoldersPressed() {
+    FoldersBottomSheetPresenter(
+      key: foldersTableKey,
+      onFolderPressed: _onFolderPressed,
+      onDeleteFolderPressed: _onDeleteFolderPressed,
+      createFolderPressed: _createFolderPressed
+    ).show(context);
   }
 
   void _onTrashPressed() {
+    TrashBottomSheetPresenter(
+      key: trashTableKey,
+      onRecoverPressed: _onRecoverPressed
+    ).show(context);
+  }
+
+  void _onPublicListsPressed() {
 
   }
 
@@ -142,6 +185,7 @@ class _HomePageState extends State<HomePage> {
       child: ScopedModelDescendant<SelectionManager<ExerciseList>>(
         builder: (BuildContext context, Widget widget, SelectionManager manager) {
           return Scaffold(
+            key: scaffoldKey,
             appBar: ThemedAppBar(
               title: FlutterI18n.translate(context, TranslationKeys.myLists),
             ),

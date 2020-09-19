@@ -26,5 +26,8 @@
   "error": "Oeps..",
   "errorSubTitle": "Er trad een fout op. Check je internetverbinding.",
   "noResults": "Geen resultaat",
-  "noResultsSubTitle": "Er zijn geen resultaten gevonden"
+  "noResultsSubTitle": "Er zijn geen resultaten gevonden",
+  "delete": "Verwijder",
+  "recover": "Herstellen",
+  "newFolder": "Nieuw"
 }

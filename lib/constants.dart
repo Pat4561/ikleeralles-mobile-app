@@ -32,6 +32,7 @@ class BrandColors {
   static Color textColorLighter = Color.fromRGBO(104, 104, 104, 1);
   static Color badgeTextColor = Color.fromRGBO(138, 135, 135, 1);
   static Color badgeBackgroundColor = Color.fromRGBO(232, 232, 232, 1);
+  static Color lightGreyBackgroundColor = Color.fromRGBO(232, 232, 232, 1);
   static Color checkboxColor = Color.fromRGBO(112, 112, 112, 1);
   static Color checkboxSelectedColor = Color.fromRGBO(252, 114, 52, 1);
 }
@@ -66,6 +67,9 @@ class TranslationKeys {
   static const String errorSubTitle = "errorSubTitle";
   static const String noResults = "noResults";
   static const String noResultsSubTitle = "noResultsSubTitle";
+  static const String delete = "delete";
+  static const String recover = "recover";
+  static const String newFolder = "newFolder";
 
 }
 

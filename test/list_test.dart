@@ -9,7 +9,7 @@ void main() {
         username: "deurmanhimself",
         password: "Swaps_07"
     );
-    var lists = await SecuredApi(AccessToken(loginResult.accessToken)).getExercisesLists();
+    var lists = await SecuredApi(AccessToken(loginResult.accessToken)).getExerciseLists();
     var folders = await SecuredApi(AccessToken(loginResult.accessToken)).getFolders();
     
   });
