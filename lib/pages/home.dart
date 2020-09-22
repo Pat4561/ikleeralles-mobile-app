@@ -107,6 +107,7 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
     return ThemedAppBar(
       title: FlutterI18n.translate(context, TranslationKeys.myLists),
       disablePopping: true,
+      showUserInfo: true,
     );
   }
 

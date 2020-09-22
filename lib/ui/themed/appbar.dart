@@ -9,8 +9,9 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   final String title;
   final bool disablePopping;
+  final bool showUserInfo;
 
-  ThemedAppBar ({ this.title, this.disablePopping = false });
+  ThemedAppBar ({ this.title, this.disablePopping = false, this.showUserInfo = false });
 
   bool canPop(BuildContext context) {
     return Navigator.canPop(context) && !disablePopping;
@@ -63,29 +64,32 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 ),
                               )),
                               SizedBox(width: 8),
-                              ValueListenableBuilder(
-                                valueListenable: AuthService().userInfoValueNotifier,
-                                builder: (BuildContext context, UserInfo userInfo, Widget widget) {
-                                  if (userInfo != null && userInfo.userResult != null) {
-                                    return Container(
-                                        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                                        decoration: BoxDecoration(
-                                            color: BrandColors.secondaryButtonColor,
-                                            borderRadius: BorderRadius.circular(10)
-                                        ),
-                                        child: Text(userInfo.userResult.username, style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.white,
-                                            fontFamily: Fonts.ubuntu,
-                                            fontWeight: FontWeight.w500
-                                        ))
+                              Visibility(
+                                visible: showUserInfo,
+                                child: ValueListenableBuilder(
+                                  valueListenable: AuthService().userInfoValueNotifier,
+                                  builder: (BuildContext context, UserInfo userInfo, Widget widget) {
+                                    if (userInfo != null && userInfo.userResult != null) {
+                                      return Container(
+                                          padding: EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                                          decoration: BoxDecoration(
+                                              color: BrandColors.secondaryButtonColor,
+                                              borderRadius: BorderRadius.circular(10)
+                                          ),
+                                          child: Text(userInfo.userResult.username, style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.white,
+                                              fontFamily: Fonts.ubuntu,
+                                              fontWeight: FontWeight.w500
+                                          ))
+                                      );
+                                    }
+                                    return Visibility(
+                                      visible: false,
+                                      child: Container(),
                                     );
-                                  }
-                                  return Visibility(
-                                    visible: false,
-                                    child: Container(),
-                                  );
-                                },
+                                  },
+                                ),
                               )
                             ],
                           )
