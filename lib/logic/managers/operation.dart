@@ -32,4 +32,6 @@ class OperationManager<T extends Operation> extends Model {
   void reset() {
     this._operation = this.operationBuilder();
   }
+
+
 }

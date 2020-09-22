@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
-
+import 'package:ikleeralles/ui/bottomsheets/options.dart';
+import 'package:ikleeralles/ui/themed/select.dart';
+import 'package:ikleeralles/ui/themed/textfield.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
 
@@ -108,5 +112,183 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize {
     return Size.fromHeight(75);
   }
+
+}
+
+class ThemedSearchAppBar extends StatefulWidget implements PreferredSizeWidget  {
+
+  final PlatformDataProvider platformDataProvider;
+  final Function(String search, String year, String level) onPerformSearch;
+
+  ThemedSearchAppBar ({ @required this.platformDataProvider, @required this.onPerformSearch });
+
+  @override
+  State<StatefulWidget> createState() {
+    return ThemedSearchAppBarState();
+  }
+
+  @override
+  Size get preferredSize {
+    return Size.fromHeight(155);
+  }
+}
+
+class ThemedSearchAppBarState extends State<ThemedSearchAppBar>  {
+
+
+
+  ValueNotifier<String> _yearNotifier;
+  ValueNotifier<String> _levelNotifier;
+
+  final TextEditingController searchTextController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    _yearNotifier = ValueNotifier<String>(widget.platformDataProvider.years.first);
+    _levelNotifier = ValueNotifier<String>(widget.platformDataProvider.levels.first);
+
+    widget.platformDataProvider.addListener(_onPlatformDataUpdate);
+
+    _yearNotifier.addListener(_shouldUpdate);
+    _levelNotifier.addListener(_shouldUpdate);
+
+  }
+
+  void _onPlatformDataUpdate() {
+    if (_yearNotifier.value != null && !widget.platformDataProvider.years.contains(_yearNotifier.value)) {
+      _yearNotifier.value = widget.platformDataProvider.years.first;
+    }
+
+    if (_levelNotifier.value != null && !widget.platformDataProvider.levels.contains(_levelNotifier.value)) {
+      _levelNotifier.value = widget.platformDataProvider.levels.first;
+    }
+  }
+
+  void _shouldUpdate() {
+    widget.onPerformSearch(
+      searchTextController.text,
+      _yearNotifier.value,
+      _levelNotifier.value
+    );
+  }
+
+  Widget selectBox({ String labelText, ValueNotifier<String> notifier, List<String> options }) {
+    return ValueListenableBuilder(
+        valueListenable: notifier,
+        builder: (BuildContext context, String value, Widget widget) {
+          return ThemedSelect(
+              placeholder: notifier.value,
+              labelText: labelText,
+              onPressed: (BuildContext context) {
+                OptionsBottomSheetPresenter<String>(
+                    title: labelText,
+                    items: options,
+                    selectedItem: notifier.value,
+                    onPressed: (item) {
+                      Navigator.pop(context);
+                      notifier.value = item;
+                    }
+                ).show(context);
+              }
+          );
+        }
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+        elevation: 8,
+        leading: Container(),
+        flexibleSpace: ScopedModel<PlatformDataProvider>(
+          model: widget.platformDataProvider,
+          child: ScopedModelDescendant<PlatformDataProvider>(
+            builder: (BuildContext context, Widget widget, PlatformDataProvider provider) {
+              return SafeArea(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      height: 75,
+                      child: Row(
+                        children: <Widget>[
+                          Visibility(
+                            child: Container(
+                              width: 64,
+                              child: IconButton(
+                                padding: EdgeInsets.all(0),
+                                icon: Icon(Icons.arrow_back, color: Colors.white),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    right: 20
+                                ),
+                                child: SizedBox(
+                                  height: 40,
+                                  child: ThemedSearchTextField(
+                                      hint: "Wat zoek je?",
+                                      textEditingController: this.searchTextController,
+                                      onSubmitted: (value) {
+                                        _shouldUpdate();
+                                      }
+                                  ),
+                                ),
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      color: BrandColors.secondaryButtonColor,
+                      height: 80,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                              child: selectBox(
+                                labelText: "Jaar",
+                                options: this.widget.platformDataProvider.years,
+                                notifier: _yearNotifier,
+                              )
+                          ),
+                          SizedBox(width: 20),
+                          Expanded(
+                              child: selectBox(
+                                labelText: "Opleiding",
+                                options: this.widget.platformDataProvider.levels,
+                                notifier: _levelNotifier,
+                              )
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          ),
+        )
+    );
+  }
+
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.platformDataProvider.removeListener(_onPlatformDataUpdate);
+    _yearNotifier.removeListener(_shouldUpdate);
+    _levelNotifier.removeListener(_shouldUpdate);
+  }
+
 
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/operations/abstract.dart';
 import 'package:ikleeralles/logic/operations/exercises.dart';
 import 'package:ikleeralles/logic/operations/folders.dart';
@@ -36,8 +37,11 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
 
   final GlobalKey<TrashTableState> trashTableKey = GlobalKey<TrashTableState>();
 
+  final PlatformDataProvider platformDataProvider = PlatformDataProvider();
+
   OperationManager _foldersOperationManager;
   OperationManager _trashOperationManager;
+
 
   @override
   void initState() {
@@ -51,6 +55,9 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
         return TrashDownloadOperation();
       }
     );
+
+    platformDataProvider.load();
+
     super.initState();
   }
 
@@ -95,7 +102,9 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
   void _onPublicListsPressed() {
     Navigator.push(context, MaterialPageRoute(
       builder: (BuildContext context) {
-        return SearchPage();
+        return SearchPage(
+          platformDataProvider: platformDataProvider
+        );
       }
     ));
   }

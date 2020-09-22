@@ -14,6 +14,8 @@ abstract class OperationBasedTable extends StatefulWidget {
 abstract class OperationBasedTableState<T extends OperationBasedTable> extends State<T> {
 
 
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+
   Color backgroundColor = Colors.white;
 
   Future _onRefresh() {
@@ -64,6 +66,10 @@ abstract class OperationBasedTableState<T extends OperationBasedTable> extends S
     widget.operationManager.execute();
   }
 
+  Future showRefresh() {
+    return refreshIndicatorKey.currentState.show();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModel<OperationManager>(
@@ -72,6 +78,7 @@ abstract class OperationBasedTableState<T extends OperationBasedTable> extends S
         builder: (BuildContext context, Widget widget, OperationManager _operationManager) {
           return RefreshIndicator(
             onRefresh: _onRefresh,
+            key: refreshIndicatorKey,
             color: BrandColors.secondaryButtonColor,
             child: Container(
               color: backgroundColor,

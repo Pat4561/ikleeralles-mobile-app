@@ -1,4 +1,5 @@
 import 'package:ikleeralles/exceptions.dart';
+import 'package:ikleeralles/logic/operations/search.dart';
 import 'package:ikleeralles/network/api/routes.dart';
 import 'package:ikleeralles/network/api/helper.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
@@ -60,6 +61,15 @@ class Api {
   Future<List<ExerciseList>> getExerciseLists() async {
     return requestHelper.multiObjectsRequest<ExerciseList>(
         route: Routes.myExerciseLists,
+        toObject: (Map map) => ExerciseList(map)
+    );
+  }
+
+  Future<List<ExerciseList>> getSearchResults(SearchQuery query) async {
+    return requestHelper.multiObjectsRequest<ExerciseList>(
+        route: Routes.searchExerciseLists,
+        method: RequestMethod.post,
+        body: query.toMap(),
         toObject: (Map map) => ExerciseList(map)
     );
   }

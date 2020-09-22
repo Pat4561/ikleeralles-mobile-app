@@ -86,3 +86,57 @@ class ThemedTextField extends StatelessWidget {
   }
 
 }
+
+
+class ThemedSearchTextField extends StatelessWidget {
+
+  final String hint;
+  final TextEditingController textEditingController;
+  final Function(String) onChanged;
+  final Function(String) onSubmitted;
+
+  ThemedSearchTextField ({ this.hint, this.textEditingController, this.onChanged, this.onSubmitted });
+
+  InputBorder inputBorder() {
+    return OutlineInputBorder(
+      borderSide: BorderSide(color: BrandColors.lightGreyBackgroundColor),
+      borderRadius: BorderRadius.circular(8),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: textEditingController,
+      style: TextStyle(
+          fontSize: 14,
+          fontFamily: Fonts.ubuntu
+      ),
+      onSubmitted: this.onSubmitted,
+      onChanged: this.onChanged,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: BrandColors.lightGreyBackgroundColor,
+        prefixIcon: Padding(
+          padding: EdgeInsets.all(0),
+          child: Container(
+            height: 40,
+            width: 40,
+            child: Center(
+              child: Icon(
+                Icons.search,
+                size: 24,
+                color: BrandColors.textColorLighter,
+              ),
+            ),
+          ),
+        ),
+        contentPadding: EdgeInsets.only(left: 14.0, bottom: 12.0, top: 0.0),
+        focusedBorder: inputBorder(),
+        hintText: hint,
+        enabledBorder: inputBorder(),
+      ),
+    );
+  }
+
+}

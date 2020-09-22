@@ -81,7 +81,7 @@ class BackgroundDefaults {
     );
   }
 
-  Widget error(BuildContext context, { Alignment alignment }) {
+  Widget error(BuildContext context, { Alignment alignment = Alignment.center }) {
     return BackgroundBuilder.buildWithTitles(
         title: FlutterI18n.translate(context, TranslationKeys.error),
         subTitle: FlutterI18n.translate(context, TranslationKeys.errorSubTitle),

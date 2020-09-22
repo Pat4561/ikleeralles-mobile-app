@@ -65,8 +65,9 @@ class AuthService {
         credentials: credentials
     );
     updateUserInfo(userInfo);
-
   }
+
+
 
 
 }
