@@ -4,6 +4,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/managers/exercises/actions.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/operations/folders.dart';
@@ -88,6 +89,8 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
 
   final SelectionManager<ExerciseList> selectionManager = SelectionManager<ExerciseList>();
 
+  final ExercisesActionsManager actionsManager = ExercisesActionsManager();
+
   final GlobalKey<ExercisesTableState> exercisesTableKey = GlobalKey<ExercisesTableState>();
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -116,15 +119,18 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   }
 
   void onMovePressed(List<ExerciseList> exercises) {
-    /*FoldersBottomSheetPresenter(
+    FoldersBottomSheetPresenter(
         operationManager: foldersOperationManager,
         onFolderPressed: (folder) {
           Navigator.pop(context);
           var toast = showLoadingToast(context, timeOutDuration: Duration(seconds: 30));
-          manager.move(exercises, to: folder).then((_) {
+          actionsManager.move(exercises, folder: folder).then((_) {
             toast.removeCustomToast();
             Future.delayed(Duration(milliseconds: 150), () {
-              showToast("${exercises.length} item(s) toegevoegd aan de map ${folder.name}",
+              showToast(FlutterI18n.translate(context, TranslationKeys.itemsAddedToFolderSuccess, {
+                "count": exercises.length.toString(),
+                "folderName": folder.name
+              }),
                 backgroundColor: Colors.green,
                 textColor: Colors.white,
               );
@@ -137,14 +143,42 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
           });
 
         }
-    ).show(context); */
+    ).show(context);
   }
 
   void onMergePressed(List<ExerciseList> exercises) {
-
+    FToast toast = showLoadingToast(context);
+    actionsManager.merge(
+      exercises
+    ).then((_) {
+      toast.removeCustomToast();
+      Future.delayed(Duration(milliseconds: 150), () {
+        showToast(FlutterI18n.translate(context, TranslationKeys.successMerged),
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+        );
+      });
+    }).catchError((e){
+      toast.removeCustomToast();
+      Future.delayed(Duration(milliseconds: 150), () {
+        showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
+      });
+    });
   }
 
   void onDeletePressed(List<ExerciseList> exercises) {
+
+    List resultList = exercisesTableKey.currentState.widget.operationManager.currentState.result;
+    List copiedList = List.from(resultList);
+    exercisesTableKey.currentState.removeObjects(exercises);
+    actionsManager.deleteExercises(
+      exercises
+    ).catchError((e) {
+      exercisesTableKey.currentState.restoreResult(
+        copiedList
+      );
+      showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
+    });
 
   }
 

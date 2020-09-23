@@ -15,6 +15,8 @@ class OperationManager<T extends Operation> extends Model {
     reset();
   }
 
+
+
   OperationState get currentState {
     return _operation.currentState;
   }
@@ -53,4 +55,25 @@ class OperationManager<T extends Operation> extends Model {
     }
     return -1;
   }
+
+  List<int> removeObjects(List values) {
+    List<int> indices = [];
+    if (currentState.result != null) {
+      List resultList = currentState.result;
+      for (var value in values) {
+        int indexOf = resultList.indexOf(value);
+        indices.add(indexOf);
+        resultList.removeAt(indexOf);
+      }
+
+      notifyListeners();
+    }
+    return indices;
+  }
+
+  void restoreResult(value) {
+    currentState.restoreResult(value);
+    notifyListeners();
+  }
+
 }

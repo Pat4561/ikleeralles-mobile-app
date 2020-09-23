@@ -81,6 +81,8 @@ class TranslationKeys {
   static const String folderCreateTitle = "folderCreateTitle";
   static const String folderCreateError = "folderCreateError";
   static const String busyProcessing = "busyProcessing";
+  static const String successMerged = "successMerged";
+  static const String itemsAddedToFolderSuccess = "itemsAddedToFolderSuccess";
 
 }
 

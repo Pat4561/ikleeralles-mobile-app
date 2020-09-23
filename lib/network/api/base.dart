@@ -95,6 +95,11 @@ class Api {
     return ParsingOperation<String>(response).asPrimitiveList();
   }
 
+  Future restoreExerciseList(ExerciseList exerciseList) async {
+
+  }
+
+
 
 }
 

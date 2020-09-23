@@ -8,11 +8,22 @@ enum OperationRunningState {
 
 class OperationState<T> {
 
-  final T result;
+  T _result;
+
+  T get result {
+    return _result;
+  }
+
   final dynamic error;
   final OperationRunningState operationRunningState;
 
-  OperationState ({ this.result, this.error, this.operationRunningState });
+  OperationState ({ T result, this.error, this.operationRunningState }) {
+    _result = result;
+  }
+
+  void restoreResult(T result) {
+    this._result = result;
+  }
 }
 
 abstract class Operation<T> {

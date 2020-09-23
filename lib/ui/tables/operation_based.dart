@@ -26,6 +26,14 @@ abstract class OperationBasedTableState<T extends OperationBasedTable> extends S
     return widget.operationManager.removeObject(value);
   }
 
+  void removeObjects(List values) {
+    widget.operationManager.removeObjects(values);
+  }
+
+  void restoreResult(result) {
+    widget.operationManager.restoreResult(result);
+  }
+
   Future _onRefresh() {
     widget.operationManager.reset();
     return widget.operationManager.execute();
