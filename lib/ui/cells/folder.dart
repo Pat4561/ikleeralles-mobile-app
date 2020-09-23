@@ -21,13 +21,15 @@ class FolderCell extends StatelessWidget {
           child: InkWell(
             child: ListTile(
 
-              title: Text(
-                  folder.name,
-                  style: TextStyle(
-                      fontFamily: Fonts.ubuntu,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15
-                  )
+              title: Container(
+                child: Text(
+                    folder.name,
+                    style: TextStyle(
+                        fontFamily: Fonts.ubuntu,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15
+                    )
+                ),
               ),
               trailing: Icon(Icons.chevron_right)
             ),
@@ -37,16 +39,21 @@ class FolderCell extends StatelessWidget {
           ),
           color: Colors.white,
         ),
-        secondaryActions: <Widget>[
-          IconSlideAction(
-            caption: FlutterI18n.translate(context, TranslationKeys.delete),
-            color: Colors.red,
-            icon: Icons.delete,
-            onTap: () {
-              onDeletePressed(folder);
-            },
-          )
-        ],
+        secondaryActions: () {
+          if (this.onDeletePressed != null) {
+            return <Widget>[
+              IconSlideAction(
+                caption: FlutterI18n.translate(context, TranslationKeys.delete),
+                color: Colors.red,
+                icon: Icons.delete,
+                onTap: () {
+                  onDeletePressed(folder);
+                },
+              )
+            ];
+          }
+          return <Widget>[];
+        }()
       ),
       decoration: BoxDecoration(
         border: Border(

@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
+import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
+import 'package:ikleeralles/ui/bottomsheets/folders.dart';
+import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/tables/exercise_list.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -13,11 +17,11 @@ import 'package:scoped_model/scoped_model.dart';
 class SelectionBar extends StatelessWidget {
 
   final int selectionCount;
-  final Function onStartPressed;
+  final Function onMovePressed;
   final Function onMergePressed;
   final Function onDeletePressed;
 
-  SelectionBar ({ @required this.selectionCount, @required this.onStartPressed,
+  SelectionBar ({ @required this.selectionCount, @required this.onMovePressed,
     @required this.onMergePressed, @required this.onDeletePressed });
 
   Widget iconButton({ @required Function onPressed, @required String assetPath }) {
@@ -29,6 +33,8 @@ class SelectionBar extends StatelessWidget {
           icon: SvgPicture.asset(
             assetPath,
             color: Colors.white,
+            width: 26,
+            height: 26,
           ),
           onPressed: onPressed,
         )
@@ -59,8 +65,8 @@ class SelectionBar extends StatelessWidget {
               ),
             )),
             iconButton(
-                assetPath: AssetPaths.start,
-                onPressed: this.onStartPressed
+                assetPath: AssetPaths.move,
+                onPressed: this.onMovePressed
             ),
             iconButton(
                 assetPath: AssetPaths.merge,
@@ -88,18 +94,50 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
 
   OperationManager _exercisesOperationManager;
 
+  OperationManager _foldersOperationManager;
+
   OperationManager get exercisesOperationManager {
     return _exercisesOperationManager;
+  }
+
+  OperationManager get foldersOperationManager {
+    return _foldersOperationManager;
   }
 
   @override
   void initState() {
     _exercisesOperationManager = createExercisesOperationManager();
+    _foldersOperationManager = OperationManager(
+        operationBuilder: () {
+          return FoldersDownloadOperation();
+        }
+    );
     super.initState();
   }
 
-  void onStartPressed(List<ExerciseList> exercises) {
+  void onMovePressed(List<ExerciseList> exercises) {
+    /*FoldersBottomSheetPresenter(
+        operationManager: foldersOperationManager,
+        onFolderPressed: (folder) {
+          Navigator.pop(context);
+          var toast = showLoadingToast(context, timeOutDuration: Duration(seconds: 30));
+          manager.move(exercises, to: folder).then((_) {
+            toast.removeCustomToast();
+            Future.delayed(Duration(milliseconds: 150), () {
+              showToast("${exercises.length} item(s) toegevoegd aan de map ${folder.name}",
+                backgroundColor: Colors.green,
+                textColor: Colors.white,
+              );
+            });
+          }).catchError((e) {
+            toast.removeCustomToast();
+            Future.delayed(Duration(milliseconds: 150), () {
+              showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
+            });
+          });
 
+        }
+    ).show(context); */
   }
 
   void onMergePressed(List<ExerciseList> exercises) {
@@ -107,6 +145,10 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   }
 
   void onDeletePressed(List<ExerciseList> exercises) {
+
+  }
+
+  void onStartPressed(List<ExerciseList> exercises) {
 
   }
 
@@ -134,17 +176,30 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
               key: scaffoldKey,
               appBar: appBar(context),
               body: body(context),
-              floatingActionButton: FloatingActionButton(
-                onPressed: onAddPressed,
-                child: SvgPicture.asset(
-                    AssetPaths.add
-                ),
-              ),
+              floatingActionButton: () {
+                if (selectionManager.objects.length > 0) {
+                  return FloatingActionButton(
+                    onPressed: () {
+                      onStartPressed(selectionManager.objects);
+                    },
+                    child: SvgPicture.asset(
+                        AssetPaths.start
+                    ),
+                  );
+                } else {
+                  return FloatingActionButton(
+                    onPressed: onAddPressed,
+                    child: SvgPicture.asset(
+                        AssetPaths.add
+                    ),
+                  );
+                }
+              }(),
               bottomNavigationBar: Visibility(
                 child: SelectionBar(
                   selectionCount: selectionManager.objects.length,
-                  onStartPressed: () {
-                    onStartPressed(selectionManager.objects);
+                  onMovePressed: () {
+                    onMovePressed(selectionManager.objects);
                   },
                   onDeletePressed: () {
                     onDeletePressed(selectionManager.objects);

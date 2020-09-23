@@ -30,10 +30,6 @@ class TrashTableState extends OperationBasedTableState<TrashTable> {
     super.initState();
   }
 
-  @override
-  Operation newOperation() {
-    return TrashDownloadOperation();
-  }
 
   @override
   Widget listBuilder(BuildContext context, result) {

@@ -6,7 +6,6 @@ import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/operations/abstract.dart';
 import 'package:ikleeralles/logic/operations/exercises.dart';
-import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/logic/operations/trash.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/network/models/folder.dart';
@@ -15,6 +14,7 @@ import 'package:ikleeralles/pages/folder.dart';
 import 'package:ikleeralles/pages/search.dart';
 import 'package:ikleeralles/ui/bottomsheets/folders.dart';
 import 'package:ikleeralles/ui/bottomsheets/trash.dart';
+import 'package:ikleeralles/ui/dialogs/create_folder.dart';
 import 'package:ikleeralles/ui/tables/exercise_list.dart';
 import 'package:ikleeralles/ui/tables/folders.dart';
 import 'package:ikleeralles/ui/tables/trash.dart';
@@ -39,17 +39,12 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
 
   final PlatformDataProvider platformDataProvider = PlatformDataProvider();
 
-  OperationManager _foldersOperationManager;
   OperationManager _trashOperationManager;
 
 
   @override
   void initState() {
-    _foldersOperationManager = OperationManager(
-      operationBuilder: () {
-        return FoldersDownloadOperation();
-      }
-    );
+
     _trashOperationManager = OperationManager(
       operationBuilder: () {
         return TrashDownloadOperation();
@@ -62,7 +57,13 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
   }
 
   void _onRecoverPressed(ExerciseList exerciseList) {
-
+    /*int index = trashTableKey.currentState.removeObject(exerciseList);
+    exercisesTableKey.currentState.insertObject(exerciseList, index: 0);
+    manager.restoreExerciseList(exerciseList).catchError((e) {
+      exercisesTableKey.currentState.removeObject(exerciseList);
+      trashTableKey.currentState.insertObject(exerciseList, index: index);
+      showToast(FlutterI18n.translate(context, TranslationKeys.restoreError));
+    }); */
   }
 
   void _onFolderPressed(Folder folder) {
@@ -74,17 +75,34 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
   }
 
   void _onDeleteFolderPressed(Folder folder) {
-
+    /* int index = foldersTableKey.currentState.removeObject(folder);
+    manager.deleteFolder(folder).catchError((e) {
+      foldersTableKey.currentState.insertObject(folder, index: index);
+      showToast(FlutterI18n.translate(context, TranslationKeys.folderDeleteError));
+    }); */
   }
 
   void _createFolderPressed() {
+    CreateFolderDialog.show(
+      context,
+      onCreatePressed: (value) {
+        /*Navigator.pop(context);
 
+        Folder folder = Folder.create(name: value);
+        foldersTableKey.currentState.insertObject(folder, index: 0);
+
+        manager.createFolder(value).catchError((e) {
+          foldersTableKey.currentState.removeObject(folder);
+          showToast(FlutterI18n.translate(context, TranslationKeys.folderCreateError));
+        }); */
+      }
+    );
   }
 
   void _onMyFoldersPressed() {
     FoldersBottomSheetPresenter(
       key: foldersTableKey,
-      operationManager: _foldersOperationManager,
+      operationManager: foldersOperationManager,
       onFolderPressed: _onFolderPressed,
       onDeleteFolderPressed: _onDeleteFolderPressed,
       createFolderPressed: _createFolderPressed

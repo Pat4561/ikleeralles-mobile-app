@@ -33,5 +33,24 @@ class OperationManager<T extends Operation> extends Model {
     this._operation = this.operationBuilder();
   }
 
+  bool insertObject(value, { int index }) {
+    if (currentState.result != null) {
+      List resultList = currentState.result;
+      resultList.insert(index, value);
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
 
+  int removeObject(value) {
+    if (currentState.result != null) {
+      List resultList = currentState.result;
+      int indexOf = resultList.indexOf(value);
+      resultList.removeAt(indexOf);
+      notifyListeners();
+      return indexOf;
+    }
+    return -1;
+  }
 }

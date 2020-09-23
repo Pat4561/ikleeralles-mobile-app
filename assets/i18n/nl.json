@@ -29,5 +29,16 @@
   "noResultsSubTitle": "Er zijn geen resultaten gevonden",
   "delete": "Verwijder",
   "recover": "Herstellen",
-  "newFolder": "Nieuw"
+  "newFolder": "Nieuw",
+  "searchHint": "Wat zoek je?",
+  "year": "Jaar",
+  "level": "Opleiding",
+  "folderDeleteError": "De map kon niet worden verwijderd",
+  "restoreError": "De overhoring kon niet worden teruggezet",
+  "folderCreateTitle": "Nieuwe map",
+  "folderCreatePlaceholder": "Bijv. Frans",
+  "create": "Aanmaken",
+  "cancel": "Annuleren",
+  "folderCreateError": "De map kon niet worden aangemaakt",
+  "busyProcessing": "Bezig met verwerken.."
 }

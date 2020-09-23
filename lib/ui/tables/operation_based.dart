@@ -18,6 +18,14 @@ abstract class OperationBasedTableState<T extends OperationBasedTable> extends S
 
   Color backgroundColor = Colors.white;
 
+  void insertObject(value, { int index} ) {
+    widget.operationManager.insertObject(value, index: index);
+  }
+
+  int removeObject(value) {
+    return widget.operationManager.removeObject(value);
+  }
+
   Future _onRefresh() {
     widget.operationManager.reset();
     return widget.operationManager.execute();

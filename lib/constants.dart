@@ -70,6 +70,17 @@ class TranslationKeys {
   static const String delete = "delete";
   static const String recover = "recover";
   static const String newFolder = "newFolder";
+  static const String searchHint = "searchHint";
+  static const String year = "year";
+  static const String level = "level";
+  static const String folderDeleteError = "folderDeleteError";
+  static const String restoreError = "restoreError";
+  static const String cancel = "cancel";
+  static const String create = "create";
+  static const String folderCreatePlaceholder = "folderCreatePlaceholder";
+  static const String folderCreateTitle = "folderCreateTitle";
+  static const String folderCreateError = "folderCreateError";
+  static const String busyProcessing = "busyProcessing";
 
 }
 
@@ -86,5 +97,5 @@ class AssetPaths {
   static const String add = 'assets/svg/add.svg';
   static const String start = 'assets/svg/start.svg';
   static const String merge = 'assets/svg/merge.svg';
-
+  static const String move = 'assets/svg/move.svg';
 }

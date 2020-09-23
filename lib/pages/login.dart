@@ -9,7 +9,7 @@ import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
 import 'package:ikleeralles/pages/home.dart';
 import 'package:ikleeralles/pages/webview.dart';
-import 'package:ikleeralles/ui/alert.dart';
+import 'package:ikleeralles/ui/dialogs/alert.dart';
 import 'package:ikleeralles/ui/hyperlink.dart';
 import 'package:ikleeralles/ui/loading_overlay.dart';
 import 'package:ikleeralles/ui/logo.dart';

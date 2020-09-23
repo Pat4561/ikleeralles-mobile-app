@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/auth/service.dart';
@@ -233,7 +234,7 @@ class ThemedSearchAppBarState extends State<ThemedSearchAppBar>  {
                                 child: SizedBox(
                                   height: 40,
                                   child: ThemedSearchTextField(
-                                      hint: "Wat zoek je?",
+                                      hint: FlutterI18n.translate(context, TranslationKeys.searchHint),
                                       textEditingController: this.searchTextController,
                                       onSubmitted: (value) {
                                         _shouldUpdate();
@@ -255,7 +256,7 @@ class ThemedSearchAppBarState extends State<ThemedSearchAppBar>  {
                         children: <Widget>[
                           Expanded(
                               child: selectBox(
-                                labelText: "Jaar",
+                                labelText: FlutterI18n.translate(context, TranslationKeys.year),
                                 options: this.widget.platformDataProvider.years,
                                 notifier: _yearNotifier,
                               )
@@ -263,7 +264,7 @@ class ThemedSearchAppBarState extends State<ThemedSearchAppBar>  {
                           SizedBox(width: 20),
                           Expanded(
                               child: selectBox(
-                                labelText: "Opleiding",
+                                labelText: FlutterI18n.translate(context, TranslationKeys.level),
                                 options: this.widget.platformDataProvider.levels,
                                 notifier: _levelNotifier,
                               )
