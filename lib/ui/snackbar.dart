@@ -41,7 +41,7 @@ void showToast(String message, { Color backgroundColor = Colors.red, Color textC
       timeInSecForIosWeb: 1,
       backgroundColor: backgroundColor,
       textColor: textColor,
-      fontSize: fontSize
+      fontSize: fontSize,
   );
 
 
@@ -60,12 +60,19 @@ FToast showLoadingToast(BuildContext context, { Duration timeOutDuration }) {
     toastDuration: timeOutDuration,
     child: Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25)
+        color: Colors.white.withOpacity(0.9),
+        borderRadius: BorderRadius.circular(25),
+        border: Border.all(
+          color: BrandColors.secondaryButtonColor,
+          width: 1.5
+        )
+      ),
+      margin: EdgeInsets.symmetric(
+        vertical: 10
       ),
       padding: EdgeInsets.symmetric(
         horizontal: 30,
-        vertical: 20
+        vertical: 15
       ),
       child: Row(
         children: <Widget>[

@@ -247,7 +247,9 @@ class ThemedSearchAppBarState extends State<ThemedSearchAppBar>  {
                       ),
                     ),
                     Container(
-                      color: BrandColors.secondaryButtonColor,
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                      ),
                       height: 80,
                       padding: EdgeInsets.symmetric(
                           horizontal: 20

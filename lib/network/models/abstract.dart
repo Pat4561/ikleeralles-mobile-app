@@ -10,6 +10,8 @@ abstract class ParsableObject {
     parse(dictionary);
   }
 
+  ParsableObject.create();
+
   void parse(Map<String, dynamic> dictionary);
 
 }
@@ -22,6 +24,8 @@ abstract class ObjectBase extends ParsableObject {
   final DateFormat parsingDateFormat = DateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
   ObjectBase (Map<String, dynamic> dictionary) : super(dictionary);
+
+  ObjectBase.create () : super.create();
 
   @override
   void parse(Map<String, dynamic> dictionary) {

@@ -149,8 +149,13 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   void onMergePressed(List<ExerciseList> exercises) {
     FToast toast = showLoadingToast(context);
     actionsManager.merge(
-      exercises
-    ).then((_) {
+      exercises,
+      name: FlutterI18n.translate(context, TranslationKeys.newMergedListName)
+    ).then((exerciseList) {
+      exercisesTableKey.currentState.insertObject(
+        exerciseList,
+        index: 0
+      );
       toast.removeCustomToast();
       Future.delayed(Duration(milliseconds: 150), () {
         showToast(FlutterI18n.translate(context, TranslationKeys.successMerged),
@@ -163,6 +168,8 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
       Future.delayed(Duration(milliseconds: 150), () {
         showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
       });
+    }).whenComplete(() {
+      selectionManager.unSelectAll();
     });
   }
 

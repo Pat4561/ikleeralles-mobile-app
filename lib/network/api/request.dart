@@ -1,8 +1,8 @@
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/network/api/url.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
-import 'package:ikleeralles/network/models/login_result.dart';
 
 class ApiRequest {
 
@@ -13,7 +13,7 @@ class ApiRequest {
   ApiRequest (this.url, { this.headers });
 
   Future<http.Response> post({ Map<String, dynamic> body }) {
-    return http.post(url.toString(), body: body, headers: headers);
+    return http.post(url.toString(), body: json.encode(body), headers: headers);
   }
 
   Future<http.Response> get() {

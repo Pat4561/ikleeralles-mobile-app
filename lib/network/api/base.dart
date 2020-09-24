@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:ikleeralles/exceptions.dart';
 import 'package:ikleeralles/logic/operations/search.dart';
 import 'package:ikleeralles/network/api/routes.dart';
@@ -95,10 +96,50 @@ class Api {
     return ParsingOperation<String>(response).asPrimitiveList();
   }
 
-  Future restoreExerciseList(ExerciseList exerciseList) async {
-
+  Future<ExerciseList> restoreExerciseList(ExerciseList exerciseList) async {
+    return requestHelper.singleObjectRequest<ExerciseList>(
+        route: Routes.restoreExerciseList,
+        toObject: (Map map) => ExerciseList(map),
+        method: RequestMethod.post,
+        body: {
+          ObjectKeys.id: exerciseList.id
+        }
+    );
   }
 
+  Future<Folder> deleteFolder(Folder folder) async {
+    return requestHelper.singleObjectRequest<Folder>(
+        route: Routes.deleteFolder(folder.id),
+        toObject: (Map map) => Folder(map),
+        method: RequestMethod.post
+    );
+  }
+
+  Future<Folder> createFolder(String name) async {
+    return requestHelper.singleObjectRequest<Folder>(
+        route: Routes.createFolder,
+        toObject: (Map map) => Folder(map),
+        method: RequestMethod.post,
+        body: {
+          ObjectKeys.name: name
+        }
+    );
+  }
+
+  Future<ExerciseList> createExerciseList(ExerciseList exerciseList) async {
+    var body = {
+      ObjectKeys.name: exerciseList.name,
+      ObjectKeys.original: exerciseList.original,
+      ObjectKeys.translated: exerciseList.translated,
+      ObjectKeys.content : json.decode(exerciseList.content)
+    };
+    return requestHelper.singleObjectRequest<ExerciseList>(
+        route: Routes.createExerciseList,
+        toObject: (Map map) => ExerciseList(map),
+        method: RequestMethod.post,
+        body: body
+    );
+  }
 
 
 }

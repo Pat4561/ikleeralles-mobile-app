@@ -46,6 +46,9 @@ class _FolderPageState extends ExercisesOverviewPageState<FolderPage> {
     return OperationManager(
         operationBuilder: () {
           return ExercisesDownloadOperation(folderId: widget.folder.id);
+        },
+        onReset: () {
+          selectionManager.unSelectAll();
         }
     );
   }

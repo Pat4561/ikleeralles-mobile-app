@@ -42,5 +42,6 @@
   "folderCreateError": "De map kon niet worden aangemaakt",
   "busyProcessing": "Bezig met verwerken..",
   "successMerged": "De lijst is succesvol samengevoegd",
-  "itemsAddedToFolderSuccess": "{count} item(s) toegevoegd aan de map {folderName}"
+  "itemsAddedToFolderSuccess": "{count} item(s) toegevoegd aan de map {folderName}",
+  "newMergedListName": "Gecombineerde lijst"
 }

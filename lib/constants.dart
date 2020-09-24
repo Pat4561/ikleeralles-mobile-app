@@ -83,6 +83,7 @@ class TranslationKeys {
   static const String busyProcessing = "busyProcessing";
   static const String successMerged = "successMerged";
   static const String itemsAddedToFolderSuccess = "itemsAddedToFolderSuccess";
+  static const String newMergedListName = "newMergedListName";
 
 }
 

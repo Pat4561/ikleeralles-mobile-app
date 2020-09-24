@@ -52,12 +52,15 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
       }
     );
 
+
+
     platformDataProvider.load();
 
     super.initState();
   }
 
   void _onRecoverPressed(ExerciseList exerciseList) {
+    Navigator.pop(context);
     int index = trashTableKey.currentState.removeObject(exerciseList);
     exercisesTableKey.currentState.insertObject(exerciseList, index: 0);
     actionsManager.restoreExerciseList(exerciseList).catchError((e) {
@@ -149,6 +152,10 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
       onMyFolderPressed: _onMyFoldersPressed,
       onPublicListsPressed: _onPublicListsPressed,
       onTrashPressed: _onTrashPressed,
+      tablePadding: EdgeInsets.only(
+        top: 25,
+        bottom: 25
+      ),
     );
   }
 
@@ -157,6 +164,9 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
     return OperationManager(
       operationBuilder: () {
         return ExercisesDownloadOperation();
+      },
+      onReset: () {
+        selectionManager.unSelectAll();
       }
     );
   }

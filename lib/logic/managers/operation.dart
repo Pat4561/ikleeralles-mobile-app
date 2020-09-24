@@ -9,9 +9,11 @@ class OperationManager<T extends Operation> extends Model {
 
   T Function() operationBuilder;
 
+  Function onReset;
+
   LoadingDelegate loadingDelegate = LoadingDelegate();
 
-  OperationManager ({ @required this.operationBuilder }) {
+  OperationManager ({ @required this.operationBuilder, this.onReset }) {
     reset();
   }
 
@@ -32,6 +34,9 @@ class OperationManager<T extends Operation> extends Model {
   }
 
   void reset() {
+    if (this.onReset != null) {
+      this.onReset();
+    }
     this._operation = this.operationBuilder();
   }
 

@@ -10,7 +10,7 @@ class Folder extends ObjectBase {
 
   Folder (Map<String, dynamic> dictionary) : super(dictionary);
 
-  Folder.create({ this.name }) : super(null) {
+  Folder.create({ this.name }) : super.create() {
     this.date = DateTime.now();
   }
 

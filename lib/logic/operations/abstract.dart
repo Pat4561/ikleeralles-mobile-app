@@ -32,7 +32,12 @@ abstract class Operation<T> {
   T _result;
   dynamic _error;
 
+
   Completer<T> _innerCompleter;
+
+  T Function (T value) orderItems;
+
+  Operation ({ this.orderItems });
 
   Future execute() {
     if (_innerCompleter != null) {
@@ -42,7 +47,7 @@ abstract class Operation<T> {
     _innerCompleter = Completer<T>();
     _operationRunningState = OperationRunningState.running;
     perform().then((value) {
-      _result = value;
+      _result = order(value);
       _innerCompleter.complete(value);
     }).catchError((e) {
       _error = e;
@@ -63,4 +68,9 @@ abstract class Operation<T> {
     );
   }
 
+  T order(T value) {
+    if (this.orderItems != null)
+      return this.orderItems(value);
+    return value;
+  }
 }

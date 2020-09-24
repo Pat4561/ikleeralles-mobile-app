@@ -21,4 +21,7 @@ class ObjectKeys {
   static String loginResult = "loginResult";
   static String credentials = "credentials";
   static String lists = "lists";
+  static String content = "content";
+  static String translatedImage = "translatedImage";
+  static String color = "color";
 }

@@ -1,5 +1,50 @@
+import 'dart:convert';
 import 'package:ikleeralles/network/models/abstract.dart';
 import 'package:ikleeralles/network/keys.dart';
+
+class ExerciseSet extends ParsableObject {
+
+  List<String> original;
+  List<String> translated;
+  String translatedImage;
+  List<String> color;
+
+  ExerciseSet (Map<String, dynamic> dictionary) : super(dictionary);
+
+  @override
+  void parse(Map<String, dynamic> dictionary) {
+    original = strList(dictionary[ObjectKeys.original]);
+    translated = strList(dictionary[ObjectKeys.translated]);
+    translatedImage = dictionary[ObjectKeys.translatedImage];
+    color = strList(dictionary[ObjectKeys.color]);
+  }
+
+  List<String> strList(List values) {
+    return values.map((value) => value.toString()).toList();
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      ObjectKeys.original: original,
+      ObjectKeys.translated: translated,
+      ObjectKeys.translatedImage: translatedImage,
+      ObjectKeys.color: color
+    };
+  }
+
+}
+
+class ExerciseDetails {
+
+  List<ExerciseSet> sets;
+
+  ExerciseDetails (String content) {
+    List mapList = json.decode(content);
+    sets = mapList.map((map) => ExerciseSet(map)).toList();
+  }
+
+}
 
 class ExerciseList extends ObjectBase {
 
@@ -7,11 +52,14 @@ class ExerciseList extends ObjectBase {
   DateTime date;
   String name;
   String original;
+  String content;
   String translated;
   int year;
   String level;
 
   ExerciseList (Map<String, dynamic> dictionary) : super(dictionary);
+
+  ExerciseList.create({ this.name, this.original, this.translated, this.content }) : super.create();
 
   @override
   void parse(Map<String, dynamic> dictionary) {
@@ -23,6 +71,7 @@ class ExerciseList extends ObjectBase {
     translated = dictionary[ObjectKeys.translated];
     year = dictionary[ObjectKeys.year];
     level = dictionary[ObjectKeys.level];
+    content = dictionary[ObjectKeys.content];
   }
 
   @override
@@ -32,6 +81,7 @@ class ExerciseList extends ObjectBase {
       ObjectKeys.name: name,
       ObjectKeys.date: toDateStr(date),
       ObjectKeys.copied: copied,
+      ObjectKeys.content: content,
       ObjectKeys.original: original,
       ObjectKeys.translated: translated,
       ObjectKeys.year: year,

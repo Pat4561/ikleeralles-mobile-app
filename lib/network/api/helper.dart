@@ -2,7 +2,6 @@ import 'package:http/http.dart';
 import 'package:ikleeralles/network/api/request.dart';
 import 'package:ikleeralles/network/api/url.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
-import 'package:ikleeralles/network/models/login_result.dart';
 import 'package:ikleeralles/network/parsing_operation.dart';
 
 enum RequestMethod {
@@ -16,7 +15,7 @@ class RequestHelper {
     return ApiRequest(
       ApiUrl(
         route
-      )
+      ),
     );
   }
 
@@ -28,6 +27,9 @@ class RequestHelper {
     if (method == RequestMethod.get) {
       response = await request.get();
     } else if (method == RequestMethod.post) {
+      if (request.headers == null)
+        request.headers = {};
+      request.headers["Content-Type"] = "application/json";
       response = await request.post(body: body);
     }
     return response;

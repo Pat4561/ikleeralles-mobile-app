@@ -8,5 +8,10 @@ class Routes {
   static String deletedExerciseLists = "list/deleted";
   static String searchExerciseLists = "list/search";
   static String folder(int folderId) => "folder/$folderId";
+  static String restoreExerciseList = "list/restore";
+  static String createFolder = "folder";
+  static String deleteFolder(int folderId) => "folder/$folderId/delete";
+  static String createExerciseList = "list";
+  static String exerciseList(int listId) => "list/$listId";
 
 }
