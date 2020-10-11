@@ -12,7 +12,7 @@ import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/pages/exercise_editor.dart';
 import 'package:ikleeralles/ui/bottomsheets/folders.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
-import 'package:ikleeralles/ui/tables/exercise_list.dart';
+import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 

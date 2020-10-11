@@ -16,7 +16,7 @@ import 'package:ikleeralles/ui/bottomsheets/folders.dart';
 import 'package:ikleeralles/ui/bottomsheets/trash.dart';
 import 'package:ikleeralles/ui/dialogs/create_folder.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
-import 'package:ikleeralles/ui/tables/exercise_list.dart';
+import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/tables/folders.dart';
 import 'package:ikleeralles/ui/tables/trash.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';

@@ -1,7 +1,18 @@
 import 'dart:async';
-
 import 'package:scoped_model/scoped_model.dart';
 import 'package:ikleeralles/network/auth/service.dart';
+
+class SetInputTypeProvider {
+
+  String defaultValue() {
+    return "Nederlands";
+  }
+
+  List<String> all() {
+    return ["Nederlands", "Duits", "Frans"];
+  }
+
+}
 
 class PlatformDataConstants {
 

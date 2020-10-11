@@ -4,7 +4,7 @@ import 'package:ikleeralles/logic/operations/abstract.dart';
 import 'package:ikleeralles/logic/operations/exercises.dart';
 import 'package:ikleeralles/network/models/folder.dart';
 import 'package:ikleeralles/pages/exercises_overview.dart';
-import 'package:ikleeralles/ui/tables/exercise_list.dart';
+import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
 
 class FolderPage extends StatefulWidget {
