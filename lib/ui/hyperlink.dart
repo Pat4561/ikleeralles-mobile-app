@@ -101,8 +101,9 @@ class IconHyperlink extends Hyperlink {
 class TextHyperlink extends Hyperlink {
 
   final String title;
+  final double fontSize;
 
-  TextHyperlink ({this.title, Key key, bool selected = false, Color baseColor, @required VoidCallback onPressed, Color highlightedColor})
+  TextHyperlink ({this.title, this.fontSize = 14, Key key, bool selected = false, Color baseColor, @required VoidCallback onPressed, Color highlightedColor})
       : super(baseColor: baseColor, onPressed: onPressed, highlightedColor: highlightedColor, selected: selected, key: key);
 
   @override
@@ -111,6 +112,7 @@ class TextHyperlink extends Hyperlink {
       title,
       style: TextStyle(
         color: currentColor,
+        fontSize: fontSize,
         fontFamily: Fonts.ubuntu,
         fontWeight: FontWeight.w600
       ),

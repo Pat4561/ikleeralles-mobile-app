@@ -11,6 +11,15 @@ class ExerciseSet extends ParsableObject {
 
   ExerciseSet (Map<String, dynamic> dictionary) : super(dictionary);
 
+  static ExerciseSet create() {
+    return ExerciseSet({
+      ObjectKeys.original: <String>[],
+      ObjectKeys.translated: <String>[],
+      ObjectKeys.translatedImage: null,
+      ObjectKeys.color: <String>[]
+    });
+  }
+
   @override
   void parse(Map<String, dynamic> dictionary) {
     original = strList(dictionary[ObjectKeys.original]);

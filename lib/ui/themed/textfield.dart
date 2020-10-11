@@ -27,16 +27,21 @@ class ThemedTextField extends StatelessWidget {
   final Color errorColor;
   final Color focusedColor;
   final Color borderColor;
+  final Color fillColor;
   final double borderRadius;
+  final double borderWidth;
+  final Widget suffixIcon;
   final BorderSide customBorderSide;
+  final EdgeInsets margin;
 
-  ThemedTextField ({ this.labelText, this.hintText, this.obscureText = false, this.textEditingController, this.validator, this.errorColor, this.focusedColor, this.borderColor, this.borderRadius = 20, this.customBorderSide });
+
+  ThemedTextField ({ this.labelText, this.hintText, this.suffixIcon, this.borderWidth, this.obscureText = false, this.textEditingController, this.margin, this.validator, this.errorColor, this.focusedColor, this.fillColor, this.borderColor, this.borderRadius = 20, this.customBorderSide });
 
   InputBorder inputBorder({ @required Color borderColor }) {
     return OutlineInputBorder(
       borderSide: customBorderSide ?? BorderSide(
           color: borderColor,
-          width: 2
+          width: borderWidth ?? 2
       ),
       borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
     );
@@ -57,18 +62,19 @@ class ThemedTextField extends StatelessWidget {
         decoration: InputDecoration(
             hintText: hintText,
             filled: true,
-            fillColor: Color.fromRGBO(255, 255, 255, 0.7),
+            fillColor: fillColor ?? Color.fromRGBO(255, 255, 255, 0.7),
             contentPadding: EdgeInsets.symmetric(
                 vertical: 15,
                 horizontal: 20
             ),
+            suffixIcon: suffixIcon,
             border: inputBorder(borderColor: borderColor ?? BrandColors.inputBorderColor),
             enabledBorder: inputBorder(borderColor: borderColor ?? BrandColors.inputBorderColor),
             focusedBorder: inputBorder(borderColor: focusedColor ?? BrandColors.inputFocusedColor),
             errorBorder: inputBorder(borderColor: errorColor ?? BrandColors.inputErrorColor)
         ),
       ),
-      margin: EdgeInsets.symmetric(
+      margin: margin ?? EdgeInsets.symmetric(
           vertical: 12
       ),
     );

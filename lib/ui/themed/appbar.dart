@@ -15,8 +15,9 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool disablePopping;
   final bool showUserInfo;
+  final List<Widget> actions;
 
-  ThemedAppBar ({ this.title, this.disablePopping = false, this.showUserInfo = false });
+  ThemedAppBar ({ this.title, this.actions, this.disablePopping = false, this.showUserInfo = false });
 
   bool canPop(BuildContext context) {
     return Navigator.canPop(context) && !disablePopping;
@@ -57,7 +58,7 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                           child: Row(
                             children: <Widget>[
                               Expanded(child: AutoSizeText(
-                                this.title,
+                                this.title ?? "",
                                 overflow: TextOverflow.ellipsis,
                                 minFontSize: 17,
                                 maxLines: 1,
@@ -69,6 +70,12 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 ),
                               )),
                               SizedBox(width: 8),
+                              Visibility(
+                                child: Row(
+                                  children: actions ?? <Widget>[],
+                                ),
+                                visible: actions != null && actions.length > 0,
+                              ),
                               Visibility(
                                 visible: showUserInfo,
                                 child: ValueListenableBuilder(

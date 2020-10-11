@@ -8,10 +8,12 @@ class ThemedSelect extends StatelessWidget  {
   final String placeholder;
   final double height;
   final double iconContainerWidth;
+  final double radius;
   final Function onPressed;
+  final Color color;
 
 
-  ThemedSelect ({ @required this.placeholder, this.labelText, this.height = 24, this.iconContainerWidth = 30, this.onPressed });
+  ThemedSelect ({ @required this.placeholder, this.labelText, this.color = Colors.white, this.height = 24, this.radius = 10, this.iconContainerWidth = 30, this.onPressed });
 
   TextStyle textStyle({ FontWeight fontWeight = FontWeight.bold, double fontSize = 14, Color color = Colors.white}) {
     return TextStyle(
@@ -29,9 +31,9 @@ class ThemedSelect extends StatelessWidget  {
       ),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(
-              10
+              radius
           ),
-          color: Colors.white
+          color: color
       ),
       child: Material(
         color: Colors.transparent,
