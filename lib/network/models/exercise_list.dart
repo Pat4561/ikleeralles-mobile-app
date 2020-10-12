@@ -46,6 +46,14 @@ class ExerciseSet extends ParsableObject {
     return items;
   }
 
+  void updateFieldsBySide(ExerciseSetInputSide side, List<String> items) {
+    if (side == ExerciseSetInputSide.term) {
+      this.original = items;
+    } else if (side == ExerciseSetInputSide.definition) {
+      this.translated = items;
+    }
+  }
+
   List<String> strList(List values) {
     return values.map((value) => value.toString()).toList();
   }

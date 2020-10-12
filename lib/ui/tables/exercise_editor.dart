@@ -6,6 +6,7 @@ import 'package:ikleeralles/ui/cells/exercise_set.dart';
 import 'package:ikleeralles/ui/exercise_controller.dart';
 import 'package:ikleeralles/ui/tables/base.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 class ExerciseEditorList extends StatelessWidget {
 
@@ -13,8 +14,37 @@ class ExerciseEditorList extends StatelessWidget {
   final String term;
   final String definition;
 
+  final FocusNode focusNode = FocusNode();
 
   ExerciseEditorList ({ @required this.controller, @required this.term, @required this.definition });
+
+  KeyboardActionsConfig _keyboardActionsConfig(BuildContext context) {
+    return KeyboardActionsConfig(
+        keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+        keyboardBarColor: Colors.grey[200],
+        nextFocus: true,
+        actions: [
+          KeyboardActionsItem(
+              focusNode: focusNode,
+              toolbarButtons: [
+                    (node) {
+                  return GestureDetector(
+                    onTap: () => node.unfocus(),
+                    child: Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        "CLOSE",
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
+                  );
+                }
+              ]
+          ),
+        ]
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +74,9 @@ class ExerciseEditorList extends StatelessWidget {
                 },
                 onFieldChange: (BuildContext context, String newText, { int index, ExerciseSetInputSide side }) {
                   controller.changeField(controller.sets[row], newText, fieldIndex: index, side: side);
+                },
+                onDeleteField: (BuildContext context, { int index, ExerciseSetInputSide side }) {
+                  controller.removeField(controller.sets[row], fieldIndex: index, side: side);
                 },
               );
             },

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/badge.dart';
-import 'package:ikleeralles/ui/exercise_controller.dart';
 import 'package:ikleeralles/ui/hyperlink.dart';
 import 'package:ikleeralles/ui/themed/textfield.dart';
 
@@ -19,10 +18,11 @@ class ExerciseSetCell extends StatelessWidget {
   final String definition;
   final Function(BuildContext context, { @required ExerciseSetInputSide side }) onAddNewEntryPressed;
   final Function(BuildContext context, String text, { @required int index, @required ExerciseSetInputSide side }) onFieldChange;
+  final Function(BuildContext context, { @required int index, @required ExerciseSetInputSide side }) onDeleteField;
   final Function(BuildContext) onDeletePressed;
 
   ExerciseSetCell (this.set, { @required this.rowNumber, @required this.term, @required this.definition,
-    @required this.onDeletePressed, @required this.onAddNewEntryPressed, @required this.onFieldChange });
+    @required this.onDeletePressed, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField });
 
   Widget _topActionsBar(BuildContext context, { double badgeSize = 30, double marginBetweenContainers = marginBetweenContainers, double marginBetweenInputs = marginBetweenInputs }) {
     return Container(
@@ -95,12 +95,14 @@ class ExerciseSetCell extends StatelessWidget {
                         _SetEntries(set.original),
                         inputTypeLabel: this.term,
                         onFieldChange: (BuildContext context, String newText, { int index}) => onFieldChange(context, newText, side: ExerciseSetInputSide.term, index: index),
+                        onDeleteField: (BuildContext context, { int index }) => onDeleteField(context, side: ExerciseSetInputSide.term, index: index),
                         onAddNewEntryPressed: (BuildContext context) => onAddNewEntryPressed(context, side: ExerciseSetInputSide.term)
                       ),
                       _SetEntriesInnerCol(
                         _SetEntries(set.translated),
                         inputTypeLabel: this.definition,
                         onFieldChange: (BuildContext context, String newText, { int index}) => onFieldChange(context, newText, side: ExerciseSetInputSide.definition, index: index),
+                        onDeleteField: (BuildContext context, { int index }) => onDeleteField(context, side: ExerciseSetInputSide.definition, index: index),
                         onAddNewEntryPressed: (BuildContext context) => onAddNewEntryPressed(context, side: ExerciseSetInputSide.definition)
                       ),
                       Container(
@@ -174,9 +176,10 @@ class _SetEntriesInnerCol extends StatelessWidget {
   final String inputTypeLabel;
   final Function(BuildContext context) onAddNewEntryPressed;
   final Function(BuildContext context, String text, { @required int index }) onFieldChange;
+  final Function(BuildContext context, { @required int index }) onDeleteField;
   final _SetEntries entries;
 
-  _SetEntriesInnerCol (this.entries, { @required this.inputTypeLabel, @required this.onAddNewEntryPressed, @required this.onFieldChange });
+  _SetEntriesInnerCol (this.entries, { @required this.inputTypeLabel, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField });
 
   Widget _exerciseSetInputTypeLabel(String text) {
     return Container(
@@ -188,18 +191,50 @@ class _SetEntriesInnerCol extends StatelessWidget {
     );
   }
 
-  Widget _textField(String text, { @required Function onTextChange }) {
-    return ThemedTextField(
-        borderRadius: 5,
-        textEditingController: TextEditingController(text: text),
-        fillColor: ExerciseSetCell.inputBackgroundColor,
-        borderColor: ExerciseSetCell.inputBackgroundColor,
-        focusedColor: BrandColors.secondaryButtonColor,
-        onChanged: onTextChange,
-        borderWidth: 1,
-        margin: EdgeInsets.only(
-            bottom: ExerciseSetCell.marginBetweenInputs
+  Widget _textField(BuildContext context, String text, { @required Function onTextChange, bool shouldShowDelete = false, Function onDeleteField }) {
+
+    return Stack(
+      alignment: Alignment.centerRight,
+      children: <Widget>[
+        Container(
+          child: ThemedTextField(
+              borderRadius: 5,
+              textEditingController: TextEditingController(text: text),
+              fillColor: ExerciseSetCell.inputBackgroundColor,
+              borderColor: ExerciseSetCell.inputBackgroundColor,
+              focusedColor: BrandColors.secondaryButtonColor,
+              onChanged: onTextChange,
+              borderWidth: 1,
+              margin: EdgeInsets.only(
+                  bottom: ExerciseSetCell.marginBetweenInputs
+              ),
+              contentPadding: EdgeInsets.only(
+                  top: 15,
+                  bottom: 15,
+                  left: 20,
+                  right: shouldShowDelete ? 66 : 20
+              )
+          ),
+        ),
+        Visibility(
+          visible: shouldShowDelete,
+          child: Container(
+            width: 46,
+            height: 40,
+            child: Center(
+              child: IconHyperlink(
+                highlightedColor: BrandColors.secondaryButtonColor,
+                baseColor: BrandColors.iconColorRed,
+                iconData: Icons.delete_outline,
+                onPressed: () => onDeleteField(),
+              ),
+            ),
+            margin: EdgeInsets.only(
+              bottom: 8,
+            ),
+          ),
         )
+      ],
     );
   }
 
@@ -223,10 +258,13 @@ class _SetEntriesInnerCol extends StatelessWidget {
 
     for (int i = 0; i < entries.values.length; i++) {
       children.add(
-        _textField(
-          entries.values[i],
-          onTextChange: (newValue) => onFieldChange(context, newValue, index: i)
-        )
+          _textField(
+              context,
+              entries.values[i],
+              shouldShowDelete: entries.values.length > 1,
+              onTextChange: (newValue) => onFieldChange(context, newValue, index: i),
+              onDeleteField: () => onDeleteField(context, index: i)
+          )
       );
     }
 

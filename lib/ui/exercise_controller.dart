@@ -84,9 +84,17 @@ class ExerciseSetsController extends Model {
     items[fieldIndex] = text;
   }
 
+  void removeField(ExerciseSet set, { @required int fieldIndex, @required ExerciseSetInputSide side }) {
+    List<String> items = set.fieldsBySide(side);
+    items.removeAt(fieldIndex);
+    set.updateFieldsBySide(side, items);
+    notifyListeners();
+  }
+
   void addFieldEntry(ExerciseSet set, { @required ExerciseSetInputSide side }) {
     List<String> items = set.fieldsBySide(side);
     items.add("");
+    set.updateFieldsBySide(side, items);
     notifyListeners();
   }
 
