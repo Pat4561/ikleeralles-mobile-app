@@ -24,14 +24,14 @@ class ExerciseListController {
     _titleTextController = TextEditingController();
     _termValueNotifier = ValueNotifier<String>(termsProvider.defaultValue());
     _definitionValueNotifier = ValueNotifier<String>(definitionsProvider.defaultValue());
-    _setsController = ExerciseSetsController();
+    _setsController = ExerciseSetsController(termValueNotifier: _termValueNotifier, definitionValueNotifier: _definitionValueNotifier);
   }
 
   ExerciseListController.existingList(ExerciseList list) {
     _titleTextController = TextEditingController(text: list.name);
     _termValueNotifier = ValueNotifier<String>(list.original ?? termsProvider.defaultValue());
     _definitionValueNotifier = ValueNotifier<String>(list.translated ?? definitionsProvider.defaultValue());
-    _setsController = ExerciseSetsController(sets: ExerciseDetails(list.content).sets);
+    _setsController = ExerciseSetsController(sets: ExerciseDetails(list.content).sets, termValueNotifier: _termValueNotifier, definitionValueNotifier: _definitionValueNotifier);
   }
 
 }
@@ -39,17 +39,27 @@ class ExerciseListController {
 
 class ExerciseSetsController extends Model {
 
+  final ValueNotifier<String> termValueNotifier;
+  final ValueNotifier<String> definitionValueNotifier;
+
   static const int minSetLength = 5;
   static const int batchSize = 3;
 
   List<ExerciseSet> _sets;
   List<ExerciseSet> get sets => _sets;
 
-  ExerciseSetsController ({ List<ExerciseSet> sets }) {
+  ExerciseSetsController ({ List<ExerciseSet> sets, @required this.termValueNotifier, @required this.definitionValueNotifier }) {
     _sets = sets ?? [];
     if (_sets.length < minSetLength) {
       _populateNew(till: minSetLength);
     }
+
+    termValueNotifier.addListener(_fieldTypeChange);
+    definitionValueNotifier.addListener(_fieldTypeChange);
+  }
+
+  void _fieldTypeChange() {
+    notifyListeners();
   }
 
   void _populateNew({ @required int till }) {
@@ -66,6 +76,13 @@ class ExerciseSetsController extends Model {
     _populateNew(till: _sets.length + batchSize);
     notifyListeners();
   }
+
+  void removeAt(int index){
+    _sets.removeAt(index);
+    notifyListeners();
+  }
+
+
 
 
 }

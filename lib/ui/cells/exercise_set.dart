@@ -16,10 +16,11 @@ class ExerciseSetCell extends StatelessWidget {
   final int rowNumber;
   final String term;
   final String definition;
+  final Function(BuildContext) onDeletePressed;
 
-  ExerciseSetCell (this.set, { @required this.rowNumber, @required this.term, @required this.definition });
+  ExerciseSetCell (this.set, { @required this.rowNumber, @required this.term, @required this.definition, @required this.onDeletePressed });
 
-  Widget _topActionsBar({ double badgeSize = 30, double marginBetweenContainers = marginBetweenContainers, double marginBetweenInputs = marginBetweenInputs }) {
+  Widget _topActionsBar(BuildContext context, { double badgeSize = 30, double marginBetweenContainers = marginBetweenContainers, double marginBetweenInputs = marginBetweenInputs }) {
     return Container(
       height: marginBetweenContainers + marginBetweenInputs,
       child: Row(
@@ -36,9 +37,7 @@ class ExerciseSetCell extends StatelessWidget {
                     size: badgeSize,
                     backgroundColor: Colors.red,
                     iconBuilder: (BuildContext context) => Icon(Icons.delete, color: Colors.white, size: 18),
-                    onPressed: () {
-
-                    },
+                    onPressed: () => onDeletePressed(context),
                   ),
                   top: badgeSize / 2 * -1,
                   right: 0,
@@ -87,7 +86,7 @@ class ExerciseSetCell extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      _topActionsBar(),
+                      _topActionsBar(context),
                       _SetEntriesInnerCol(
                         set.original,
                         inputTypeLabel: this.term,
@@ -192,7 +191,6 @@ class _SetEntriesInnerColState extends State<_SetEntriesInnerCol> {
     );
   }
 
-  //TODO: send event (create entry, delete entry, fill entry)
 
   Widget _textField(_SetFieldEntry entry) {
     return ThemedTextField(

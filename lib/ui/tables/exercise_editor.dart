@@ -32,6 +32,9 @@ class ExerciseEditorList extends StatelessWidget {
                 rowNumber: row + 1,
                 definition: definition,
                 term: term,
+                onDeletePressed: (BuildContext context) {
+                  controller.removeAt(row);
+                }
               );
             },
             sectionFooterBuilder: (int section) {

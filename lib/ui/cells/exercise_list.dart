@@ -46,9 +46,7 @@ class ExerciseListCell extends StatelessWidget {
             )
         ),
       ),
-      onTap: () {
-        onPressed(this.exerciseList);
-      },
+      onTap: () => onPressed(this.exerciseList),
     ), color: Colors.white);
   }
 
