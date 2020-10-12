@@ -23,6 +23,7 @@ class ThemedTextField extends StatelessWidget {
   final bool obscureText;
   final TextEditingController textEditingController;
   final Function(String) validator;
+  final Function(String) onChanged;
 
   final Color errorColor;
   final Color focusedColor;
@@ -35,7 +36,7 @@ class ThemedTextField extends StatelessWidget {
   final EdgeInsets margin;
 
 
-  ThemedTextField ({ this.labelText, this.hintText, this.suffixIcon, this.borderWidth, this.obscureText = false, this.textEditingController, this.margin, this.validator, this.errorColor, this.focusedColor, this.fillColor, this.borderColor, this.borderRadius = 20, this.customBorderSide });
+  ThemedTextField ({ this.labelText, this.hintText, this.suffixIcon, this.borderWidth, this.obscureText = false, this.textEditingController, this.margin, this.validator, this.errorColor, this.focusedColor, this.fillColor, this.borderColor, this.onChanged, this.borderRadius = 20, this.customBorderSide });
 
   InputBorder inputBorder({ @required Color borderColor }) {
     return OutlineInputBorder(
@@ -53,6 +54,7 @@ class ThemedTextField extends StatelessWidget {
         obscureText: obscureText,
         controller: textEditingController,
         validator: validator,
+        onChanged: onChanged,
         style: TextStyle(
             fontFamily: Fonts.ubuntu,
             fontWeight: FontWeight.w600,

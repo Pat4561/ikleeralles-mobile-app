@@ -3,6 +3,8 @@ import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+
+
 class ExerciseListController {
 
   final SetInputTypeProvider termsProvider = SetInputTypeProvider();
@@ -74,6 +76,22 @@ class ExerciseSetsController extends Model {
 
   void addMore() {
     _populateNew(till: _sets.length + batchSize);
+    notifyListeners();
+  }
+
+  void changeField(ExerciseSet set, String text, { @required int fieldIndex, @required ExerciseSetInputSide side } ) {
+    List<String> items = set.fieldsBySide(side);
+    items[fieldIndex] = text;
+  }
+
+  void addFieldEntry(ExerciseSet set, { @required ExerciseSetInputSide side }) {
+    List<String> items = set.fieldsBySide(side);
+    items.add("");
+    notifyListeners();
+  }
+
+  void remove(ExerciseSet set) {
+    _sets.remove(set);
     notifyListeners();
   }
 

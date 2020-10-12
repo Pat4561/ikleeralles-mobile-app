@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/cells/exercise_set.dart';
 import 'package:ikleeralles/ui/exercise_controller.dart';
 import 'package:ikleeralles/ui/tables/base.dart';
@@ -11,6 +12,7 @@ class ExerciseEditorList extends StatelessWidget {
   final ExerciseSetsController controller;
   final String term;
   final String definition;
+
 
   ExerciseEditorList ({ @required this.controller, @required this.term, @required this.definition });
 
@@ -33,8 +35,16 @@ class ExerciseEditorList extends StatelessWidget {
                 definition: definition,
                 term: term,
                 onDeletePressed: (BuildContext context) {
-                  controller.removeAt(row);
-                }
+                  FocusScope.of(context).unfocus();
+                  controller.remove(controller.sets[row]);
+                },
+                onAddNewEntryPressed: (BuildContext context, { ExerciseSetInputSide side }) {
+                  FocusScope.of(context).unfocus();
+                  controller.addFieldEntry(controller.sets[row], side: side);
+                },
+                onFieldChange: (BuildContext context, String newText, { int index, ExerciseSetInputSide side }) {
+                  controller.changeField(controller.sets[row], newText, fieldIndex: index, side: side);
+                },
               );
             },
             sectionFooterBuilder: (int section) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/badge.dart';
+import 'package:ikleeralles/ui/exercise_controller.dart';
 import 'package:ikleeralles/ui/hyperlink.dart';
 import 'package:ikleeralles/ui/themed/textfield.dart';
 
@@ -16,9 +17,12 @@ class ExerciseSetCell extends StatelessWidget {
   final int rowNumber;
   final String term;
   final String definition;
+  final Function(BuildContext context, { @required ExerciseSetInputSide side }) onAddNewEntryPressed;
+  final Function(BuildContext context, String text, { @required int index, @required ExerciseSetInputSide side }) onFieldChange;
   final Function(BuildContext) onDeletePressed;
 
-  ExerciseSetCell (this.set, { @required this.rowNumber, @required this.term, @required this.definition, @required this.onDeletePressed });
+  ExerciseSetCell (this.set, { @required this.rowNumber, @required this.term, @required this.definition,
+    @required this.onDeletePressed, @required this.onAddNewEntryPressed, @required this.onFieldChange });
 
   Widget _topActionsBar(BuildContext context, { double badgeSize = 30, double marginBetweenContainers = marginBetweenContainers, double marginBetweenInputs = marginBetweenInputs }) {
     return Container(
@@ -88,12 +92,16 @@ class ExerciseSetCell extends StatelessWidget {
                     children: <Widget>[
                       _topActionsBar(context),
                       _SetEntriesInnerCol(
-                        set.original,
+                        _SetEntries(set.original),
                         inputTypeLabel: this.term,
+                        onFieldChange: (BuildContext context, String newText, { int index}) => onFieldChange(context, newText, side: ExerciseSetInputSide.term, index: index),
+                        onAddNewEntryPressed: (BuildContext context) => onAddNewEntryPressed(context, side: ExerciseSetInputSide.term)
                       ),
                       _SetEntriesInnerCol(
-                        set.translated,
+                        _SetEntries(set.translated),
                         inputTypeLabel: this.definition,
+                        onFieldChange: (BuildContext context, String newText, { int index}) => onFieldChange(context, newText, side: ExerciseSetInputSide.definition, index: index),
+                        onAddNewEntryPressed: (BuildContext context) => onAddNewEntryPressed(context, side: ExerciseSetInputSide.definition)
                       ),
                       Container(
                         height: marginBetweenContainers,
@@ -145,41 +153,30 @@ class _RowNumberBadge extends StatelessWidget {
 
 }
 
-class _SetFieldEntry {
 
-  TextEditingController _textEditingController;
+class _SetEntries {
 
-  TextEditingController get textEditingController => _textEditingController;
+  List<String> _values;
 
-  _SetFieldEntry (String text) {
-    _textEditingController = TextEditingController(
-        text: text
-    );
-  }
+  List<String> get values => _values;
 
-  static _SetFieldEntry create() {
-    return _SetFieldEntry("");
+  _SetEntries (List<String> entries) {
+    _values = entries ?? [];
+    if (_values.length == 0) {
+      _values.add("");
+    }
   }
 
 }
 
-class _SetEntriesInnerCol extends StatefulWidget {
+class _SetEntriesInnerCol extends StatelessWidget {
 
-  final List<String> entries;
   final String inputTypeLabel;
+  final Function(BuildContext context) onAddNewEntryPressed;
+  final Function(BuildContext context, String text, { @required int index }) onFieldChange;
+  final _SetEntries entries;
 
-  _SetEntriesInnerCol (this.entries, { @required this.inputTypeLabel });
-
-  @override
-  State<StatefulWidget> createState() {
-    return _SetEntriesInnerColState();
-  }
-
-}
-
-class _SetEntriesInnerColState extends State<_SetEntriesInnerCol> {
-
-  List<_SetFieldEntry> _fieldEntries;
+  _SetEntriesInnerCol (this.entries, { @required this.inputTypeLabel, @required this.onAddNewEntryPressed, @required this.onFieldChange });
 
   Widget _exerciseSetInputTypeLabel(String text) {
     return Container(
@@ -191,22 +188,22 @@ class _SetEntriesInnerColState extends State<_SetEntriesInnerCol> {
     );
   }
 
-
-  Widget _textField(_SetFieldEntry entry) {
+  Widget _textField(String text, { @required Function onTextChange }) {
     return ThemedTextField(
         borderRadius: 5,
+        textEditingController: TextEditingController(text: text),
         fillColor: ExerciseSetCell.inputBackgroundColor,
         borderColor: ExerciseSetCell.inputBackgroundColor,
         focusedColor: BrandColors.secondaryButtonColor,
+        onChanged: onTextChange,
         borderWidth: 1,
-        textEditingController: entry.textEditingController,
         margin: EdgeInsets.only(
             bottom: ExerciseSetCell.marginBetweenInputs
         )
     );
   }
 
-  Widget _addNewEntryButton() {
+  Widget _addNewEntryButton(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
@@ -214,7 +211,7 @@ class _SetEntriesInnerColState extends State<_SetEntriesInnerCol> {
           title: "+ Synoniem",
           baseColor: BrandColors.secondaryButtonColor,
           highlightedColor: BrandColors.secondaryButtonColor.withOpacity(0.7),
-          onPressed: _addNewEntry,
+          onPressed: () => onAddNewEntryPressed(context)
         )
       ],
     );
@@ -222,9 +219,18 @@ class _SetEntriesInnerColState extends State<_SetEntriesInnerCol> {
 
   List<Widget> _buildChildren(BuildContext context) {
     List<Widget> children = [];
-    children.add(_exerciseSetInputTypeLabel(widget.inputTypeLabel));
-    children.addAll(_fieldEntries.map((o) => _textField(o)).toList());
-    children.add(_addNewEntryButton());
+    children.add(_exerciseSetInputTypeLabel(inputTypeLabel));
+
+    for (int i = 0; i < entries.values.length; i++) {
+      children.add(
+        _textField(
+          entries.values[i],
+          onTextChange: (newValue) => onFieldChange(context, newValue, index: i)
+        )
+      );
+    }
+
+    children.add(_addNewEntryButton(context));
     return children;
   }
 
@@ -237,20 +243,7 @@ class _SetEntriesInnerColState extends State<_SetEntriesInnerCol> {
     );
   }
 
-  void _addNewEntry() {
-    setState(() {
-      _fieldEntries.add(_SetFieldEntry.create());
-    });
-  }
-
-  @override
-  void initState() {
-    _fieldEntries = widget.entries.map((v) => _SetFieldEntry(v)).toList();
-    if (_fieldEntries.length == 0) {
-      _fieldEntries.add(_SetFieldEntry.create());
-    }
-    super.initState();
-  }
 
 }
+
 

@@ -2,6 +2,11 @@ import 'dart:convert';
 import 'package:ikleeralles/network/models/abstract.dart';
 import 'package:ikleeralles/network/keys.dart';
 
+enum ExerciseSetInputSide {
+  term,
+  definition
+}
+
 class ExerciseSet extends ParsableObject {
 
   List<String> original;
@@ -26,6 +31,19 @@ class ExerciseSet extends ParsableObject {
     translated = strList(dictionary[ObjectKeys.translated]);
     translatedImage = dictionary[ObjectKeys.translatedImage];
     color = strList(dictionary[ObjectKeys.color]);
+  }
+
+  List<String> fieldsBySide (ExerciseSetInputSide side) {
+    List<String> items = [];
+    switch (side) {
+      case ExerciseSetInputSide.term:
+        items = this.original;
+        break;
+      case ExerciseSetInputSide.definition:
+        items = this.translated;
+        break;
+    }
+    return items;
   }
 
   List<String> strList(List values) {
