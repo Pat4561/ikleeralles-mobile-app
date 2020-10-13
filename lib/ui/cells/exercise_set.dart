@@ -16,13 +16,14 @@ class ExerciseSetCell extends StatelessWidget {
   final int rowNumber;
   final String term;
   final String definition;
+  final bool readOnly;
   final Function(BuildContext context, { @required ExerciseSetInputSide side }) onAddNewEntryPressed;
   final Function(BuildContext context, String text, { @required int index, @required ExerciseSetInputSide side }) onFieldChange;
   final Function(BuildContext context, { @required int index, @required ExerciseSetInputSide side }) onDeleteField;
   final Function(BuildContext) onDeletePressed;
 
   ExerciseSetCell (this.set, { @required this.rowNumber, @required this.term, @required this.definition,
-    @required this.onDeletePressed, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField });
+    @required this.onDeletePressed, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField, @required this.readOnly });
 
   Widget _topActionsBar(BuildContext context, { double badgeSize = 30, double marginBetweenContainers = marginBetweenContainers, double marginBetweenInputs = marginBetweenInputs }) {
     return Container(
@@ -37,11 +38,14 @@ class ExerciseSetCell extends StatelessWidget {
               overflow: Overflow.visible,
               children: <Widget>[
                 Positioned(
-                  child: IconBadge(
-                    size: badgeSize,
-                    backgroundColor: Colors.red,
-                    iconBuilder: (BuildContext context) => Icon(Icons.delete, color: Colors.white, size: 18),
-                    onPressed: () => onDeletePressed(context),
+                  child: Visibility(
+                    visible: !readOnly,
+                    child: IconBadge(
+                      size: badgeSize,
+                      backgroundColor: Colors.red,
+                      iconBuilder: (BuildContext context) => Icon(Icons.delete, color: Colors.white, size: 18),
+                      onPressed: () => onDeletePressed(context),
+                    ),
                   ),
                   top: badgeSize / 2 * -1,
                   right: 0,
@@ -93,13 +97,19 @@ class ExerciseSetCell extends StatelessWidget {
                       _topActionsBar(context),
                       _SetEntriesInnerCol(
                         _SetEntries(set.original),
+                        readOnly: readOnly,
                         inputTypeLabel: this.term,
                         onFieldChange: (BuildContext context, String newText, { int index}) => onFieldChange(context, newText, side: ExerciseSetInputSide.term, index: index),
                         onDeleteField: (BuildContext context, { int index }) => onDeleteField(context, side: ExerciseSetInputSide.term, index: index),
                         onAddNewEntryPressed: (BuildContext context) => onAddNewEntryPressed(context, side: ExerciseSetInputSide.term)
                       ),
+                      Visibility(
+                        visible: readOnly,
+                        child: SizedBox(height: 12),
+                      ),
                       _SetEntriesInnerCol(
                         _SetEntries(set.translated),
+                        readOnly: readOnly,
                         inputTypeLabel: this.definition,
                         onFieldChange: (BuildContext context, String newText, { int index}) => onFieldChange(context, newText, side: ExerciseSetInputSide.definition, index: index),
                         onDeleteField: (BuildContext context, { int index }) => onDeleteField(context, side: ExerciseSetInputSide.definition, index: index),
@@ -171,15 +181,72 @@ class _SetEntries {
 
 }
 
+class _SetField extends StatelessWidget {
+
+  final String text;
+  final Function(String) onTextChange;
+  final bool shouldShowDelete;
+  final bool readOnly;
+
+  _SetField ({ @required this.text, @required this.onTextChange, @required this.shouldShowDelete, @required this.readOnly });
+
+  Widget readOnlyBuilder(BuildContext context) {
+    return Container(
+      child: Text(
+        "twekjtwe",
+        style: TextStyle(
+          fontSize: 15,
+          fontFamily: Fonts.ubuntu
+        ),
+      ),
+      margin: EdgeInsets.only(
+          bottom: ExerciseSetCell.marginBetweenInputs
+      ),
+    );
+  }
+
+  Widget editableBuilder(BuildContext context) {
+    return ThemedTextField(
+        borderRadius: 5,
+        textEditingController: TextEditingController(text: text),
+        fillColor: ExerciseSetCell.inputBackgroundColor,
+        borderColor: ExerciseSetCell.inputBackgroundColor,
+        focusedColor: BrandColors.secondaryButtonColor,
+        onChanged: onTextChange,
+        borderWidth: 1,
+        margin: EdgeInsets.only(
+            bottom: ExerciseSetCell.marginBetweenInputs
+        ),
+        contentPadding: EdgeInsets.only(
+            top: 15,
+            bottom: 15,
+            left: 20,
+            right: shouldShowDelete ? 66 : 20
+        )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (this.readOnly) {
+      return readOnlyBuilder(context);
+    } else {
+      return editableBuilder(context);
+    }
+  }
+
+}
+
 class _SetEntriesInnerCol extends StatelessWidget {
 
   final String inputTypeLabel;
+  final bool readOnly;
   final Function(BuildContext context) onAddNewEntryPressed;
   final Function(BuildContext context, String text, { @required int index }) onFieldChange;
   final Function(BuildContext context, { @required int index }) onDeleteField;
   final _SetEntries entries;
 
-  _SetEntriesInnerCol (this.entries, { @required this.inputTypeLabel, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField });
+  _SetEntriesInnerCol (this.entries, { @required this.inputTypeLabel, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField, @required this.readOnly });
 
   Widget _exerciseSetInputTypeLabel(String text) {
     return Container(
@@ -193,49 +260,49 @@ class _SetEntriesInnerCol extends StatelessWidget {
 
   Widget _textField(BuildContext context, String text, { @required Function onTextChange, bool shouldShowDelete = false, Function onDeleteField }) {
 
-    return Stack(
-      alignment: Alignment.centerRight,
-      children: <Widget>[
-        Container(
-          child: ThemedTextField(
-              borderRadius: 5,
-              textEditingController: TextEditingController(text: text),
-              fillColor: ExerciseSetCell.inputBackgroundColor,
-              borderColor: ExerciseSetCell.inputBackgroundColor,
-              focusedColor: BrandColors.secondaryButtonColor,
-              onChanged: onTextChange,
-              borderWidth: 1,
-              margin: EdgeInsets.only(
-                  bottom: ExerciseSetCell.marginBetweenInputs
-              ),
-              contentPadding: EdgeInsets.only(
-                  top: 15,
-                  bottom: 15,
-                  left: 20,
-                  right: shouldShowDelete ? 66 : 20
-              )
-          ),
+    if (this.readOnly) {
+      return Container(
+        child: _SetField(
+          onTextChange: onTextChange,
+          text: text,
+          readOnly: readOnly,
+          shouldShowDelete: shouldShowDelete,
         ),
-        Visibility(
-          visible: shouldShowDelete,
-          child: Container(
-            width: 46,
-            height: 40,
-            child: Center(
-              child: IconHyperlink(
-                highlightedColor: BrandColors.secondaryButtonColor,
-                baseColor: BrandColors.iconColorRed,
-                iconData: Icons.delete_outline,
-                onPressed: () => onDeleteField(),
-              ),
-            ),
-            margin: EdgeInsets.only(
-              bottom: 8,
+      );
+    } else {
+      return Stack(
+        alignment: Alignment.centerRight,
+        children: <Widget>[
+          Container(
+            child: _SetField(
+              onTextChange: onTextChange,
+              text: text,
+              readOnly: readOnly,
+              shouldShowDelete: shouldShowDelete,
             ),
           ),
-        )
-      ],
-    );
+          Visibility(
+            visible: shouldShowDelete,
+            child: Container(
+              width: 46,
+              height: 40,
+              child: Center(
+                child: IconHyperlink(
+                  highlightedColor: BrandColors.secondaryButtonColor,
+                  baseColor: BrandColors.iconColorRed,
+                  iconData: Icons.delete_outline,
+                  onPressed: () => onDeleteField(),
+                ),
+              ),
+              margin: EdgeInsets.only(
+                bottom: 8,
+              ),
+            ),
+          )
+        ],
+      );
+    }
+
   }
 
   Widget _addNewEntryButton(BuildContext context) {
@@ -268,7 +335,9 @@ class _SetEntriesInnerCol extends StatelessWidget {
       );
     }
 
-    children.add(_addNewEntryButton(context));
+    if (!readOnly) {
+      children.add(_addNewEntryButton(context));
+    }
     return children;
   }
 

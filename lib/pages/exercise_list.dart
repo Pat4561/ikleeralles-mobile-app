@@ -10,8 +10,99 @@ import 'package:ikleeralles/ui/themed/select.dart';
 import 'package:ikleeralles/ui/themed/textfield.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+class _ReadOnlySliverAppBar extends StatelessWidget {
 
-class _ExerciseEditorSliverAppBar  extends StatelessWidget {
+  final String definition;
+  final String term;
+  final String title;
+  final Function(BuildContext) onCopyTestPressed;
+
+  _ReadOnlySliverAppBar ({ @required this.definition, @required this.term, @required this.title, @required this.onCopyTestPressed });
+
+  Widget _labelBox(String labelText, String value) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Text(labelText, style: TextStyle(
+              color: Colors.white,
+              fontFamily: Fonts.ubuntu,
+              fontSize: 15,
+              fontWeight: FontWeight.bold
+          )),
+          SizedBox(height: 5),
+          Text(value, style: TextStyle(
+              color: Colors.white,
+              fontFamily: Fonts.ubuntu,
+              fontSize: 14
+          ))
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverAppBar(
+      expandedHeight: 230,
+      pinned: true,
+      actions: <Widget>[
+        Container(
+          child: Center(
+            child: ThemedButton(
+              "Overnemen",
+              buttonColor: BrandColors.secondaryButtonColor,
+              icon: Icons.content_copy,
+              borderRadius: BorderRadius.circular(12),
+              onPressed: () => onCopyTestPressed(context),
+            ),
+          ),
+          margin: EdgeInsets.only(
+              right: 20
+          ),
+        )
+      ],
+      flexibleSpace: FlexibleSpaceBar(
+        background: SafeArea(
+          child: Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
+            padding: EdgeInsets.only(
+              top: 55
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text(
+                  "test1234",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: Fonts.ubuntu,
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold
+                  ),
+                ),
+                SizedBox(height: 20),
+                Row(
+                  children: <Widget>[
+                    Expanded(child: _labelBox("Term", term)),
+                    SizedBox(width: 20),
+                    Expanded(child: _labelBox("Definitie", definition))
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+}
+
+class _EditableSliverAppBar  extends StatelessWidget {
 
   final Function(BuildContext) onSaveTestPressed;
   final TextEditingController titleTextController;
@@ -20,8 +111,8 @@ class _ExerciseEditorSliverAppBar  extends StatelessWidget {
   final List<String> termOptions;
   final List<String> definitionOptions;
 
-  _ExerciseEditorSliverAppBar ({ @required this.onSaveTestPressed, @required this.titleTextController, @required this.termValueNotifier, @required List<String> this.termOptions,
-    @required this.definitionValueNotifier, @required List<String> this.definitionOptions });
+  _EditableSliverAppBar ({ @required this.onSaveTestPressed, @required this.titleTextController, @required this.termValueNotifier, @required this.termOptions,
+    @required this.definitionValueNotifier, @required this.definitionOptions });
 
   Widget _buildOptionsButton(BuildContext context, ValueNotifier<String> valueNotifier, { @required String labelText, @required List<String> options }) {
     return ValueListenableBuilder<String>(
@@ -133,8 +224,8 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
 
   @override
   void initState() {
-    super.initState();
     _initializeController();
+    super.initState();
   }
 
   void _initializeController() {
@@ -143,6 +234,8 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
     } else {
       _exerciseListController = ExerciseListController.newList();
     }
+
+    _exerciseListController.readOnly = true; //For testing purposes
   }
 
   void _saveTest() {
@@ -153,22 +246,36 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
 
   }
 
+  void _copyTest() {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(245, 245, 245, 1),
       body: NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScroller) {
-            return <Widget>[
-              _ExerciseEditorSliverAppBar(
-                definitionValueNotifier: _exerciseListController.definitionValueNotifier,
-                termValueNotifier: _exerciseListController.termValueNotifier,
-                onSaveTestPressed: (BuildContext context) => _saveTest(),
-                titleTextController: _exerciseListController.titleTextController,
-                termOptions: _exerciseListController.termsProvider.all(),
-                definitionOptions: _exerciseListController.definitionsProvider.all(),
-              )
-            ];
+
+            if (_exerciseListController.readOnly) {
+              return <Widget>[_ReadOnlySliverAppBar(
+                title: _exerciseListController.titleTextController.text,
+                term: _exerciseListController.termValueNotifier.value,
+                definition: _exerciseListController.definitionValueNotifier.value,
+                onCopyTestPressed: (BuildContext context) => _copyTest(),
+              )];
+            } else {
+              return <Widget>[
+                _EditableSliverAppBar(
+                  definitionValueNotifier: _exerciseListController.definitionValueNotifier,
+                  termValueNotifier: _exerciseListController.termValueNotifier,
+                  onSaveTestPressed: (BuildContext context) => _saveTest(),
+                  titleTextController: _exerciseListController.titleTextController,
+                  termOptions: _exerciseListController.termsProvider.all(),
+                  definitionOptions: _exerciseListController.definitionsProvider.all(),
+                )
+              ];
+            }
           },
           body: RefreshIndicator(
             onRefresh: () {

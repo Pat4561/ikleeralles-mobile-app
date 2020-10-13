@@ -22,18 +22,30 @@ class ExerciseListController {
   ExerciseSetsController _setsController;
   ExerciseSetsController get setsController => _setsController;
 
+  bool _readOnly = false;
+
+  bool get readOnly => _readOnly;
+
+  set readOnly (bool value) {
+    _readOnly = value;
+    _setsController.readOnly = value;
+  }
+
+  ExerciseSetsController _createSetsController() => ExerciseSetsController(termValueNotifier: _termValueNotifier, definitionValueNotifier: _definitionValueNotifier, readOnly: readOnly);
+
   ExerciseListController.newList() {
     _titleTextController = TextEditingController();
     _termValueNotifier = ValueNotifier<String>(termsProvider.defaultValue());
     _definitionValueNotifier = ValueNotifier<String>(definitionsProvider.defaultValue());
-    _setsController = ExerciseSetsController(termValueNotifier: _termValueNotifier, definitionValueNotifier: _definitionValueNotifier);
+    _setsController = _createSetsController();
   }
 
-  ExerciseListController.existingList(ExerciseList list) {
+  ExerciseListController.existingList(ExerciseList list, { readOnly = false }) {
+    _readOnly = readOnly;
     _titleTextController = TextEditingController(text: list.name);
     _termValueNotifier = ValueNotifier<String>(list.original ?? termsProvider.defaultValue());
     _definitionValueNotifier = ValueNotifier<String>(list.translated ?? definitionsProvider.defaultValue());
-    _setsController = ExerciseSetsController(sets: ExerciseDetails(list.content).sets, termValueNotifier: _termValueNotifier, definitionValueNotifier: _definitionValueNotifier);
+    _setsController = _createSetsController();
   }
 
 }
@@ -47,10 +59,12 @@ class ExerciseSetsController extends Model {
   static const int minSetLength = 5;
   static const int batchSize = 3;
 
+  bool readOnly;
+
   List<ExerciseSet> _sets;
   List<ExerciseSet> get sets => _sets;
 
-  ExerciseSetsController ({ List<ExerciseSet> sets, @required this.termValueNotifier, @required this.definitionValueNotifier }) {
+  ExerciseSetsController ({ List<ExerciseSet> sets, @required this.termValueNotifier, @required this.definitionValueNotifier, this.readOnly = false }) {
     _sets = sets ?? [];
     if (_sets.length < minSetLength) {
       _populateNew(till: minSetLength);

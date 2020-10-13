@@ -9,7 +9,7 @@ import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
-import 'package:ikleeralles/pages/exercise_editor.dart';
+import 'package:ikleeralles/pages/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/folders.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
