@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/badge.dart';
@@ -193,7 +194,7 @@ class _SetField extends StatelessWidget {
   Widget readOnlyBuilder(BuildContext context) {
     return Container(
       child: Text(
-        "twekjtwe",
+        this.text,
         style: TextStyle(
           fontSize: 15,
           fontFamily: Fonts.ubuntu
@@ -310,7 +311,7 @@ class _SetEntriesInnerCol extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         TextHyperlink(
-          title: "+ Synoniem",
+          title: FlutterI18n.translate(context, TranslationKeys.addField),
           baseColor: BrandColors.secondaryButtonColor,
           highlightedColor: BrandColors.secondaryButtonColor.withOpacity(0.7),
           onPressed: () => onAddNewEntryPressed(context)

@@ -84,7 +84,13 @@ class TranslationKeys {
   static const String successMerged = "successMerged";
   static const String itemsAddedToFolderSuccess = "itemsAddedToFolderSuccess";
   static const String newMergedListName = "newMergedListName";
-
+  static const String save = "save";
+  static const String copy = "copy";
+  static const String definition = "definition";
+  static const String term = "term";
+  static const String title = "title";
+  static const String addSets = "addSets";
+  static const String addField = "addField";
 }
 
 class WebUrls {

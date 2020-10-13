@@ -43,5 +43,12 @@
   "busyProcessing": "Bezig met verwerken..",
   "successMerged": "De lijst is succesvol samengevoegd",
   "itemsAddedToFolderSuccess": "{count} item(s) toegevoegd aan de map {folderName}",
-  "newMergedListName": "Gecombineerde lijst"
+  "newMergedListName": "Gecombineerde lijst",
+  "save": "Opslaan",
+  "copy": "Overnemen",
+  "definition": "Definitie",
+  "term": "Term",
+  "title": "Titel",
+  "addSets": "Nieuwe velden",
+  "addField": "+ Synoniem"
 }

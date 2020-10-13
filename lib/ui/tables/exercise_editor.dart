@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/cells/exercise_set.dart';
@@ -58,7 +59,7 @@ class ExerciseEditorList extends StatelessWidget {
                   children: <Widget>[
                     Visibility(
                       child: ThemedButton(
-                          "Nieuwe velden",
+                          FlutterI18n.translate(context, TranslationKeys.addSets),
                           buttonColor: Colors.white,
                           labelColor: BrandColors.textColorLighter,
                           fontSize: 15,

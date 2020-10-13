@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/options.dart';
@@ -50,7 +51,7 @@ class _ReadOnlySliverAppBar extends StatelessWidget {
         Container(
           child: Center(
             child: ThemedButton(
-              "Overnemen",
+              FlutterI18n.translate(context, TranslationKeys.copy),
               buttonColor: BrandColors.secondaryButtonColor,
               icon: Icons.content_copy,
               borderRadius: BorderRadius.circular(12),
@@ -76,7 +77,7 @@ class _ReadOnlySliverAppBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Text(
-                  "test1234",
+                  this.title,
                   style: TextStyle(
                       color: Colors.white,
                       fontFamily: Fonts.ubuntu,
@@ -87,9 +88,9 @@ class _ReadOnlySliverAppBar extends StatelessWidget {
                 SizedBox(height: 20),
                 Row(
                   children: <Widget>[
-                    Expanded(child: _labelBox("Term", term)),
+                    Expanded(child: _labelBox(FlutterI18n.translate(context, TranslationKeys.term), term)),
                     SizedBox(width: 20),
-                    Expanded(child: _labelBox("Definitie", definition))
+                    Expanded(child: _labelBox(FlutterI18n.translate(context, TranslationKeys.definition), definition))
                   ],
                 )
               ],
@@ -149,7 +150,7 @@ class _EditableSliverAppBar  extends StatelessWidget {
         Container(
           child: Center(
             child: ThemedButton(
-              "Opslaan",
+              FlutterI18n.translate(context, TranslationKeys.save),
               buttonColor: BrandColors.secondaryButtonColor,
               icon: Icons.save,
               borderRadius: BorderRadius.circular(12),
@@ -176,7 +177,7 @@ class _EditableSliverAppBar  extends StatelessWidget {
               children: <Widget>[
                 ThemedTextField(
                     borderRadius: 5,
-                    labelText: "Titel",
+                    labelText: FlutterI18n.translate(context, TranslationKeys.title),
                     textEditingController: titleTextController,
                     fillColor: Colors.white.withOpacity(0.7),
                     borderColor: Colors.white.withOpacity(0.7),
@@ -190,9 +191,9 @@ class _EditableSliverAppBar  extends StatelessWidget {
                 SizedBox(height: 5),
                 Row(
                   children: <Widget>[
-                    Expanded(child: _buildOptionsButton(context, termValueNotifier, labelText: "Term", options: termOptions)),
+                    Expanded(child: _buildOptionsButton(context, termValueNotifier, labelText: FlutterI18n.translate(context, TranslationKeys.term), options: termOptions)),
                     SizedBox(width: 20),
-                    Expanded(child: _buildOptionsButton(context, definitionValueNotifier, labelText: "Definitie", options: definitionOptions)),
+                    Expanded(child: _buildOptionsButton(context, definitionValueNotifier, labelText: FlutterI18n.translate(context, TranslationKeys.definition), options: definitionOptions)),
                   ],
                 )
               ],
@@ -234,8 +235,7 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
     } else {
       _exerciseListController = ExerciseListController.newList();
     }
-
-    _exerciseListController.readOnly = true; //For testing purposes
+    
   }
 
   void _saveTest() {
