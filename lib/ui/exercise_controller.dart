@@ -96,8 +96,17 @@ class ExerciseListController {
 
 }
 
+class TranslationController {
+
+  Future<String> translate(String value, { @required String inputLanguage, @required String outputLanguage }) {
+    return AuthService().securedApi.getTranslation(value, inputLanguage: inputLanguage, outputLanguage: outputLanguage);
+  }
+
+}
 
 class ExerciseSetsController extends Model {
+
+  final TranslationController translationController = TranslationController();
 
   final ValueNotifier<String> termValueNotifier;
   final ValueNotifier<String> definitionValueNotifier;
@@ -106,6 +115,15 @@ class ExerciseSetsController extends Model {
   static const int batchSize = 3;
 
   bool readOnly;
+
+  bool _autoTranslationEnabled = true;
+
+  bool get autoTranslationEnabled => _autoTranslationEnabled;
+
+  set autoTranslationEnabled (bool value) {
+    _autoTranslationEnabled = value;
+    notifyListeners();
+  }
 
   bool _isEdited = false;
 
@@ -174,6 +192,25 @@ class ExerciseSetsController extends Model {
     set.updateFieldsBySide(side, items);
     _isEdited = true;
     notifyListeners();
+  }
+
+  void autoTranslate(ExerciseSet set) async {
+    if (!_autoTranslationEnabled) {
+      return;
+    }
+
+    var originalText = set.original.first;
+    var translation = set.translated;
+    var hasTranslation = (translation != null && translation.length > 0 && translation.first != null && translation.first.isNotEmpty);
+    if (!hasTranslation) {
+      set.translated = set.translated ?? [""];
+      if (set.translated.length == 0) {
+        set.translated = [""];
+      }
+      set.translated[0] = await translationController.translate(originalText, inputLanguage: termValueNotifier.value, outputLanguage: definitionValueNotifier.value);
+      _isEdited = true;
+      notifyListeners();
+    }
   }
 
   void remove(ExerciseSet set) {
@@ -363,10 +400,7 @@ class ExerciseEditorActionsHandler {
       );
     });
 
-
-
     return completer.future;
   }
-
 
 }

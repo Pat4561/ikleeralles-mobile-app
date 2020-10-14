@@ -58,5 +58,6 @@
   "errorLoadingList": "Er ging iets mis bij het ophalen van de lijst",
   "ignoreChanges": "Negeren",
   "unSavedChanges": "Let op! Onopgeslagen wijzigingen!",
-  "unSavedChangesDescription": "Om te voorkomen dat je wijzigingen van op de app verloren gaan moet je eerst je overhoringen opslaan. Wil je toch je wijzigingen overschrijven? Klik dan op negeren."
+  "unSavedChangesDescription": "Om te voorkomen dat je wijzigingen van op de app verloren gaan moet je eerst je overhoringen opslaan. Wil je toch je wijzigingen overschrijven? Klik dan op negeren.",
+  "translateAutomatically": "Automatisch vertalen"
 }

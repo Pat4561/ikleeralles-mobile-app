@@ -99,6 +99,7 @@ class TranslationKeys {
   static const String ignoreChanges = "ignoreChanges";
   static const String unSavedChanges = "unSavedChanges";
   static const String unSavedChangesDescription = "unSavedChangesDescription";
+  static const String translateAutomatically = "translateAutomatically";
 }
 
 class WebUrls {

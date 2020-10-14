@@ -20,11 +20,12 @@ class ExerciseSetCell extends StatelessWidget {
   final bool readOnly;
   final Function(BuildContext context, { @required ExerciseSetInputSide side }) onAddNewEntryPressed;
   final Function(BuildContext context, String text, { @required int index, @required ExerciseSetInputSide side }) onFieldChange;
+  final Function(BuildContext context, { @required int index, @required ExerciseSetInputSide side }) onFieldEditingEnded;
   final Function(BuildContext context, { @required int index, @required ExerciseSetInputSide side }) onDeleteField;
   final Function(BuildContext) onDeletePressed;
 
   ExerciseSetCell (this.set, { @required this.rowNumber, @required this.term, @required this.definition,
-    @required this.onDeletePressed, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField, @required this.readOnly });
+    @required this.onDeletePressed, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField, @required this.readOnly, @required this.onFieldEditingEnded });
 
   Widget _topActionsBar(BuildContext context, { double badgeSize = 30, double marginBetweenContainers = marginBetweenContainers, double marginBetweenInputs = marginBetweenInputs }) {
     return Container(
@@ -101,6 +102,7 @@ class ExerciseSetCell extends StatelessWidget {
                         readOnly: readOnly,
                         inputTypeLabel: this.term,
                         onFieldChange: (BuildContext context, String newText, { int index}) => onFieldChange(context, newText, side: ExerciseSetInputSide.term, index: index),
+                        onEditingComplete: (BuildContext context, { int index }) => onFieldEditingEnded(context, side: ExerciseSetInputSide.term, index: index),
                         onDeleteField: (BuildContext context, { int index }) => onDeleteField(context, side: ExerciseSetInputSide.term, index: index),
                         onAddNewEntryPressed: (BuildContext context) => onAddNewEntryPressed(context, side: ExerciseSetInputSide.term)
                       ),
@@ -113,6 +115,7 @@ class ExerciseSetCell extends StatelessWidget {
                         readOnly: readOnly,
                         inputTypeLabel: this.definition,
                         onFieldChange: (BuildContext context, String newText, { int index}) => onFieldChange(context, newText, side: ExerciseSetInputSide.definition, index: index),
+                        onEditingComplete: (BuildContext context, { int index }) => onFieldEditingEnded(context, side: ExerciseSetInputSide.definition, index: index),
                         onDeleteField: (BuildContext context, { int index }) => onDeleteField(context, side: ExerciseSetInputSide.definition, index: index),
                         onAddNewEntryPressed: (BuildContext context) => onAddNewEntryPressed(context, side: ExerciseSetInputSide.definition)
                       ),
@@ -186,10 +189,11 @@ class _SetField extends StatelessWidget {
 
   final String text;
   final Function(String) onTextChange;
+  final Function onEditingComplete;
   final bool shouldShowDelete;
   final bool readOnly;
 
-  _SetField ({ @required this.text, @required this.onTextChange, @required this.shouldShowDelete, @required this.readOnly });
+  _SetField ({ @required this.text, @required this.onTextChange, @required this.shouldShowDelete, @required this.readOnly, this.onEditingComplete });
 
   Widget readOnlyBuilder(BuildContext context) {
     return Container(
@@ -214,6 +218,7 @@ class _SetField extends StatelessWidget {
         borderColor: ExerciseSetCell.inputBackgroundColor,
         focusedColor: BrandColors.secondaryButtonColor,
         onChanged: onTextChange,
+        onEditingComplete: onEditingComplete,
         borderWidth: 1,
         margin: EdgeInsets.only(
             bottom: ExerciseSetCell.marginBetweenInputs
@@ -244,10 +249,11 @@ class _SetEntriesInnerCol extends StatelessWidget {
   final bool readOnly;
   final Function(BuildContext context) onAddNewEntryPressed;
   final Function(BuildContext context, String text, { @required int index }) onFieldChange;
+  final Function(BuildContext context, { @required int index }) onEditingComplete;
   final Function(BuildContext context, { @required int index }) onDeleteField;
   final _SetEntries entries;
 
-  _SetEntriesInnerCol (this.entries, { @required this.inputTypeLabel, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField, @required this.readOnly });
+  _SetEntriesInnerCol (this.entries, { @required this.inputTypeLabel, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField, @required this.readOnly, this.onEditingComplete });
 
   Widget _exerciseSetInputTypeLabel(String text) {
     return Container(
@@ -259,7 +265,7 @@ class _SetEntriesInnerCol extends StatelessWidget {
     );
   }
 
-  Widget _textField(BuildContext context, String text, { @required Function onTextChange, bool shouldShowDelete = false, Function onDeleteField }) {
+  Widget _textField(BuildContext context, String text, { @required Function onTextChange, bool shouldShowDelete = false, Function onDeleteField, Function onEditingComplete }) {
 
     if (this.readOnly) {
       return Container(
@@ -280,6 +286,7 @@ class _SetEntriesInnerCol extends StatelessWidget {
               text: text,
               readOnly: readOnly,
               shouldShowDelete: shouldShowDelete,
+              onEditingComplete: onEditingComplete
             ),
           ),
           Visibility(
@@ -331,7 +338,8 @@ class _SetEntriesInnerCol extends StatelessWidget {
               entries.values[i],
               shouldShowDelete: entries.values.length > 1,
               onTextChange: (newValue) => onFieldChange(context, newValue, index: i),
-              onDeleteField: () => onDeleteField(context, index: i)
+              onDeleteField: () => onDeleteField(context, index: i),
+              onEditingComplete: () => onEditingComplete(context, index: i)
           )
       );
     }

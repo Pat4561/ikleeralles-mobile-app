@@ -21,9 +21,33 @@ class ExerciseEditorList extends StatelessWidget {
     return TableView(
         TableViewBuilder(
             sectionHeaderBuilder: (int section) {
-              return Container(
-                height: 10,
-              );
+              if (controller.readOnly) {
+                return Container(height: 12);
+              } else {
+                return Container(
+                  margin: EdgeInsets.only(
+                      top: 12,
+                      left: 20
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Switch(
+                        activeColor: BrandColors.secondaryButtonColor,
+                        onChanged: (newValue) => controller.autoTranslationEnabled = newValue,
+                        value: controller.autoTranslationEnabled,
+                      ),
+                      Text(
+                        FlutterI18n.translate(context, TranslationKeys.translateAutomatically),
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            fontFamily: Fonts.ubuntu
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              }
             },
             numberOfRows: (int section) {
               return controller.sets.length;
@@ -49,31 +73,37 @@ class ExerciseEditorList extends StatelessWidget {
                 onDeleteField: (BuildContext context, { int index, ExerciseSetInputSide side }) {
                   controller.removeField(controller.sets[row], fieldIndex: index, side: side);
                 },
+                onFieldEditingEnded: (BuildContext context, { int index, ExerciseSetInputSide side }) {
+                  FocusScope.of(context).unfocus();
+                  if (side == ExerciseSetInputSide.term && index == 0) {
+                    controller.autoTranslate(controller.sets[row]);
+                  }
+                },
               );
             },
             sectionFooterBuilder: (int section) {
               return Container(
                 margin: EdgeInsets.only(bottom: 20),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Visibility(
-                      child: ThemedButton(
-                          FlutterI18n.translate(context, TranslationKeys.addSets),
-                          buttonColor: Colors.white,
-                          labelColor: BrandColors.textColorLighter,
-                          fontSize: 15,
-                          icon: Icons.add_circle_outline,
-                          iconSize: 24,
-                          contentPadding: EdgeInsets.all(12),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          borderSide: BorderSide(
-                              color: BrandColors.borderColor
-                          ),
-                          onPressed: () => controller.addMore()
-                      ),
-                      visible: !controller.readOnly,
-                    )
+                    Visibility(child: ThemedButton(
+                        FlutterI18n.translate(context, TranslationKeys.addSets),
+                        buttonColor: Colors.white,
+                        labelColor: BrandColors.textColorLighter,
+                        fontSize: 15,
+                        icon: Icons.add_circle_outline,
+                        iconSize: 24,
+                        contentPadding: EdgeInsets.all(12),
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderSide: BorderSide(
+                            color: BrandColors.borderColor
+                        ),
+                        onPressed: () => controller.addMore()
+                    ), visible: !controller.readOnly),
                   ],
                 ),
               );

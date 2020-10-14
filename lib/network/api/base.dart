@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/exceptions.dart';
@@ -125,6 +126,26 @@ class Api {
           ObjectKeys.name: name
         }
     );
+  }
+
+  Future<String> getTranslation(String value, { String inputLanguage, String outputLanguage }) {
+    Completer<String> completer = Completer();
+
+    requestHelper.executeRequest(
+      route: Routes.translate,
+      method: RequestMethod.post,
+      body: {
+        ObjectKeys.text: value,
+        ObjectKeys.original: inputLanguage,
+        ObjectKeys.translated: outputLanguage
+      }
+    ).then((response) {
+      completer.complete(response.body);
+    }).catchError((e) {
+      completer.completeError(e);
+    });
+
+    return completer.future;
   }
 
   Future<ExerciseList> getExerciseList({ @required int listId }) async {

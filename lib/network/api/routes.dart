@@ -13,5 +13,6 @@ class Routes {
   static String deleteFolder(int folderId) => "folder/$folderId/delete";
   static String createExerciseList = "list";
   static String exerciseList(int listId) => "list/$listId";
+  static String translate = "translate";
 
 }
