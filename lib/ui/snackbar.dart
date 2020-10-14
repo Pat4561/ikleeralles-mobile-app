@@ -47,6 +47,29 @@ void showToast(String message, { Color backgroundColor = Colors.red, Color textC
 
 }
 
+class LoadingMessageHandler {
+
+  FToast _toast;
+
+  void show(BuildContext context) {
+    _toast = showLoadingToast(context);
+  }
+
+  void _delay(Function callback) {
+    Future.delayed(Duration(milliseconds: 150), callback);
+  }
+
+  void clear({ Function callback }) {
+    if (_toast != null) {
+      _toast.removeCustomToast();
+    }
+    if (callback != null) {
+      _delay(callback);
+    }
+  }
+
+}
+
 FToast showLoadingToast(BuildContext context, { Duration timeOutDuration }) {
 
   FToast fToast = FToast();

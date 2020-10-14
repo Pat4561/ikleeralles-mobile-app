@@ -1,6 +1,14 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
+import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
+import 'package:ikleeralles/pages/exercise_list.dart';
+import 'package:ikleeralles/ui/snackbar.dart';
+import 'package:ikleeralles/ui/themed/button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 
@@ -22,6 +30,10 @@ class ExerciseListController {
   ExerciseSetsController _setsController;
   ExerciseSetsController get setsController => _setsController;
 
+  ExerciseList _list;
+
+  int get exerciseListId => _list != null ? _list.id : null;
+
   bool _readOnly = false;
 
   bool get readOnly => _readOnly;
@@ -31,7 +43,7 @@ class ExerciseListController {
     _setsController.readOnly = value;
   }
 
-  ExerciseSetsController _createSetsController() => ExerciseSetsController(termValueNotifier: _termValueNotifier, definitionValueNotifier: _definitionValueNotifier, readOnly: readOnly);
+  ExerciseSetsController _createSetsController({ ExerciseDetails details }) => ExerciseSetsController(details: details, termValueNotifier: _termValueNotifier, definitionValueNotifier: _definitionValueNotifier, readOnly: readOnly);
 
   ExerciseListController.newList() {
     _titleTextController = TextEditingController();
@@ -42,10 +54,44 @@ class ExerciseListController {
 
   ExerciseListController.existingList(ExerciseList list, { readOnly = false }) {
     _readOnly = readOnly;
+    _list = list;
     _titleTextController = TextEditingController(text: list.name);
     _termValueNotifier = ValueNotifier<String>(list.original ?? termsProvider.defaultValue());
     _definitionValueNotifier = ValueNotifier<String>(list.translated ?? definitionsProvider.defaultValue());
-    _setsController = _createSetsController();
+    _setsController = _createSetsController(details: ExerciseDetails(list.content));
+  }
+
+
+  ExerciseList currentList(BuildContext context) {
+    var sets = _setsController.sets;
+    List<Map<String, dynamic>> mapList = sets.map((set) => set.toMap()).toList();
+    var newContent = json.encode(mapList);
+    return ExerciseList.create(
+        name: _titleTextController.text,
+        original: _termValueNotifier.value,
+        translated: _definitionValueNotifier.value,
+        content: newContent,
+        id: exerciseListId
+    );
+  }
+
+  ExerciseList copyOfCurrentList(BuildContext context) {
+    var sets = _setsController.sets;
+    List<Map<String, dynamic>> mapList = sets.map((set) => set.toMap()).toList();
+    var newContent = json.encode(mapList);
+    return ExerciseList.create(
+        name: FlutterI18n.translate(context, TranslationKeys.copyOfTitle, { "title": _titleTextController.text }),
+        original: _termValueNotifier.value,
+        translated: _definitionValueNotifier.value,
+        content: newContent
+    );
+  }
+
+  void handleChanges(ExerciseList updatedExerciseList) {
+    _titleTextController.text = updatedExerciseList.name;
+    _termValueNotifier.value = updatedExerciseList.original ?? _termValueNotifier.value;
+    _definitionValueNotifier.value = updatedExerciseList.translated ?? _definitionValueNotifier.value;
+    _setsController.handleChanges(ExerciseDetails(updatedExerciseList.content));
   }
 
 }
@@ -61,11 +107,26 @@ class ExerciseSetsController extends Model {
 
   bool readOnly;
 
+  bool _isEdited = false;
+
+  bool get isEdited => _isEdited;
+
   List<ExerciseSet> _sets;
   List<ExerciseSet> get sets => _sets;
 
-  ExerciseSetsController ({ List<ExerciseSet> sets, @required this.termValueNotifier, @required this.definitionValueNotifier, this.readOnly = false }) {
-    _sets = sets ?? [];
+  void handleChanges (ExerciseDetails details) {
+    if (details.sets != null && details.sets.length > minSetLength) {
+      _sets = details.sets;
+      notifyListeners();
+    }
+    _isEdited = false;
+  }
+
+  ExerciseSetsController ({ ExerciseDetails details, @required this.termValueNotifier, @required this.definitionValueNotifier, this.readOnly = false }) {
+    if (details != null) {
+      _sets = details.sets;
+    }
+    _sets = _sets ?? [];
     if (_sets.length < minSetLength) {
       _populateNew(till: minSetLength);
     }
@@ -96,12 +157,14 @@ class ExerciseSetsController extends Model {
   void changeField(ExerciseSet set, String text, { @required int fieldIndex, @required ExerciseSetInputSide side } ) {
     List<String> items = set.fieldsBySide(side);
     items[fieldIndex] = text;
+    _isEdited = true;
   }
 
   void removeField(ExerciseSet set, { @required int fieldIndex, @required ExerciseSetInputSide side }) {
     List<String> items = set.fieldsBySide(side);
     items.removeAt(fieldIndex);
     set.updateFieldsBySide(side, items);
+    _isEdited = true;
     notifyListeners();
   }
 
@@ -109,20 +172,201 @@ class ExerciseSetsController extends Model {
     List<String> items = set.fieldsBySide(side);
     items.add("");
     set.updateFieldsBySide(side, items);
+    _isEdited = true;
     notifyListeners();
   }
 
   void remove(ExerciseSet set) {
     _sets.remove(set);
+    _isEdited = true;
     notifyListeners();
   }
 
   void removeAt(int index){
     _sets.removeAt(index);
+    _isEdited = true;
     notifyListeners();
   }
 
 
+
+
+}
+
+class _SaveChangesDialog extends StatelessWidget {
+
+  final Function(bool) onResult;
+
+  _SaveChangesDialog ({ this.onResult });
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        FlutterI18n.translate(context, TranslationKeys.unSavedChanges),
+        style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            fontFamily: Fonts.ubuntu
+        ),
+      ),
+      content: Text(
+        FlutterI18n.translate(context, TranslationKeys.unSavedChangesDescription),
+        style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.normal,
+            fontFamily: Fonts.ubuntu
+        ),
+      ),
+      actions: <Widget>[
+        ThemedButton(
+          FlutterI18n.translate(context, TranslationKeys.save),
+          onPressed: () {
+            onResult(true);
+          },
+          buttonColor: BrandColors.primaryButtonColor,
+        ),
+        ThemedButton(
+          FlutterI18n.translate(context, TranslationKeys.ignoreChanges),
+          onPressed: () {
+            onResult(false);
+          },
+          buttonColor: Colors.red,
+        )
+      ],
+    );
+  }
+
+}
+
+class ExerciseEditorActionsHandler {
+
+  final LoadingMessageHandler loadingMessageHandler = LoadingMessageHandler();
+
+  final ExerciseListController controller;
+
+  ExerciseEditorActionsHandler (this.controller);
+
+  void saveList(BuildContext context) {
+    loadingMessageHandler.show(context);
+    var exerciseList = controller.currentList(context);
+    Future<ExerciseList> updateOrCreateFuture;
+    if (exerciseList.id != null) {
+      updateOrCreateFuture = AuthService().securedApi.updateExerciseList(exerciseList);
+    } else {
+      updateOrCreateFuture = AuthService().securedApi.createExerciseList(exerciseList);
+    }
+
+    updateOrCreateFuture.then((v) {
+
+      loadingMessageHandler.clear(
+        callback: () {
+          showToast(
+              FlutterI18n.translate(context, TranslationKeys.successListSaved),
+              backgroundColor: BrandColors.secondaryButtonColor
+          );
+        }
+      );
+
+    }).catchError((e) {
+
+      loadingMessageHandler.clear(
+          callback: () {
+            showToast(
+              FlutterI18n.translate(context, TranslationKeys.failedListSaved),
+            );
+          }
+      );
+
+    });
+  }
+
+  void copyList(BuildContext context) {
+    var exerciseList = controller.copyOfCurrentList(context);
+    Future<ExerciseList> copyListFuture = AuthService().securedApi.createExerciseList(exerciseList);
+    loadingMessageHandler.show(context);
+    copyListFuture.then((exerciseList) {
+      Navigator.push(context, MaterialPageRoute(
+          builder: (BuildContext context) {
+            return ExerciseEditorPage(
+              exerciseList: exerciseList,
+            );
+          }
+      ));
+    }).catchError((e) {
+      loadingMessageHandler.clear(
+          callback: () {
+            showToast(
+              FlutterI18n.translate(context, TranslationKeys.failedListCopy),
+            );
+          }
+      );
+    });
+  }
+
+  Future<bool> _userWantsToSaveChange(BuildContext context) {
+    Completer<bool> completer = Completer();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return _SaveChangesDialog(
+          onResult: (shouldSave) {
+            Navigator.pop(context);
+            completer.complete(shouldSave);
+          }
+        );
+      }
+    );
+
+    return completer.future;
+  }
+
+  Future performRefresh(BuildContext context) async {
+    Completer<ExerciseList> completer = Completer<ExerciseList>();
+    if (controller.exerciseListId == null) {
+      AuthService().securedApi.createExerciseList(controller.currentList(context)).then((exercise) {
+        completer.complete(exercise);
+      }).catchError((e) {
+        completer.completeError(e);
+      });
+    } else {
+      if (controller.setsController.isEdited) {
+        bool shouldSaveChanges = await _userWantsToSaveChange(context);
+        if (shouldSaveChanges) {
+          AuthService().securedApi.updateExerciseList(controller.currentList(context)).then((exercise) {
+            completer.complete(exercise);
+          }).catchError((e) {
+            completer.completeError(e);
+          });
+        } else {
+          AuthService().securedApi.getExerciseList(listId: controller.exerciseListId).then((exercise) {
+            completer.complete(exercise);
+          }).catchError((e) {
+            completer.completeError(e);
+          });
+        }
+      } else {
+        AuthService().securedApi.getExerciseList(listId: controller.exerciseListId).then((exercise) {
+          completer.complete(exercise);
+        }).catchError((e) {
+          completer.completeError(e);
+        });
+      }
+    }
+
+    completer.future.then((exerciseList) {
+      controller.handleChanges(exerciseList);
+    }).catchError((e) {
+      showToast(
+        FlutterI18n.translate(context, TranslationKeys.errorLoadingList),
+      );
+    });
+
+
+
+    return completer.future;
+  }
 
 
 }

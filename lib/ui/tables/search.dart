@@ -42,7 +42,7 @@ class SearchTableState extends OperationBasedTableState<SearchTable> {
           ),
           child: SearchExerciseListCell(
             result[position],
-            onPressed: widget.onExerciseListPressed(result[position]),
+            onPressed: (exerciseList) => widget.onExerciseListPressed(result[position]),
           ),
         );
       },

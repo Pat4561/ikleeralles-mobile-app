@@ -94,7 +94,7 @@ class ExerciseList extends ObjectBase {
 
   ExerciseList (Map<String, dynamic> dictionary) : super(dictionary);
 
-  ExerciseList.create({ this.name, this.original, this.translated, this.content }) : super.create();
+  ExerciseList.create({ this.name, this.original, this.translated, this.content, int id }) : super.create(id: id);
 
   @override
   void parse(Map<String, dynamic> dictionary) {
@@ -106,7 +106,12 @@ class ExerciseList extends ObjectBase {
     translated = dictionary[ObjectKeys.translated];
     year = dictionary[ObjectKeys.year];
     level = dictionary[ObjectKeys.level];
-    content = dictionary[ObjectKeys.content];
+    var content = dictionary[ObjectKeys.content];
+    if (content is String) {
+      this.content = content;
+    } else {
+      this.content = json.encode(content);
+    }
   }
 
   @override

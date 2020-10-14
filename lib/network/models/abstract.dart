@@ -25,7 +25,7 @@ abstract class ObjectBase extends ParsableObject {
 
   ObjectBase (Map<String, dynamic> dictionary) : super(dictionary);
 
-  ObjectBase.create () : super.create();
+  ObjectBase.create ({ this.id }) : super.create();
 
   @override
   void parse(Map<String, dynamic> dictionary) {

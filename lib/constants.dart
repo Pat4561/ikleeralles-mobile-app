@@ -91,6 +91,14 @@ class TranslationKeys {
   static const String title = "title";
   static const String addSets = "addSets";
   static const String addField = "addField";
+  static const String copyOfTitle = "copyOfTitle";
+  static const String failedListSaved = "failedListSaved";
+  static const String successListSaved = "successListSaved";
+  static const String failedListCopy = "failedListCopy";
+  static const String errorLoadingList = "errorLoadingList";
+  static const String ignoreChanges = "ignoreChanges";
+  static const String unSavedChanges = "unSavedChanges";
+  static const String unSavedChangesDescription = "unSavedChangesDescription";
 }
 
 class WebUrls {

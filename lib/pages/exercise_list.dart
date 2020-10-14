@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/options.dart';
 import 'package:ikleeralles/ui/exercise_controller.dart';
+import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/tables/exercise_editor.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
 import 'package:ikleeralles/ui/themed/select.dart';
@@ -209,8 +213,9 @@ class _EditableSliverAppBar  extends StatelessWidget {
 class ExerciseEditorPage extends StatefulWidget {
 
   final ExerciseList exerciseList;
+  final bool readOnly;
 
-  ExerciseEditorPage ({ this.exerciseList });
+  ExerciseEditorPage ({ this.exerciseList, this.readOnly = false });
 
   @override
   State<StatefulWidget> createState() {
@@ -223,9 +228,12 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
 
   ExerciseListController _exerciseListController;
 
+  ExerciseEditorActionsHandler _exerciseEditorActionsHandler;
+
   @override
   void initState() {
     _initializeController();
+    _initializeEditorHandler();
     super.initState();
   }
 
@@ -235,18 +243,14 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
     } else {
       _exerciseListController = ExerciseListController.newList();
     }
-    
+    _exerciseListController.readOnly = widget.readOnly;
   }
 
-  void _saveTest() {
-
+  void _initializeEditorHandler() {
+    _exerciseEditorActionsHandler = ExerciseEditorActionsHandler(_exerciseListController);
   }
 
   void _startTest() {
-
-  }
-
-  void _copyTest() {
 
   }
 
@@ -262,14 +266,14 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
                 title: _exerciseListController.titleTextController.text,
                 term: _exerciseListController.termValueNotifier.value,
                 definition: _exerciseListController.definitionValueNotifier.value,
-                onCopyTestPressed: (BuildContext context) => _copyTest(),
+                onCopyTestPressed: (BuildContext context) => _exerciseEditorActionsHandler.copyList(context),
               )];
             } else {
               return <Widget>[
                 _EditableSliverAppBar(
                   definitionValueNotifier: _exerciseListController.definitionValueNotifier,
                   termValueNotifier: _exerciseListController.termValueNotifier,
-                  onSaveTestPressed: (BuildContext context) => _saveTest(),
+                  onSaveTestPressed: (BuildContext context) => _exerciseEditorActionsHandler.saveList(context),
                   titleTextController: _exerciseListController.titleTextController,
                   termOptions: _exerciseListController.termsProvider.all(),
                   definitionOptions: _exerciseListController.definitionsProvider.all(),
@@ -278,8 +282,8 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
             }
           },
           body: RefreshIndicator(
-            onRefresh: () {
-              return Future.delayed(Duration(seconds: 1));
+            onRefresh: () async {
+              return _exerciseEditorActionsHandler.performRefresh(context);
             },
             child: ScopedModel<ExerciseSetsController>(
               model: _exerciseListController.setsController,

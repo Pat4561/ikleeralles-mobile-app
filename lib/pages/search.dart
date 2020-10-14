@@ -4,6 +4,7 @@ import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/operations/search.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
+import 'package:ikleeralles/pages/exercise_list.dart';
 import 'package:ikleeralles/ui/tables/search.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
 
@@ -46,7 +47,11 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onExerciseListPressed(ExerciseList exerciseList) {
-
+    Navigator.push(context, MaterialPageRoute(
+        builder: (BuildContext context) {
+          return ExerciseEditorPage(exerciseList: exerciseList, readOnly: true);
+        }
+    ));
   }
 
 

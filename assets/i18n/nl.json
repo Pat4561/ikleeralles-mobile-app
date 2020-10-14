@@ -50,5 +50,13 @@
   "term": "Term",
   "title": "Titel",
   "addSets": "Nieuwe velden",
-  "addField": "+ Synoniem"
+  "addField": "+ Synoniem",
+  "copyOfTitle": "Kopie: {title}",
+  "failedListSaved": "De lijst kon niet worden opgeslagen, check je internetverbinding",
+  "successListSaved": "De lijst is succesvol opgeslagen!",
+  "failedListCopy": "Oeps.. er ging iets mis bij het kopieren van de lijst",
+  "errorLoadingList": "Er ging iets mis bij het ophalen van de lijst",
+  "ignoreChanges": "Negeren",
+  "unSavedChanges": "Let op! Onopgeslagen wijzigingen!",
+  "unSavedChangesDescription": "Om te voorkomen dat je wijzigingen van op de app verloren gaan moet je eerst je overhoringen opslaan. Wil je toch je wijzigingen overschrijven? Klik dan op negeren."
 }

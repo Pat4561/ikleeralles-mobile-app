@@ -120,14 +120,15 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   }
 
   void onMovePressed(List<ExerciseList> exercises) {
+    LoadingMessageHandler loadingMessageHandler = LoadingMessageHandler();
+
     FoldersBottomSheetPresenter(
         operationManager: foldersOperationManager,
         onFolderPressed: (folder) {
           Navigator.pop(context);
-          var toast = showLoadingToast(context, timeOutDuration: Duration(seconds: 30));
+          loadingMessageHandler.show(context);
           actionsManager.move(exercises, folder: folder).then((_) {
-            toast.removeCustomToast();
-            Future.delayed(Duration(milliseconds: 150), () {
+            loadingMessageHandler.clear(callback: () {
               showToast(FlutterI18n.translate(context, TranslationKeys.itemsAddedToFolderSuccess, {
                 "count": exercises.length.toString(),
                 "folderName": folder.name
@@ -136,9 +137,9 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
                 textColor: Colors.white,
               );
             });
+
           }).catchError((e) {
-            toast.removeCustomToast();
-            Future.delayed(Duration(milliseconds: 150), () {
+            loadingMessageHandler.clear(callback: () {
               showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
             });
           });
@@ -148,7 +149,8 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   }
 
   void onMergePressed(List<ExerciseList> exercises) {
-    FToast toast = showLoadingToast(context);
+    LoadingMessageHandler loadingMessageHandler = LoadingMessageHandler();
+    loadingMessageHandler.show(context);
     actionsManager.merge(
       exercises,
       name: FlutterI18n.translate(context, TranslationKeys.newMergedListName)
@@ -157,18 +159,21 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
         exerciseList,
         index: 0
       );
-      toast.removeCustomToast();
-      Future.delayed(Duration(milliseconds: 150), () {
-        showToast(FlutterI18n.translate(context, TranslationKeys.successMerged),
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-        );
-      });
+      loadingMessageHandler.clear(
+        callback: () {
+          showToast(FlutterI18n.translate(context, TranslationKeys.successMerged),
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+          );
+        }
+      );
+
     }).catchError((e){
-      toast.removeCustomToast();
-      Future.delayed(Duration(milliseconds: 150), () {
-        showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
-      });
+      loadingMessageHandler.clear(
+        callback: () {
+          showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
+        }
+      );
     }).whenComplete(() {
       selectionManager.unSelectAll();
     });
@@ -195,7 +200,11 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   }
 
   void onExerciseListPressed(ExerciseList exerciseList) {
-
+    Navigator.push(context, MaterialPageRoute(
+        builder: (BuildContext context) {
+          return ExerciseEditorPage(exerciseList: exerciseList);
+        }
+    ));
   }
 
   void onAddPressed() {

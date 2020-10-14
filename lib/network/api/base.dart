@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/exceptions.dart';
 import 'package:ikleeralles/logic/operations/search.dart';
 import 'package:ikleeralles/network/api/routes.dart';
@@ -126,6 +127,14 @@ class Api {
     );
   }
 
+  Future<ExerciseList> getExerciseList({ @required int listId }) async {
+    return requestHelper.singleObjectRequest<ExerciseList>(
+      route: Routes.exerciseList(listId),
+      toObject: (Map map) => ExerciseList(map),
+      method: RequestMethod.get
+    );
+  }
+
   Future<ExerciseList> createExerciseList(ExerciseList exerciseList) async {
     var body = {
       ObjectKeys.name: exerciseList.name,
@@ -135,6 +144,21 @@ class Api {
     };
     return requestHelper.singleObjectRequest<ExerciseList>(
         route: Routes.createExerciseList,
+        toObject: (Map map) => ExerciseList(map),
+        method: RequestMethod.post,
+        body: body
+    );
+  }
+
+  Future<ExerciseList> updateExerciseList(ExerciseList exerciseList) async {
+    var body = {
+      ObjectKeys.name: exerciseList.name,
+      ObjectKeys.original: exerciseList.original,
+      ObjectKeys.translated: exerciseList.translated,
+      ObjectKeys.content : json.decode(exerciseList.content)
+    };
+    return requestHelper.singleObjectRequest<ExerciseList>(
+        route: Routes.exerciseList(exerciseList.id),
         toObject: (Map map) => ExerciseList(map),
         method: RequestMethod.post,
         body: body

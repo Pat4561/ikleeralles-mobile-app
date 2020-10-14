@@ -107,7 +107,9 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
           onSelectionChange: (exerciseList, isSelected) {
             widget.selectionManager.toggle(exerciseList);
           },
-          onPressed: widget.onExerciseListPressed(exerciseList),
+          onPressed: (exerciseList) {
+            widget.onExerciseListPressed(exerciseList);
+          },
       ),
       margin: EdgeInsets.symmetric(
           vertical: 5,
