@@ -42,6 +42,7 @@ class ThemedButton extends StatelessWidget {
       child: () {
         if (this.icon != null) {
           return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
                 margin: EdgeInsets.only(

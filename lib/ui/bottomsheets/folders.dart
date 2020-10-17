@@ -29,28 +29,24 @@ class FoldersBottomSheetPresenter extends BottomSheetPresenter {
 
   @override
   Widget header(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-          vertical: 10,
-          horizontal: 20
-      ),
+    return BottomSheetHeader(
       child: Row(
         children: <Widget>[
           Expanded(child:
-            Padding(
-              child: Text(
-                FlutterI18n.translate(context, TranslationKeys.myFolders),
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  fontFamily: Fonts.ubuntu,
-                ),
-                textAlign: TextAlign.start,
+          Padding(
+            child: Text(
+              FlutterI18n.translate(context, TranslationKeys.myFolders),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                fontFamily: Fonts.ubuntu,
               ),
-              padding: EdgeInsets.symmetric(
+              textAlign: TextAlign.start,
+            ),
+            padding: EdgeInsets.symmetric(
                 vertical: 10
-              ),
-            )
+            ),
+          )
           ),
           Visibility(
             visible: this.createFolderPressed != null,
@@ -74,14 +70,7 @@ class FoldersBottomSheetPresenter extends BottomSheetPresenter {
           )
         ],
       ),
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 1,
-                  color: BrandColors.borderColor
-              )
-          )
-      ),
+      borderColor: BrandColors.borderColor,
     );
   }
 

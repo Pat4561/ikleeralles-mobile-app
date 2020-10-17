@@ -69,28 +69,9 @@ class OptionsBottomSheetPresenter<T> extends BottomSheetPresenter {
     if (this.title == null)
       return Container();
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-          vertical: 20,
-          horizontal: 20
-      ),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          fontFamily: Fonts.ubuntu,
-        ),
-        textAlign: TextAlign.start,
-      ),
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 1,
-                  color: BrandColors.borderColor
-              )
-          )
-      ),
+    return BottomSheetHeader(
+      borderColor: BrandColors.borderColor,
+      title: title,
     );
   }
 

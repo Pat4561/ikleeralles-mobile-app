@@ -24,28 +24,9 @@ class TrashBottomSheetPresenter extends BottomSheetPresenter {
 
   @override
   Widget header(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-          vertical: 20,
-          horizontal: 20
-      ),
-      child: Text(
-        FlutterI18n.translate(context, TranslationKeys.trashCan),
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-          fontFamily: Fonts.ubuntu,
-        ),
-        textAlign: TextAlign.start,
-      ),
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-                  width: 1,
-                  color: Colors.white
-              )
-          )
-      ),
+    return BottomSheetHeader(
+      title: FlutterI18n.translate(context, TranslationKeys.trashCan),
+      borderColor: Colors.white,
     );
   }
 

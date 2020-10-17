@@ -11,6 +11,7 @@ import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/pages/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/folders.dart';
+import 'package:ikleeralles/ui/bottomsheets/quiz_options.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -196,7 +197,7 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   }
 
   void onStartPressed(List<ExerciseList> exercises) {
-
+    QuizOptionsBottomSheetPresenter().show(context);
   }
 
   void onExerciseListPressed(ExerciseList exerciseList) {
