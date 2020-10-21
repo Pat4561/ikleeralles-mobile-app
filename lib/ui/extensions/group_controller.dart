@@ -4,8 +4,9 @@ class Option {
 
   int code;
   String name;
+  String description;
 
-  Option (this.name, this.code);
+  Option (this.name, this.code, { this.description });
 
   @override
   String toString() {

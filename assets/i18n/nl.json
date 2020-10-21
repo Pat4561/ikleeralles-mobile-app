@@ -59,5 +59,20 @@
   "ignoreChanges": "Negeren",
   "unSavedChanges": "Let op! Onopgeslagen wijzigingen!",
   "unSavedChangesDescription": "Om te voorkomen dat je wijzigingen van op de app verloren gaan moet je eerst je overhoringen opslaan. Wil je toch je wijzigingen overschrijven? Klik dan op negeren.",
-  "translateAutomatically": "Automatisch vertalen"
+  "translateAutomatically": "Automatisch vertalen",
+  "quizSettings": "Instellingen",
+  "mixed": "Gemengd",
+  "startQuiz": "Overhoren",
+  "advancedSettings": "Geavanceerd",
+  "continueTillSuccess": "Uitgebreid overhoren - Doorgaan totdat je alles goed hebt",
+  "correctCapitals": "Hoofdletters worden meegeteld",
+  "correctAccents": "Accenten worden meegeteld",
+  "showFirstLetter": "Eerste letter van antwoord laten zien",
+  "showVowels": "Klinkers in het antwoord laten zien",
+  "quizSelection": "Selectie van vragen",
+  "quizTimeOptions": "Overhoortijd",
+  "enterToNextAnswer": "Met Enter naar het volgende woord",
+  "termToDefinition": "Van begrip naar betekenis",
+  "definitionToTerm": "Van betekenis naar begrip",
+  "bothDirections": "Beide richtigingen"
 }

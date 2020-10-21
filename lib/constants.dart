@@ -100,6 +100,21 @@ class TranslationKeys {
   static const String unSavedChanges = "unSavedChanges";
   static const String unSavedChangesDescription = "unSavedChangesDescription";
   static const String translateAutomatically = "translateAutomatically";
+  static const String mixed = "mixed";
+  static const String advancedSettings = "advancedSettings";
+  static const String continueTillSuccess = "continueTillSuccess";
+  static const String correctCapitals = "correctCapitals";
+  static const String correctAccents = "correctAccents";
+  static const String showFirstLetter = "showFirstLetter";
+  static const String showVowels = "showVowels";
+  static const String quizSelection = "quizSelection";
+  static const String quizTimeOptions = "quizTimeOptions";
+  static const String enterToNextAnswer = "enterToNextAnswer";
+  static const String quizSettings = "quizSettings";
+  static const String startQuiz = "startQuiz";
+  static const String termToDefinition = "termToDefinition";
+  static const String definitionToTerm = "definitionToTerm";
+  static const String bothDirections = "bothDirections";
 }
 
 class WebUrls {

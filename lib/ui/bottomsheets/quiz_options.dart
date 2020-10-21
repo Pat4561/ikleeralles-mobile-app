@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
-import 'package:group_radio_button/group_radio_button.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/presenter.dart';
@@ -13,12 +12,96 @@ import 'package:ikleeralles/ui/extensions/group_controller.dart';
 //TODO: Switch
 //TODO: Numeric input
 
+enum QuizDirectionType {
+  originalToTranslation,
+  translationToOriginal,
+  mixed
+}
 
-class _QuizOptionsFragment extends StatefulWidget {
+class QuizDirection {
+
+  final String hint;
+  final String name;
+
+  QuizDirection ({ @required this.name, @required this.hint});
+
+}
+
+class QuizDirectionTypeGenerator {
 
   final ExerciseList exerciseList;
 
-  _QuizOptionsFragment (this.exerciseList);
+  QuizDirectionTypeGenerator (this.exerciseList);
+
+  Map<QuizDirectionType, QuizDirection> generate(BuildContext context) {
+    String original = "${exerciseList.original} - ${exerciseList.translated}";
+    String translated = "${exerciseList.translated} - ${exerciseList.original}";
+    return {
+      QuizDirectionType.originalToTranslation: QuizDirection(
+          name: original,
+          hint: FlutterI18n.translate(context, TranslationKeys.termToDefinition)
+      ),
+      QuizDirectionType.translationToOriginal: QuizDirection(
+          name: translated,
+          hint: FlutterI18n.translate(context, TranslationKeys.definitionToTerm)
+      ),
+      QuizDirectionType.mixed: QuizDirection(
+        name: FlutterI18n.translate(context, TranslationKeys.mixed),
+        hint: FlutterI18n.translate(context, TranslationKeys.bothDirections)
+      )
+    };
+  }
+
+}
+
+class QuizInput {
+
+  final List<ExerciseList> exerciseLists;
+
+  QuizDirectionTypeGenerator _directionTypeGenerator;
+
+  Map<QuizDirectionType, QuizDirection> _directionNamesMap;
+
+  Map<ExerciseList, ExerciseDetails> _questionsInfo = Map<ExerciseList, ExerciseDetails>();
+
+  QuizInput (this.exerciseLists) {
+    _directionTypeGenerator = QuizDirectionTypeGenerator(this.exerciseLists.first);
+  }
+
+  void initialize(BuildContext context) {
+    for (ExerciseList exerciseList in this.exerciseLists) {
+      _questionsInfo[exerciseList] = ExerciseDetails(exerciseList.content);
+    }
+    _directionNamesMap = _directionTypeGenerator.generate(context);
+  }
+
+  Map<QuizDirectionType, QuizDirection> get directionNamesMapping => _directionNamesMap;
+
+  int get questionsCount {
+    int sum = 0;
+    _questionsInfo.forEach((k, v) => sum += v.sets.length);
+    return sum;
+  }
+
+  int get divisions {
+    int count = this.questionsCount;
+    if (count < 10) {
+      return 2;
+    } else if (count < 30) {
+      return 5;
+    } else {
+      return 10;
+    }
+  }
+
+
+}
+
+class _QuizOptionsFragment extends StatefulWidget {
+
+  final QuizInput quizInput;
+
+  _QuizOptionsFragment (this.quizInput);
 
   @override
   State<StatefulWidget> createState() {
@@ -27,51 +110,94 @@ class _QuizOptionsFragment extends StatefulWidget {
 
 }
 
-class _DirectionTypeGenerator {
 
-  final ExerciseList exerciseList;
 
-  _DirectionTypeGenerator (this.exerciseList);
 
-  List<String> generate(BuildContext context) {
-    String original = "${exerciseList.original} - ${exerciseList.translated}";
-    String translated = "${exerciseList.translated} - ${exerciseList.original}";
-    String mixed = FlutterI18n.translate(context, TranslationKeys.mixed);
-    return [original, translated, mixed];
-  }
 
-}
 
 class _QuizOptionsUI {
 
   Widget _radioGroup(GroupController<Option> controller) {
     return controller.build(builder: (BuildContext context, { Option groupValue, List<Option> availableOptions, Function(Option) updateCallback }) {
-      return RadioGroup<Option>.builder(
-        direction: Axis.vertical,
-        groupValue: groupValue,
-        onChanged: (value) => updateCallback(value),
-        items: availableOptions,
-        itemBuilder: (item) => RadioButtonBuilder(
-          item.toString(),
-        ),
+      return Column(
+        children: () {
+          return availableOptions.map((option) {
+            return Container(
+              child: _radioRow(
+                  option: option,
+                  groupValue: groupValue,
+                  updateCallback: updateCallback
+              ),
+              margin: EdgeInsets.only(
+                bottom: 6,
+                top: 6
+              ),
+            );
+          }).toList();
+        }(),
       );
     });
   }
 
-  Widget _checkBoxRow(ValueController<bool> controller, { @required String label, double checkBoxSize = 16 }) {
+  Widget _radioRow({ @required Option option, @required Option groupValue, @required Function(Option) updateCallback, double checkBoxSize = 30 }) {
     return Row(
       children: <Widget>[
         Container(child: SizedBox(
           width: checkBoxSize,
           height: checkBoxSize,
-          child: controller.build(
-              builder: (BuildContext context, { bool selectedValue, Function(bool) updateCallback }) {
-                return Checkbox(
-                    value: selectedValue,
-                    activeColor: BrandColors.secondaryButtonColor,
-                    onChanged: (newValue) => updateCallback(newValue)
-                );
-              }
+          child: Center(
+            child: Radio(
+              activeColor: BrandColors.secondaryButtonColor,
+              value: option,
+              groupValue: groupValue,
+              onChanged: (value) => updateCallback(value),
+            ),
+          ),
+        ), margin: EdgeInsets.only(right: 15)),
+        Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text(option.name, style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontFamily: Fonts.ubuntu,
+                    fontSize: 14
+                )),
+                Visibility(
+                  visible: option.description != null,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                      vertical: 8
+                    ),
+                    child: Text(option.description ?? "", style: TextStyle(
+                        fontFamily: Fonts.ubuntu,
+                        fontSize: 12
+                    )),
+                  )
+                )
+              ],
+            )
+        )
+      ],
+    );
+  }
+
+  Widget _checkBoxRow(ValueController<bool> controller, { @required String label, double checkBoxSize = 30 }) {
+    return Row(
+      children: <Widget>[
+        Container(child: SizedBox(
+          width: checkBoxSize,
+          height: checkBoxSize,
+          child: Center(
+            child: controller.build(
+                builder: (BuildContext context, { bool selectedValue, Function(bool) updateCallback }) {
+                  return Checkbox(
+                      value: selectedValue,
+                      activeColor: BrandColors.secondaryButtonColor,
+                      onChanged: (newValue) => updateCallback(newValue)
+                  );
+                }
+            ),
           ),
         ), margin: EdgeInsets.only(right: 15)),
         Expanded(child: Text(
@@ -109,13 +235,28 @@ class _QuizOptionsFragmentState extends State<_QuizOptionsFragment> with _QuizOp
   ValueController<bool> _showFirstLetterOptionController;
   ValueController<bool> _showVowelsOptionController;
   ValueController<bool> _enterToNextAnswerController;
+  ValueController<RangeValues> _selectionRangeController;
 
 
   void initializeControllers() {
+    
     _directionTypeController = GroupController<Option>(
-        options: _DirectionTypeGenerator(widget.exerciseList).generate(context).asMap().map(
-                (index, element) => MapEntry(index, Option(element, index))
-        ).values.toList()
+      options: [
+        Option(
+            widget.quizInput.directionNamesMapping[QuizDirectionType.translationToOriginal].name,
+            0,
+            description: widget.quizInput.directionNamesMapping[QuizDirectionType.translationToOriginal].hint),
+        Option(
+            widget.quizInput.directionNamesMapping[QuizDirectionType.originalToTranslation].name,
+            1,
+            description: widget.quizInput.directionNamesMapping[QuizDirectionType.originalToTranslation].hint
+        ),
+        Option(
+          widget.quizInput.directionNamesMapping[QuizDirectionType.mixed].name,
+          2,
+          description: widget.quizInput.directionNamesMapping[QuizDirectionType.mixed].hint
+        )
+      ]
     );
 
     _continueTillSuccessOptionController = ValueController<bool>(true);
@@ -125,16 +266,22 @@ class _QuizOptionsFragmentState extends State<_QuizOptionsFragment> with _QuizOp
     _showFirstLetterOptionController = ValueController<bool>(false);
     _showVowelsOptionController = ValueController<bool>(false);
     _enterToNextAnswerController = ValueController<bool>(false);
+
+    _selectionRangeController = ValueController<RangeValues>(RangeValues(
+      1,
+      widget.quizInput.questionsCount.toDouble()
+    ));
   }
 
   @override
   void initState() {
-   super.initState();
    initializeControllers();
+   super.initState();
   }
 
   Widget _simpleOptionsSection(BuildContext context) {
     return Container(
+      padding: EdgeInsets.all(15),
       child: _radioGroup(
         _directionTypeController
       ),
@@ -145,16 +292,42 @@ class _QuizOptionsFragmentState extends State<_QuizOptionsFragment> with _QuizOp
     return Container(
       padding: EdgeInsets.all(15),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
               child: _captionLabel(context, FlutterI18n.translate(context, TranslationKeys.advancedSettings)),
-              margin: EdgeInsets.only(bottom: 10),
+              margin: EdgeInsets.only(bottom: 20),
           ),
-          _checkBoxRow(_continueTillSuccessOptionController, label: FlutterI18n.translate(context, TranslationKeys.contineuTillSuccess)),
-          _checkBoxRow(_correctCapitalsOptionController, label: FlutterI18n.translate(context, TranslationKeys.correctCapitals)),
-          _checkBoxRow(_correctAccentsOptionController, label: FlutterI18n.translate(context, TranslationKeys.correctAccents)),
-          _checkBoxRow(_showFirstLetterOptionController, label: FlutterI18n.translate(context, TranslationKeys.showFirstLetter)),
-          _checkBoxRow(_showVowelsOptionController, label: FlutterI18n.translate(context, TranslationKeys.showVowels))
+          Container(
+            child: _checkBoxRow(_continueTillSuccessOptionController, label: FlutterI18n.translate(context, TranslationKeys.continueTillSuccess)),
+            margin: EdgeInsets.only(
+              bottom: 8
+            ),
+          ),
+          Container(
+            child: _checkBoxRow(_correctCapitalsOptionController, label: FlutterI18n.translate(context, TranslationKeys.correctCapitals)),
+            margin: EdgeInsets.only(
+                bottom: 8
+            ),
+          ),
+          Container(
+            child: _checkBoxRow(_correctAccentsOptionController, label: FlutterI18n.translate(context, TranslationKeys.correctAccents)),
+            margin: EdgeInsets.only(
+                bottom: 8
+            ),
+          ),
+          Container(
+            child: _checkBoxRow(_showFirstLetterOptionController, label: FlutterI18n.translate(context, TranslationKeys.showFirstLetter)),
+            margin: EdgeInsets.only(
+                bottom: 8
+            ),
+          ),
+          Container(
+            child: _checkBoxRow(_showVowelsOptionController, label: FlutterI18n.translate(context, TranslationKeys.showVowels)),
+            margin: EdgeInsets.only(
+                bottom: 8
+            ),
+          )
         ],
       ),
     );
@@ -163,15 +336,33 @@ class _QuizOptionsFragmentState extends State<_QuizOptionsFragment> with _QuizOp
 
   Widget _quizSelectionOptionsSection(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(15),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
+            padding: EdgeInsets.all(15),
             child: _captionLabel(context, FlutterI18n.translate(context, TranslationKeys.quizSelection)),
-            margin: EdgeInsets.only(bottom: 10),
           ),
           Container(
-            child: //here comes the slider,
+            child: _selectionRangeController.build(
+                builder: (BuildContext context, { RangeValues selectedValue, Function(RangeValues) updateCallback }) {
+                  double max = widget.quizInput.questionsCount.toDouble();
+                  return RangeSlider(
+                    values: selectedValue,
+                    activeColor: BrandColors.secondaryButtonColor,
+                    inactiveColor: BrandColors.secondaryButtonColor.withOpacity(0.4),
+                    min: 1,
+                    max: max,
+                    divisions: widget.quizInput.divisions,
+                    labels: RangeLabels(
+                        selectedValue.start.round().toString(),
+                        selectedValue.end.round().toString()
+                    ),
+                    onChanged: (rangeValues) => updateCallback(rangeValues),
+                  );
+                }
+            )
           )
         ],
       ),
@@ -182,6 +373,7 @@ class _QuizOptionsFragmentState extends State<_QuizOptionsFragment> with _QuizOp
     return Container(
       padding: EdgeInsets.all(15),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Container(
             child: _captionLabel(context, FlutterI18n.translate(context, TranslationKeys.quizTimeOptions)),
@@ -191,13 +383,9 @@ class _QuizOptionsFragmentState extends State<_QuizOptionsFragment> with _QuizOp
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                Container(
-                  child: //numericInput,
-                ),
+                Container(),
                 Spacer(),
-                Container(
-                  child: //numericInput,
-                ),
+                Container(),
               ],
             ),
             margin: EdgeInsets.symmetric(
@@ -228,14 +416,19 @@ class _QuizOptionsFragmentState extends State<_QuizOptionsFragment> with _QuizOp
 class QuizOptionsBottomSheetPresenter extends BottomSheetPresenter {
 
   final GlobalKey<_QuizOptionsFragmentState> quizOptionsFragmentKey = GlobalKey<_QuizOptionsFragmentState>();
-  final ExerciseList exerciseList;
-  final List<ExerciseSet> exerciseSets;
 
-  QuizOptionsBottomSheetPresenter ({ @required this.exerciseList, @required this.exerciseSets }) : super();
+  final QuizInput quizInput;
+
+  QuizOptionsBottomSheetPresenter ({ @required this.quizInput }) : super();
 
   @override
   Widget header(BuildContext context) {
     return BottomSheetHeader(
+      padding: EdgeInsets.symmetric(
+        vertical: 10,
+        horizontal: 20
+      ),
+      borderColor: BrandColors.borderColor.withOpacity(0.5),
       child: Row(
           children: <Widget>[
             Expanded(
@@ -275,7 +468,7 @@ class QuizOptionsBottomSheetPresenter extends BottomSheetPresenter {
           child: SingleChildScrollView(
             child: Container(
               child: _QuizOptionsFragment(
-                this.exerciseList
+                this.quizInput
               ),
             )
           )

@@ -197,7 +197,11 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   }
 
   void onStartPressed(List<ExerciseList> exercises) {
-    QuizOptionsBottomSheetPresenter().show(context);
+    var quizInput = QuizInput(exercises);
+    quizInput.initialize(context);
+    QuizOptionsBottomSheetPresenter(
+      quizInput: quizInput
+    ).show(context);
   }
 
   void onExerciseListPressed(ExerciseList exerciseList) {
