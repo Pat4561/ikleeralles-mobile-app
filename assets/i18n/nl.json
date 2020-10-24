@@ -74,5 +74,10 @@
   "enterToNextAnswer": "Met Enter naar het volgende woord",
   "termToDefinition": "Van begrip naar betekenis",
   "definitionToTerm": "Van betekenis naar begrip",
-  "bothDirections": "Beide richtigingen"
+  "bothDirections": "Beide richtigingen",
+  "quizTypeInMind": "In gedachte",
+  "quizTypeTest": "Overhoren",
+  "timeCorrectAnswer": "Tijd goed antwoord",
+  "timeIncorrectAnswer": "Tijd fout antwoord",
+  "showMore": "Meer tonen"
 }

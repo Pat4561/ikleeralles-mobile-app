@@ -62,21 +62,25 @@ abstract class BottomSheetPresenter {
 
   Widget body(BuildContext context);
 
+  Widget builder(BuildContext context) {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          header(context),
+          Expanded(
+            child: body(context),
+          )
+        ],
+      ),
+    );
+  }
+
   void show(BuildContext context) {
     showModalBottomSheet(
         builder: (BuildContext context) {
-          return Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                header(context),
-                Expanded(
-                  child: body(context),
-                )
-              ],
-            ),
-          );
+          return builder(context);
         },
         context: context
     );

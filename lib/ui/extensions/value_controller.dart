@@ -7,6 +7,8 @@ class ValueController<T> {
 
   ValueNotifier<T> _notifier;
 
+  T get value => _notifier.value;
+
   ValueController(T value) {
     _notifier = ValueNotifier<T>(value);
   }

@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 
-class Option {
+class CustomOption<T> {
 
-  int code;
-  String name;
-  String description;
+  final T key;
+  final String name;
+  final String description;
 
-  Option (this.name, this.code, { this.description });
+  CustomOption(this.name, this.key, { this.description });
 
   @override
   String toString() {
-    return name;
+    return this.name;
   }
+
+}
+
+class Option extends CustomOption<int> {
+
+  Option (String name, int code, { String description }) : super(name, code, description: description);
 
 }
 
@@ -24,6 +30,7 @@ class GroupController<T> {
 
   ValueNotifier<T> _notifier;
 
+  T get value => _notifier.value;
 
   GroupController ({ @required List<T> options, T selectedOption }) {
     _options = options;

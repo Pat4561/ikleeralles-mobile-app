@@ -17,8 +17,6 @@ class OperationManager<T extends Operation> extends Model {
     reset();
   }
 
-
-
   OperationState get currentState {
     return _operation.currentState;
   }

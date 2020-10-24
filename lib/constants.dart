@@ -115,6 +115,11 @@ class TranslationKeys {
   static const String termToDefinition = "termToDefinition";
   static const String definitionToTerm = "definitionToTerm";
   static const String bothDirections = "bothDirections";
+  static const String quizTypeInMind = "quizTypeInMind";
+  static const String quizTypeTest = "quizTypeTest";
+  static const String timeCorrectAnswer = "timeCorrectAnswer";
+  static const String timeIncorrectAnswer = "timeIncorrectAnswer";
+  static const String showMore = "showMore";
 }
 
 class WebUrls {
