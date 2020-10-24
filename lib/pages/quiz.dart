@@ -114,7 +114,7 @@ class QuizPageState extends State<QuizPage> {
 
   @override
   void initState() {
-    
+
     super.initState();
   }
 
