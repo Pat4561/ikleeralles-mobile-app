@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/ui/hyperlink.dart';
@@ -117,7 +118,7 @@ class _HintPresentationState extends State<_HintPresentation> {
                     left: 10
                 ),
                 child: Text(
-                  _isHintVisible ? widget.hint : "Hint tonen",
+                  _isHintVisible ? widget.hint : FlutterI18n.translate(context, TranslationKeys.showHint),
                   style: TextStyle(
                       color: color,
                       fontSize: 15,

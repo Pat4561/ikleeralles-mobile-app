@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/ui/custom/quiz/answer_form/abstract.dart';
 import 'package:ikleeralles/ui/custom/quiz/builder.dart';
@@ -70,15 +71,15 @@ class _StatusBar extends StatelessWidget {
         children: <Widget>[
           _box(
             value: upcomingQuestionsCount.toString(),
-            text: "Te gaan"
+            text: FlutterI18n.translate(context, TranslationKeys.upcoming)
           ),
           _box(
             value: errorCount.toString(),
-            text: "Fouten"
+            text: FlutterI18n.translate(context, TranslationKeys.errors)
           ),
           _box(
             value: answeredQuestionsCount.toString(),
-            text: "Gevraagd"
+            text: FlutterI18n.translate(context, TranslationKeys.asked)
           )
         ],
       ),
@@ -139,7 +140,7 @@ class QuizPageState extends State<QuizPage> {
               child: Row(
                 children: <Widget>[
                   ThemedButton(
-                    "Vorig antwoord goedrekenen",
+                    FlutterI18n.translate(context, TranslationKeys.markPreviousAnswerCorrect),
                     buttonColor: BrandColors.primaryButtonColor,
                     icon: Icons.undo,
                     borderRadius: BorderRadius.circular(20),

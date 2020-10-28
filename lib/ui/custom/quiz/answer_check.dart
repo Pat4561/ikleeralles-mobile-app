@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/quiz/checker.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
@@ -26,7 +27,7 @@ class ManualAnswerCheckActions extends AnswerCheckActions {
       children: <Widget>[
         Expanded(
           child: ThemedButton(
-            "Goed",
+            FlutterI18n.translate(context, TranslationKeys.correct),
             buttonColor: Colors.green,
             borderRadius: BorderRadius.circular(12),
             onPressed: () => onCorrectAnswer(this.question),
@@ -35,7 +36,7 @@ class ManualAnswerCheckActions extends AnswerCheckActions {
         SizedBox(width: 30),
         Expanded(
           child: ThemedButton(
-            "Fout",
+            FlutterI18n.translate(context, TranslationKeys.incorrect),
             buttonColor: Colors.red,
             borderRadius: BorderRadius.circular(12),
             onPressed: () => onIncorrectAnswer(this.question),
@@ -72,7 +73,7 @@ class AutomaticAnswerCheckActions extends AnswerCheckActions {
   @override
   Widget build(BuildContext context) {
     return ThemedButton(
-      "Controleer",
+        FlutterI18n.translate(context, TranslationKeys.checkAnswer),
       buttonColor: BrandColors.secondaryButtonColor,
       borderRadius: BorderRadius.circular(12),
       onPressed: () => _onPressed(context),

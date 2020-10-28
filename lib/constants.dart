@@ -121,6 +121,15 @@ class TranslationKeys {
   static const String timeIncorrectAnswer = "timeIncorrectAnswer";
   static const String showMore = "showMore";
   static const String combinedQuiz = "combinedQuiz";
+  static const String answer = "answer";
+  static const String correct = "correct";
+  static const String incorrect = "incorrect";
+  static const String checkAnswer = "checkAnswer";
+  static const String upcoming = "upcoming";
+  static const String errors = "errors";
+  static const String asked = "asked";
+  static const String markPreviousAnswerCorrect = "markPreviousAnswerCorrect";
+  static const String showHint = "showHint";
 }
 
 class WebUrls {

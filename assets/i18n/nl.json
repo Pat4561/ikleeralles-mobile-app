@@ -80,5 +80,14 @@
   "timeCorrectAnswer": "Tijd goed antwoord",
   "timeIncorrectAnswer": "Tijd fout antwoord",
   "showMore": "Meer tonen",
-  "combinedQuiz": "Gecombineerde overhoring"
+  "combinedQuiz": "Gecombineerde overhoring",
+  "answer": "Antwoord",
+  "correct": "Goed",
+  "incorrect": "Fout",
+  "checkAnswer": "Controleer",
+  "upcoming": "Te gaan",
+  "errors": "Fouten",
+  "asked": "Gevraagd",
+  "markPreviousAnswerCorrect": "Vorig antwoord goedrekenen",
+  "showHint": "Hint tonen"
 }

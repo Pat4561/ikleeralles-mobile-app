@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/ui/custom/quiz/answer_form/abstract.dart';
 import 'package:ikleeralles/ui/themed/textfield.dart';
@@ -34,7 +35,7 @@ class OpenAnswerFormState extends AnswerFormState<String, OpenAnswerForm> {
       ),
       child: ThemedTextField(
         textEditingController: controller,
-        hintText: "Antwoord",
+        hintText: FlutterI18n.translate(context, TranslationKeys.answer),
         focusedColor: BrandColors.secondaryButtonColor,
         onEditingComplete: () {
           if (widget.onEnterPressed != null) {
