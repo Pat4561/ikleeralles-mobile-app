@@ -7,7 +7,7 @@ import 'package:ikleeralles/pages/quiz.dart';
 import 'package:ikleeralles/ui/bottomsheets/presenter.dart';
 import 'package:ikleeralles/ui/custom/quiz/builder.dart';
 import 'package:ikleeralles/ui/expandable_container.dart';
-import 'package:ikleeralles/ui/fragments/quiz_options.dart';
+import 'package:ikleeralles/ui/custom/quiz/options_fragment.dart';
 import 'package:ikleeralles/ui/segmented_control.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
 import 'package:ikleeralles/ui/extensions/group_controller.dart';
