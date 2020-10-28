@@ -1,8 +1,12 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
+import 'package:ikleeralles/logic/quiz/speech.dart';
+import 'package:ikleeralles/network/api/url.dart';
 import 'package:ikleeralles/ui/hyperlink.dart';
+import 'package:ikleeralles/ui/snackbar.dart';
 
 class QuizQuestionPresentation extends StatefulWidget {
 
@@ -20,12 +24,24 @@ class QuizQuestionPresentation extends StatefulWidget {
 
 }
 
-
 class QuizQuestionPresentationState extends State<QuizQuestionPresentation> {
 
+  SpeechPlayer _speechPlayer;
+
+  @override
+  void initState() {
+    _speechPlayer = SpeechPlayer(
+      language: widget.question.language
+    );
+    super.initState();
+  }
 
   void _playSound(BuildContext context) {
-
+    _speechPlayer.play(
+      widget.question.title
+    ).catchError((e) {
+      showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
+    });
   }
 
   Widget _titlePresentation(BuildContext context) {

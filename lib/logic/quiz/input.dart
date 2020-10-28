@@ -56,9 +56,10 @@ class QuizQuestion {
   final ExerciseList exerciseList;
   final ExerciseSet set;
   final String title;
+  final String language;
   final List<String> answers;
 
-  QuizQuestion ({ @required this.exerciseList, @required this.set, @required this.title, @required this.answers });
+  QuizQuestion ({ @required this.exerciseList, @required this.set, @required this.title, @required this.answers, @required this.language });
 
 }
 
@@ -83,6 +84,7 @@ class QuizQuestionCollection {
             exerciseList: exerciseList,
             set: set,
             title: set.original.join(", "),
+            language: exerciseList.original,
             answers: set.translated
         ));
 
@@ -90,6 +92,7 @@ class QuizQuestionCollection {
             exerciseList: exerciseList,
             set: set,
             title: set.translated.join(", "),
+            language: exerciseList.translated,
             answers: set.original
         ));
       });
