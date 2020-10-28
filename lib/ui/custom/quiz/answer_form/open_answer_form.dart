@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/ui/custom/quiz/answer_form/abstract.dart';
 import 'package:ikleeralles/ui/themed/textfield.dart';
 
@@ -28,12 +29,13 @@ class OpenAnswerFormState extends AnswerFormState<String, OpenAnswerForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(
-          vertical: 15
+      margin: EdgeInsets.only(
+        top: 30
       ),
       child: ThemedTextField(
         textEditingController: controller,
         hintText: "Antwoord",
+        focusedColor: BrandColors.secondaryButtonColor,
         onEditingComplete: () {
           if (widget.onEnterPressed != null) {
             widget.onEnterPressed();

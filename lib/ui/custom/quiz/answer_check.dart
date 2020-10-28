@@ -23,19 +23,23 @@ class ManualAnswerCheckActions extends AnswerCheckActions {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        ThemedButton(
-          "Goed",
-          buttonColor: Colors.green,
-          borderRadius: BorderRadius.circular(12),
-          onPressed: () => onCorrectAnswer(this.question),
+        Expanded(
+          child: ThemedButton(
+            "Goed",
+            buttonColor: Colors.green,
+            borderRadius: BorderRadius.circular(12),
+            onPressed: () => onCorrectAnswer(this.question),
+          ),
         ),
-        ThemedButton(
-          "Fout",
-          buttonColor: Colors.red,
-          borderRadius: BorderRadius.circular(12),
-          onPressed: () => onIncorrectAnswer(this.question),
+        SizedBox(width: 30),
+        Expanded(
+          child: ThemedButton(
+            "Fout",
+            buttonColor: Colors.red,
+            borderRadius: BorderRadius.circular(12),
+            onPressed: () => onIncorrectAnswer(this.question),
+          ),
         )
       ],
     );

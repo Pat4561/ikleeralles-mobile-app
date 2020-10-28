@@ -30,11 +30,11 @@ class QuizQuestionPresentationState extends State<QuizQuestionPresentation> {
   Widget _titlePresentation(BuildContext context) {
     return Row(
       children: <Widget>[
-        Text(widget.question.title, style: TextStyle(
+        Expanded(child: Text(widget.question.title, style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
             fontFamily: Fonts.ubuntu
-        )),
+        ))),
         Container(
           child: IconButton(
             icon: Icon(Icons.volume_up),
