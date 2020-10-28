@@ -8,7 +8,7 @@ import 'package:ikleeralles/logic/managers/exercises/actions.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/operations/folders.dart';
-import 'package:ikleeralles/logic/quiz_input.dart';
+import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/pages/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/folders.dart';

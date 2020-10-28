@@ -37,6 +37,10 @@ class GroupController<T> {
     _notifier = ValueNotifier<T>(selectedOption ?? _options.first);
   }
 
+  void onChange(Function event) {
+    _notifier.addListener(event);
+  }
+
   void _updateValue(T value) {
     _notifier.value = value;
   }

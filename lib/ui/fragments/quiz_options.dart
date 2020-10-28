@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
-import 'package:ikleeralles/logic/quiz_input.dart';
-import 'package:ikleeralles/logic/quiz_options.dart';
+import 'package:ikleeralles/logic/quiz/options.dart';
+import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/ui/extensions/value_controller.dart';
 import 'package:ikleeralles/ui/numeric_input.dart';
 import 'package:ikleeralles/ui/extensions/group_controller.dart';
@@ -14,7 +14,7 @@ class QuizOptionsFragment extends StatefulWidget {
 
   final Function(BuildContext) onExpand;
 
-  QuizOptionsFragment (this.quizInput, { this.onExpand });
+  QuizOptionsFragment (this.quizInput, { this.onExpand, GlobalKey<QuizOptionsFragmentState> key }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -26,8 +26,8 @@ class QuizOptionsFragment extends StatefulWidget {
 
 class _QuizOptionsUI {
 
-  Widget _radioGroup(GroupController<CustomOption> controller) {
-    return controller.build(builder: (BuildContext context, { CustomOption groupValue, List<CustomOption> availableOptions, Function(CustomOption) updateCallback }) {
+  Widget _radioGroup<T>(GroupController<CustomOption<T>> controller) {
+    return controller.build(builder: (BuildContext context, { CustomOption<T> groupValue, List<CustomOption<T>> availableOptions, Function(CustomOption<T>) updateCallback }) {
       return Column(
         children: () {
           return availableOptions.map((option) {
@@ -48,7 +48,7 @@ class _QuizOptionsUI {
     });
   }
 
-  Widget _radioRow({ @required CustomOption option, @required CustomOption groupValue, @required Function(CustomOption) updateCallback, double checkBoxSize = 30 }) {
+  Widget _radioRow<T>({ @required CustomOption<T> option, @required CustomOption<T> groupValue, @required Function(CustomOption<T>) updateCallback, double checkBoxSize = 30 }) {
     return Row(
       children: <Widget>[
         Container(child: SizedBox(
@@ -221,8 +221,17 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
 
     _selectionRangeController = ValueController<RangeValues>(RangeValues(
         1,
-        widget.quizInput.questionsCount.toDouble()
+        widget.quizInput.count(directionType: _directionTypeController.value.key).toDouble()
     ));
+
+    _directionTypeController.onChange(() {
+      _selectionRangeController.notify(
+        value: RangeValues(
+            1,
+            widget.quizInput.count(directionType: _directionTypeController.value.key).toDouble()
+        )
+      );
+    });
   }
 
   @override
@@ -234,7 +243,7 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
   Widget _simpleOptionsSection(BuildContext context) {
     return Container(
       padding: _showAdvanced ? EdgeInsets.all(15) : EdgeInsets.only(top: 15, bottom: 0, left: 15, right: 15),
-      child: _radioGroup(
+      child: _radioGroup<QuizDirectionType>(
           _directionTypeController
       ),
     );
@@ -299,14 +308,14 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
           Container(
               child: _selectionRangeController.build(
                   builder: (BuildContext context, { RangeValues selectedValue, Function(RangeValues) updateCallback }) {
-                    double max = widget.quizInput.questionsCount.toDouble();
+                    double max = widget.quizInput.count(directionType: _directionTypeController.value.key).toDouble();
                     return RangeSlider(
                       values: selectedValue,
                       activeColor: BrandColors.secondaryButtonColor,
                       inactiveColor: BrandColors.secondaryButtonColor.withOpacity(0.4),
                       min: 1,
                       max: max,
-                      divisions: widget.quizInput.divisions,
+                      divisions: widget.quizInput.divisions(directionType: _directionTypeController.value.key),
                       labels: RangeLabels(
                           selectedValue.start.round().toString(),
                           selectedValue.end.round().toString()

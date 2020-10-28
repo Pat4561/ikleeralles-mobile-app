@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:ikleeralles/logic/quiz_input.dart';
+import 'package:ikleeralles/logic/quiz/input.dart';
 
 class QuizSelectionRange {
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
-import 'package:ikleeralles/logic/quiz_input.dart';
-import 'package:ikleeralles/logic/quiz_options.dart';
+import 'package:ikleeralles/logic/quiz/options.dart';
+import 'package:ikleeralles/logic/quiz/input.dart';
+import 'package:ikleeralles/pages/quiz.dart';
 import 'package:ikleeralles/ui/bottomsheets/presenter.dart';
+import 'package:ikleeralles/ui/custom/quiz/builder.dart';
 import 'package:ikleeralles/ui/expandable_container.dart';
 import 'package:ikleeralles/ui/fragments/quiz_options.dart';
 import 'package:ikleeralles/ui/segmented_control.dart';
@@ -162,7 +164,7 @@ class QuizOptionsBottomSheetPresenter extends BottomSheetPresenter {
     );
   }
 
-  void _startQuiz() {
+  void _startQuiz(BuildContext context) {
     var headerResult = quizOptionsHeaderKey.currentState.getData();
     var fragmentResult = quizOptionsFragmentKey.currentState.getData();
     var options = QuizOptions(
@@ -174,7 +176,18 @@ class QuizOptionsBottomSheetPresenter extends BottomSheetPresenter {
       range: fragmentResult.range,
       visibilityOptions: fragmentResult.visibilityOptions
     );
-    
+
+
+    Navigator.push(context, MaterialPageRoute(
+      builder: (BuildContext context) {
+        return QuizPage(
+          builder:  QuizBuilder.create(
+              options: options,
+              quizInput: quizInput
+          )
+        );
+      }
+    ));
   }
 
   @override
@@ -190,6 +203,7 @@ class QuizOptionsBottomSheetPresenter extends BottomSheetPresenter {
                 onExpand: (BuildContext context) {
                   expansionContainerKey.currentState.expand();
                 },
+                key: quizOptionsFragmentKey
               ),
             )
           )
@@ -206,7 +220,7 @@ class QuizOptionsBottomSheetPresenter extends BottomSheetPresenter {
               horizontal: 18
             ),
             borderRadius: BorderRadius.all(Radius.circular(15)),
-            onPressed: _startQuiz,
+            onPressed: () => _startQuiz(context),
             buttonColor: BrandColors.primaryButtonColor,
           ),
         )

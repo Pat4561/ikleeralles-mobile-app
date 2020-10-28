@@ -4,7 +4,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/cells/exercise_set.dart';
-import 'package:ikleeralles/ui/exercise_controller.dart';
+import 'package:ikleeralles/ui/custom/exercise_controller.dart';
 import 'package:ikleeralles/ui/tables/base.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
 

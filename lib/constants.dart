@@ -120,6 +120,7 @@ class TranslationKeys {
   static const String timeCorrectAnswer = "timeCorrectAnswer";
   static const String timeIncorrectAnswer = "timeIncorrectAnswer";
   static const String showMore = "showMore";
+  static const String combinedQuiz = "combinedQuiz";
 }
 
 class WebUrls {

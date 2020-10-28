@@ -13,6 +13,18 @@ class ValueController<T> {
     _notifier = ValueNotifier<T>(value);
   }
 
+  void notify({ T value }) {
+    if (value != _notifier.value) {
+      _notifier.value = value;
+    } else {
+      _notifier.notifyListeners();
+    }
+  }
+
+  void onChange(Function event) {
+    _notifier.addListener(event);
+  }
+
   void _updateValue(T value) {
     _notifier.value = value;
   }
