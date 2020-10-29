@@ -15,7 +15,7 @@ class QuizQuestionPresentation extends StatefulWidget {
   final String hint;
 
 
-  QuizQuestionPresentation (this.question, { this.hint, this.formBuilder });
+  QuizQuestionPresentation (this.question, { this.hint, this.formBuilder, GlobalKey key }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -24,9 +24,34 @@ class QuizQuestionPresentation extends StatefulWidget {
 
 }
 
+class QuizQuestionUserResponse {
+
+  final bool correctlyAnswered;
+
+  QuizQuestionUserResponse ({ @required this.correctlyAnswered });
+
+}
+
 class QuizQuestionPresentationState extends State<QuizQuestionPresentation> {
 
   SpeechPlayer _speechPlayer;
+
+  QuizQuestionUserResponse _response;
+
+  final GlobalKey<_HintPresentationState> hintPresentationKey = GlobalKey<_HintPresentationState>();
+
+  void showFeedback(QuizQuestionUserResponse response) {
+    setState(() {
+      _response = response;
+    });
+  }
+
+  void restore() {
+    hintPresentationKey.currentState.setVisible(false);
+    setState(() {
+      _response = null;
+    });
+  }
 
   @override
   void initState() {
@@ -35,6 +60,7 @@ class QuizQuestionPresentationState extends State<QuizQuestionPresentation> {
     );
     super.initState();
   }
+
 
   void _playSound(BuildContext context) {
     _speechPlayer.play(
@@ -50,7 +76,7 @@ class QuizQuestionPresentationState extends State<QuizQuestionPresentation> {
         Expanded(child: Text(widget.question.title, style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
-            fontFamily: Fonts.ubuntu
+            fontFamily: Fonts.ubuntu,
         ))),
         Container(
           child: IconButton(
@@ -67,8 +93,14 @@ class QuizQuestionPresentationState extends State<QuizQuestionPresentation> {
 
   Widget _hintPresentation(BuildContext context) {
     return Visibility(
-      child: _HintPresentation(
-        hint: widget.hint,
+      child: Container(
+        child: _HintPresentation(
+          hint: widget.hint,
+          key: hintPresentationKey
+        ),
+        margin: EdgeInsets.only(
+          top: 5
+        ),
       ),
       visible: widget.hint != null,
     );
@@ -84,13 +116,39 @@ class QuizQuestionPresentationState extends State<QuizQuestionPresentation> {
     return Container();
   }
 
+  Widget _feedback(BuildContext context) {
+    if (_response != null) {
+      return Container(
+        child: Text(widget.question.answers.join(", "), style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontFamily: Fonts.ubuntu,
+            color: _response.correctlyAnswered ? Colors.green : Colors.red
+        )),
+        margin: EdgeInsets.only(
+          top: 20
+        ),
+      );
+    } else {
+      return Container();
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         _titlePresentation(context),
         _hintPresentation(context),
-        _form(context)
+        Visibility(
+          visible: _response == null,
+          child: _form(context),
+        ),
+        Visibility(
+          visible: _response != null,
+          child: _feedback(context),
+        )
       ],
     );
   }
@@ -101,7 +159,7 @@ class _HintPresentation extends StatefulWidget {
 
   final String hint;
 
-  _HintPresentation ({ @required this.hint });
+  _HintPresentation ({ @required this.hint, GlobalKey<_HintPresentationState> key }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -114,6 +172,12 @@ class _HintPresentationState extends State<_HintPresentation> {
 
   bool _isHintVisible = false;
 
+  void setVisible(bool isVisible) {
+    setState(() {
+      _isHintVisible = isVisible;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -121,9 +185,7 @@ class _HintPresentationState extends State<_HintPresentation> {
         baseColor: Colors.grey,
         highlightedColor: BrandColors.secondaryButtonColor,
         onPressed: () {
-          setState(() {
-            _isHintVisible = !_isHintVisible;
-          });
+          setVisible(!_isHintVisible);
         },
         builder: (bool isSelected, Color color) {
           return Row(

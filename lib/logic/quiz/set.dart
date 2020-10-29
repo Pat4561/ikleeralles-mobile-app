@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/material.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class QuizAnswers {
 
@@ -20,7 +22,16 @@ class QuizAnswers {
   }
 }
 
-class QuizSet {
+class QuestionResponse {
+
+  final QuizQuestion question;
+  final bool isCorrect;
+
+  QuestionResponse (this.question, { @required this.isCorrect });
+
+}
+
+class QuizSet extends Model {
 
   final QuizAnswers answers = QuizAnswers();
 
@@ -28,9 +39,11 @@ class QuizSet {
 
   final bool repeatQuestionsTillAllCorrect;
 
+  int _askedQuestionsCount = 1;
+
   List<QuizQuestion> _upcomingQuestions;
 
-  QuizQuestion _lastAnsweredQuestion;
+  QuestionResponse _lastAnswered;
 
   QuizSet (this.inputQuestions, { this.repeatQuestionsTillAllCorrect = false }) {
     _upcomingQuestions = this.inputQuestions;
@@ -60,36 +73,61 @@ class QuizSet {
     return answers.incorrectAnsweredQuestions.length + answers.correctAnsweredQuestions.length + 1;
   }
 
+  int get askedQuestionsCount {
+    return _askedQuestionsCount;
+  }
+
+  bool get previousAnswerWasIncorrect {
+    return _lastAnswered != null ? !_lastAnswered.isCorrect : false;
+  }
+
   void randomizeQuestions() {
     _upcomingQuestions.shuffle();
   }
 
   void unMarkAsIncorrectAnswer() {
-    this.answers.unMarkIncorrectAnswer(_lastAnsweredQuestion);
-    _upcomingQuestions.removeWhere((value) => value == _lastAnsweredQuestion);
+    this.answers.unMarkIncorrectAnswer(_lastAnswered.question);
+    _upcomingQuestions.removeWhere((value) => value == _lastAnswered.question);
+    notifyListeners();
   }
 
   void repeatQuestionSomewhere(QuizQuestion question) {
-    _upcomingQuestions.insert(Random().nextInt(_upcomingQuestions.length), question);
+    //first question is the current question now
+
+    if (_upcomingQuestions.length > 0) {
+      int min = 1;
+      int randomIndex = min + Random().nextInt(_upcomingQuestions.length - min);
+      _upcomingQuestions.insert(randomIndex, question);
+    } else {
+      _upcomingQuestions.add(question);
+    }
+
+    notifyListeners();
+
   }
 
   void answerQuestion(bool isCorrect) {
 
     if (!isCorrect) {
       this.answers.markIncorrectAnswer(currentQuestion);
-      if (this.repeatQuestionsTillAllCorrect) {
-        repeatQuestionSomewhere(currentQuestion);
-      }
     } else {
       this.answers.markCorrectAnswer(currentQuestion);
     }
 
-    _lastAnsweredQuestion = currentQuestion;
+    _lastAnswered = QuestionResponse(currentQuestion, isCorrect: isCorrect);
+    notifyListeners();
 
   }
 
   void nextQuestion() {
     _upcomingQuestions.remove(currentQuestion);
+    _askedQuestionsCount += 1;
+    if (!_lastAnswered.isCorrect) {
+      if (this.repeatQuestionsTillAllCorrect) {
+        repeatQuestionSomewhere(_lastAnswered.question);
+      }
+    }
+    notifyListeners();
   }
 
 

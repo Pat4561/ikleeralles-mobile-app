@@ -2,10 +2,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/quiz/set.dart';
 import 'package:ikleeralles/ui/custom/quiz/answer_form/abstract.dart';
 import 'package:ikleeralles/ui/custom/quiz/builder.dart';
 import 'package:ikleeralles/ui/custom/quiz/question_presentation.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class QuizPage extends StatefulWidget {
 
@@ -25,9 +27,9 @@ class _StatusBar extends StatelessWidget {
 
   final int upcomingQuestionsCount;
   final int errorCount;
-  final int answeredQuestionsCount;
+  final int askedQuestionsCount;
 
-  _StatusBar ({ @required this.upcomingQuestionsCount, @required this.errorCount, @required this.answeredQuestionsCount });
+  _StatusBar ({ @required this.upcomingQuestionsCount, @required this.errorCount, @required this.askedQuestionsCount });
 
   Widget _box({ @required String text, @required String value }) {
     return Expanded(
@@ -78,7 +80,7 @@ class _StatusBar extends StatelessWidget {
             text: FlutterI18n.translate(context, TranslationKeys.errors)
           ),
           _box(
-            value: answeredQuestionsCount.toString(),
+            value: askedQuestionsCount.toString(),
             text: FlutterI18n.translate(context, TranslationKeys.asked)
           )
         ],
@@ -92,12 +94,33 @@ class QuizPageState extends State<QuizPage> {
 
   final GlobalKey<AnswerFormState> _answerFormKey = GlobalKey<AnswerFormState>();
 
-  void _unMarkAsIncorrectAnswer() {
+  final GlobalKey<QuizQuestionPresentationState> _quizQuestionPresentationKey = GlobalKey<QuizQuestionPresentationState>();
 
+  void _unMarkAsIncorrectAnswer() {
+    widget.builder.quizSet.unMarkAsIncorrectAnswer();
   }
 
   void _onEnterPressed() {
+    if (!widget.builder.options.visibilityOptions.useEnterToGoToNext) {
+      return;
+    }
+    String answer = _answerFormKey.currentState.getAnswer();
+    bool isCorrect = widget.builder.answerChecker.correct(widget.builder.quizSet.currentQuestion, answer);
+    _answerQuestion(
+      isCorrect: isCorrect,
+      transitionDelay: isCorrect ? widget.builder.options.visibilityOptions.timeCorrectAnswerVisible : widget.builder.options.visibilityOptions.timeIncorrectAnswerVisible
+    );
+  }
 
+  void _answerQuestion({ @required bool isCorrect, @required int transitionDelay }) {
+    _quizQuestionPresentationKey.currentState.showFeedback(QuizQuestionUserResponse(
+        correctlyAnswered: isCorrect
+    ));
+    widget.builder.quizSet.answerQuestion(isCorrect);
+    Future.delayed(Duration(seconds: transitionDelay)).then((_) {
+      _quizQuestionPresentationKey.currentState.restore();
+      widget.builder.quizSet.nextQuestion();
+    });
   }
 
   Widget _progressBar() {
@@ -112,86 +135,102 @@ class QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          widget.builder.quizInput.title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            fontFamily: Fonts.ubuntu
-          ),
-        ),
-        elevation: 0,
-      ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            _progressBar(),
-            _StatusBar(
-              answeredQuestionsCount: widget.builder.quizSet.answeredQuestionsCount,
-              upcomingQuestionsCount: widget.builder.quizSet.upcomingQuestionsCount,
-              errorCount: widget.builder.quizSet.errorCount,
+    return ScopedModel<QuizSet>(
+      model: widget.builder.quizSet,
+      child: ScopedModelDescendant<QuizSet>(
+        builder: (BuildContext context, Widget childWidget, QuizSet quizSet) {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              centerTitle: true,
+              title: Text(
+                widget.builder.quizInput.title,
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: Fonts.ubuntu
+                ),
+              ),
+              elevation: 0,
             ),
-            Container(
-              padding: EdgeInsets.all(20),
-              child: Row(
+            body: Container(
+              child: Column(
                 children: <Widget>[
-                  ThemedButton(
-                    FlutterI18n.translate(context, TranslationKeys.markPreviousAnswerCorrect),
-                    buttonColor: BrandColors.primaryButtonColor,
-                    icon: Icons.undo,
-                    borderRadius: BorderRadius.circular(20),
-                    onPressed: () => _unMarkAsIncorrectAnswer(),
-                  )
+                  _progressBar(),
+                  _StatusBar(
+                    askedQuestionsCount: widget.builder.quizSet.askedQuestionsCount,
+                    upcomingQuestionsCount: widget.builder.quizSet.upcomingQuestionsCount,
+                    errorCount: widget.builder.quizSet.errorCount,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(20),
+                              child: Row(
+                                children: <Widget>[
+                                  Visibility(
+                                    visible: widget.builder.quizSet.previousAnswerWasIncorrect,
+                                    child: ThemedButton(
+                                      FlutterI18n.translate(context, TranslationKeys.markPreviousAnswerCorrect),
+                                      buttonColor: BrandColors.primaryButtonColor,
+                                      icon: Icons.undo,
+                                      borderRadius: BorderRadius.circular(20),
+                                      onPressed: () => _unMarkAsIncorrectAnswer(),
+                                    ),
+                                  ),
+
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(20),
+                              child: QuizQuestionPresentation(
+                                  widget.builder.quizSet.currentQuestion,
+                                  key: _quizQuestionPresentationKey,
+                                  hint: widget.builder.hintGenerator.generate(widget.builder.quizSet.currentQuestion),
+                                  formBuilder: (BuildContext context) {
+                                    return widget.builder.formBuilder(key: _answerFormKey, onEnterPressed:  _onEnterPressed);
+                                  }
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-            Expanded(
+            bottomNavigationBar: BottomAppBar(
+              color: Colors.white,
+              elevation: 0,
               child: Container(
-                margin: EdgeInsets.all(20),
-                child: QuizQuestionPresentation(
-                  widget.builder.quizSet.currentQuestion,
-                  hint: widget.builder.hintGenerator.generate(widget.builder.quizSet.currentQuestion),
-                  formBuilder: (BuildContext context) {
-                    return widget.builder.formBuilder(key: _answerFormKey, onEnterPressed:  _onEnterPressed);
-                  }
+                decoration: BoxDecoration(
+                    border: Border(
+                        top: BorderSide(
+                            color: BrandColors.borderColor,
+                            width: 1
+                        )
+                    )
+                ),
+                padding: EdgeInsets.symmetric(
+                    horizontal: 15,
+                    vertical: 5
+                ),
+                child: widget.builder.actionsBuilder(
+                    onIncorrectAnswer: (question) => _answerQuestion(isCorrect: false, transitionDelay: widget.builder.options.visibilityOptions.timeIncorrectAnswerVisible),
+                    onCorrectAnswer: (question) => _answerQuestion(isCorrect: true, transitionDelay: widget.builder.options.visibilityOptions.timeCorrectAnswerVisible),
+                    answerGetter: () {
+                      return _answerFormKey.currentState.getAnswer();
+                    }
                 ),
               ),
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
-        elevation: 0,
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(
-                color: BrandColors.borderColor,
-                width: 1
-              )
-            )
-          ),
-          padding: EdgeInsets.symmetric(
-            horizontal: 15,
-            vertical: 5
-          ),
-          child: widget.builder.actionsBuilder(
-            onIncorrectAnswer: (question) {
-
-            },
-            onCorrectAnswer: (question) {
-
-            },
-            answerGetter: () {
-              return _answerFormKey.currentState.getAnswer();
-            }
-          ),
-        ),
+          );
+        },
       ),
     );
   }

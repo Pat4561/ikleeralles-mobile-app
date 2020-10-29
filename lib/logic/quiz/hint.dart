@@ -18,6 +18,10 @@ class HintGenerator {
       for (int i = 0; i < input.length; i++) {
         var char = input[i];
         char = char.toLowerCase();
+        if (char == " ") {
+          hinted = _replaceCharAt(hinted, i, " ");
+        }
+
         var vowels = ["a", "e", "u", "i"];
         if (vowels.contains(char)) {
           hinted = _replaceCharAt(hinted, i, char);

@@ -164,7 +164,7 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
   QuizOptionsFragmentData getData() {
     return QuizOptionsFragmentData(
       mainOptions: QuizMainOptions(
-        repeatQuestionsTillAllCorrect: _enterToNextAnswerController.value
+        repeatQuestionsTillAllCorrect: _continueTillSuccessOptionController.value
       ),
       range: QuizSelectionRange(
         startIndex: _selectionRangeController.value.start.toInt() - 1,

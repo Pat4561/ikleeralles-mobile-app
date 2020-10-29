@@ -31,7 +31,8 @@ abstract class QuizBuilder {
         quizInput.select(
             range: options.range,
             directionType: options.directionType
-        )
+        ),
+        repeatQuestionsTillAllCorrect: options.mainOptions.repeatQuestionsTillAllCorrect
     );
 
     _hintGenerator = HintGenerator(
