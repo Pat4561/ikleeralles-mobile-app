@@ -177,7 +177,6 @@ class QuizOptionsBottomSheetPresenter extends BottomSheetPresenter {
       visibilityOptions: fragmentResult.visibilityOptions
     );
 
-
     Navigator.push(context, MaterialPageRoute(
       builder: (BuildContext context) {
         return QuizPage(

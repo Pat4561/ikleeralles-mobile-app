@@ -47,7 +47,9 @@ class QuizQuestionPresentationState extends State<QuizQuestionPresentation> {
   }
 
   void restore() {
-    hintPresentationKey.currentState.setVisible(false);
+    if (hintPresentationKey.currentState != null) {
+      hintPresentationKey.currentState.setVisible(false);
+    }
     setState(() {
       _response = null;
     });

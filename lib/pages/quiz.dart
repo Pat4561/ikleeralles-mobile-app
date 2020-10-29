@@ -1,8 +1,11 @@
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/quiz/set.dart';
+import 'package:ikleeralles/ui/background_builder.dart';
 import 'package:ikleeralles/ui/custom/quiz/answer_form/abstract.dart';
 import 'package:ikleeralles/ui/custom/quiz/builder.dart';
 import 'package:ikleeralles/ui/custom/quiz/question_presentation.dart';
@@ -90,6 +93,134 @@ class _StatusBar extends StatelessWidget {
 
 }
 
+abstract class _PresentationState {
+
+  final QuizBuilder builder;
+
+  _PresentationState (this.builder);
+
+  Widget body(BuildContext context);
+
+  Widget bottomBar(BuildContext context);
+
+  Widget baseBottomBar({ @required Widget child }) {
+    return BottomAppBar(
+      color: Colors.white,
+      elevation: 0,
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border(
+                top: BorderSide(
+                    color: BrandColors.borderColor,
+                    width: 1
+                )
+            )
+        ),
+        padding: EdgeInsets.symmetric(
+            horizontal: 15,
+            vertical: 5
+        ),
+        child: child,
+      ),
+    );
+  }
+
+}
+
+class _ActivePresentationState extends _PresentationState {
+
+
+  final GlobalKey<QuizQuestionPresentationState> questionPresentationKey;
+  final GlobalKey<AnswerFormState> answerFormKey;
+  final Function onEnterPressed;
+  final Function({ @required bool isCorrect, @required int transitionDelay }) answerQuestion;
+
+  _ActivePresentationState (QuizBuilder builder, { this.questionPresentationKey, this.answerFormKey, this.onEnterPressed, this.answerQuestion }) : super(builder);
+
+  @override
+  Widget body(BuildContext context) {
+    return QuizQuestionPresentation(
+        builder.quizSet.currentQuestion,
+        key: questionPresentationKey,
+        hint: builder.hintGenerator.generate(builder.quizSet.currentQuestion),
+        formBuilder: (BuildContext context) {
+          return builder.formBuilder(key: answerFormKey, onEnterPressed:  onEnterPressed);
+        }
+    );
+  }
+
+  @override
+  Widget bottomBar(BuildContext context) {
+    return baseBottomBar(
+      child: builder.actionsBuilder(
+          onIncorrectAnswer: (question) => answerQuestion(isCorrect: false, transitionDelay: builder.options.visibilityOptions.timeIncorrectAnswerVisible),
+          onCorrectAnswer: (question) => answerQuestion(isCorrect: true, transitionDelay: builder.options.visibilityOptions.timeCorrectAnswerVisible),
+          answerGetter: () {
+            return answerFormKey.currentState.getAnswer();
+          }
+      )
+    );
+  }
+}
+
+class _FinishedPresentationState extends _PresentationState {
+
+  final Function(BuildContext) onFinishPressed;
+
+  _FinishedPresentationState (QuizBuilder builder, { this.onFinishPressed }) : super(builder);
+
+  @override
+  Widget body(BuildContext context) {
+    return Container(
+      constraints: BoxConstraints(
+        maxWidth: 350
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          SvgPicture.asset(
+            AssetPaths.finish,
+            width: 150,
+            height: 150,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(
+              vertical: 20
+            ),
+            child: Text("Einde van de overhoring", style: TextStyle(
+                fontFamily: Fonts.ubuntu,
+                fontWeight: FontWeight.bold,
+                fontSize: 25,
+
+            ), textAlign: TextAlign.center),
+          ),
+          Text("Je hebt alle vragen beantwoord, klik op afronden om je resultaat te zien en verder te gaan", style: TextStyle(
+              fontFamily: Fonts.ubuntu,
+              fontWeight: FontWeight.w400,
+              fontSize: 14
+          ), textAlign: TextAlign.center)
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget bottomBar(BuildContext context) {
+    return baseBottomBar(
+        child: ThemedButton(
+          "Afronden",
+          buttonColor: BrandColors.secondaryButtonColor,
+          onPressed: () => onFinishPressed(context),
+          borderRadius: BorderRadius.circular(12),
+        )
+    );
+  }
+
+
+}
+
 class QuizPageState extends State<QuizPage> {
 
   final GlobalKey<AnswerFormState> _answerFormKey = GlobalKey<AnswerFormState>();
@@ -131,6 +262,20 @@ class QuizPageState extends State<QuizPage> {
           BrandColors.secondaryButtonColor
       ),
     );
+  }
+
+  _PresentationState get presentation {
+    if (widget.builder.quizSet.currentQuestion == null) {
+      return _FinishedPresentationState(widget.builder);
+    } else {
+      return _ActivePresentationState(
+        widget.builder,
+        onEnterPressed: _onEnterPressed,
+        answerFormKey: _answerFormKey,
+        questionPresentationKey: _quizQuestionPresentationKey,
+        answerQuestion: _answerQuestion
+      );
+    }
   }
 
   @override
@@ -187,14 +332,7 @@ class QuizPageState extends State<QuizPage> {
                             ),
                             Container(
                               padding: EdgeInsets.all(20),
-                              child: QuizQuestionPresentation(
-                                  widget.builder.quizSet.currentQuestion,
-                                  key: _quizQuestionPresentationKey,
-                                  hint: widget.builder.hintGenerator.generate(widget.builder.quizSet.currentQuestion),
-                                  formBuilder: (BuildContext context) {
-                                    return widget.builder.formBuilder(key: _answerFormKey, onEnterPressed:  _onEnterPressed);
-                                  }
-                              ),
+                              child: presentation.body(context),
                             )
                           ],
                         ),
@@ -204,31 +342,7 @@ class QuizPageState extends State<QuizPage> {
                 ],
               ),
             ),
-            bottomNavigationBar: BottomAppBar(
-              color: Colors.white,
-              elevation: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border(
-                        top: BorderSide(
-                            color: BrandColors.borderColor,
-                            width: 1
-                        )
-                    )
-                ),
-                padding: EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 5
-                ),
-                child: widget.builder.actionsBuilder(
-                    onIncorrectAnswer: (question) => _answerQuestion(isCorrect: false, transitionDelay: widget.builder.options.visibilityOptions.timeIncorrectAnswerVisible),
-                    onCorrectAnswer: (question) => _answerQuestion(isCorrect: true, transitionDelay: widget.builder.options.visibilityOptions.timeCorrectAnswerVisible),
-                    answerGetter: () {
-                      return _answerFormKey.currentState.getAnswer();
-                    }
-                ),
-              ),
-            ),
+            bottomNavigationBar: presentation.bottomBar(context),
           );
         },
       ),

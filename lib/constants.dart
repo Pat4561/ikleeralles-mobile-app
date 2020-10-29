@@ -146,4 +146,5 @@ class AssetPaths {
   static const String start = 'assets/svg/start.svg';
   static const String merge = 'assets/svg/merge.svg';
   static const String move = 'assets/svg/move.svg';
+  static const String finish = 'assets/svg/finish.svg';
 }
