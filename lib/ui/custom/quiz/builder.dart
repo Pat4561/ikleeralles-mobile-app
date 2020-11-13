@@ -3,6 +3,7 @@ import 'package:ikleeralles/logic/quiz/checker.dart';
 import 'package:ikleeralles/logic/quiz/hint.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/logic/quiz/options.dart';
+import 'package:ikleeralles/logic/quiz/result.dart';
 import 'package:ikleeralles/logic/quiz/set.dart';
 import 'package:ikleeralles/ui/custom/quiz/answer_check.dart';
 import 'package:ikleeralles/ui/custom/quiz/answer_form/abstract.dart';
@@ -42,6 +43,14 @@ abstract class QuizBuilder {
 
     _answerChecker = AnswerChecker(
       options: options.correctionOptions
+    );
+  }
+
+  QuizResult getResult() {
+    return QuizResult(
+      _quizSet,
+      input: this.quizInput,
+      options: this.options,
     );
   }
 

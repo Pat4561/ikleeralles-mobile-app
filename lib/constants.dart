@@ -130,6 +130,14 @@ class TranslationKeys {
   static const String asked = "asked";
   static const String markPreviousAnswerCorrect = "markPreviousAnswerCorrect";
   static const String showHint = "showHint";
+  static const String finish = "finish";
+  static const String finishedQuizTitle = "finishedQuizTitle";
+  static const String finishedQuizSubTitle = "finishedQuizSubTitle";
+  static const String questions = "questions";
+  static const String showErrors = "showErrors";
+  static const String quizErrors = "quizErrors";
+  static const String again = "again";
+  static const String errorsMade = "errorsMade";
 }
 
 class WebUrls {

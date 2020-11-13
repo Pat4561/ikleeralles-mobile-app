@@ -1,7 +1,7 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
+import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class QuizAnswers {
@@ -33,7 +33,7 @@ class QuestionResponse {
 
 class QuizSet extends Model {
 
-  final QuizAnswers answers = QuizAnswers();
+  QuizAnswers answers = QuizAnswers();
 
   final List<QuizQuestion> inputQuestions;
 
@@ -46,7 +46,7 @@ class QuizSet extends Model {
   QuestionResponse _lastAnswered;
 
   QuizSet (this.inputQuestions, { this.repeatQuestionsTillAllCorrect = false }) {
-    _upcomingQuestions = this.inputQuestions;
+    _upcomingQuestions = List.of(this.inputQuestions);
     randomizeQuestions();
   }
 
@@ -91,10 +91,17 @@ class QuizSet extends Model {
     notifyListeners();
   }
 
+  QuizSet filter(ExerciseList exerciseList) {
+    return QuizSet(
+      inputQuestions.where((quizQuestion) => quizQuestion.exerciseList == exerciseList).toList(),
+      repeatQuestionsTillAllCorrect: repeatQuestionsTillAllCorrect
+    );
+  }
+
   void repeatQuestionSomewhere(QuizQuestion question) {
     //first question is the current question now
 
-    if (_upcomingQuestions.length > 0) {
+    if (_upcomingQuestions.length > 1) {
       int min = 1;
       int randomIndex = min + Random().nextInt(_upcomingQuestions.length - min);
       _upcomingQuestions.insert(randomIndex, question);
@@ -119,6 +126,15 @@ class QuizSet extends Model {
 
   }
 
+  void reset() {
+    _upcomingQuestions = List.of(this.inputQuestions);
+    _lastAnswered = null;
+    _askedQuestionsCount = 0;
+    answers = QuizAnswers();
+    randomizeQuestions();
+    notifyListeners();
+  }
+
   void nextQuestion() {
     _upcomingQuestions.remove(currentQuestion);
     _askedQuestionsCount += 1;
@@ -129,6 +145,7 @@ class QuizSet extends Model {
     }
     notifyListeners();
   }
+
 
 
 }

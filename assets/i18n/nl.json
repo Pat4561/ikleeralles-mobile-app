@@ -89,5 +89,14 @@
   "errors": "Fouten",
   "asked": "Gevraagd",
   "markPreviousAnswerCorrect": "Vorig antwoord goedrekenen",
-  "showHint": "Hint tonen"
+  "showHint": "Hint tonen",
+  "finish": "Afronden",
+  "finishedQuizTitle": "Einde van de overhoring",
+  "finishedQuizSubTitle": "Je hebt alle vragen beantwoord, klik op afronden om je resultaat te zien en verder te gaan",
+  "questions": "{count} vragen",
+  "showErrors": "Toon fouten ({count})",
+  "quizErrors": "Fouten overhoren",
+  "again": "Opnieuw",
+  "errorsMade": "Gemaakte fouten"
+
 }

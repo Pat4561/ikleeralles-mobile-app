@@ -170,6 +170,9 @@ class QuizInput {
 
   }
 
+  QuizInput filter(ExerciseList exerciseList) {
+    return QuizInput([exerciseList]);
+  }
 
   List<QuizQuestion> select({ @required QuizSelectionRange range, @required QuizDirectionType directionType }) {
     List<QuizQuestion> questions = _questionCollection.get(

@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/logic/quiz/set.dart';
-import 'package:ikleeralles/ui/background_builder.dart';
 import 'package:ikleeralles/ui/custom/quiz/answer_form/abstract.dart';
 import 'package:ikleeralles/ui/custom/quiz/builder.dart';
 import 'package:ikleeralles/ui/custom/quiz/question_presentation.dart';
+import 'package:ikleeralles/ui/dialogs/navigation_dialog.dart';
+import 'package:ikleeralles/ui/dialogs/quiz_result.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -189,14 +191,14 @@ class _FinishedPresentationState extends _PresentationState {
             margin: EdgeInsets.symmetric(
               vertical: 20
             ),
-            child: Text("Einde van de overhoring", style: TextStyle(
+            child: Text(FlutterI18n.translate(context, TranslationKeys.finishedQuizTitle), style: TextStyle(
                 fontFamily: Fonts.ubuntu,
                 fontWeight: FontWeight.bold,
                 fontSize: 25,
 
             ), textAlign: TextAlign.center),
           ),
-          Text("Je hebt alle vragen beantwoord, klik op afronden om je resultaat te zien en verder te gaan", style: TextStyle(
+          Text(FlutterI18n.translate(context, TranslationKeys.finishedQuizSubTitle), style: TextStyle(
               fontFamily: Fonts.ubuntu,
               fontWeight: FontWeight.w400,
               fontSize: 14
@@ -210,7 +212,7 @@ class _FinishedPresentationState extends _PresentationState {
   Widget bottomBar(BuildContext context) {
     return baseBottomBar(
         child: ThemedButton(
-          "Afronden",
+          FlutterI18n.translate(context, TranslationKeys.finish),
           buttonColor: BrandColors.secondaryButtonColor,
           onPressed: () => onFinishPressed(context),
           borderRadius: BorderRadius.circular(12),
@@ -264,9 +266,52 @@ class QuizPageState extends State<QuizPage> {
     );
   }
 
+
+  void _quizErrors(List<QuizQuestion> questions) {
+
+  }
+
+  void _finishQuiz() {
+
+    var result = widget.builder.getResult();
+    QuizResultFactory factory;
+    if (result.isCombined) {
+      factory = CombinedQuizResultFactory(result, redoQuiz: () {
+        Navigator.pop(context);
+        widget.builder.quizSet.reset();
+      });
+    } else {
+      factory = SingleQuizResultFactory(result, redoQuiz: () {
+        widget.builder.quizSet.reset();
+        Navigator.pop(context);
+      }, quizErrors: (List<QuizQuestion> questions) {
+        Navigator.pop(context);
+        _quizErrors(questions);
+      });
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return NavigationDialog(
+          appBarBuilder: DefaultDialogAppBarBuilder(
+            backgroundColor: BrandColors.secondaryButtonColor,
+            iconColor: Colors.white
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5)
+          ),
+          elevation: 0,
+          fragmentsManager: factory.manager,
+        );
+      }
+    );
+
+  }
+
   _PresentationState get presentation {
     if (widget.builder.quizSet.currentQuestion == null) {
-      return _FinishedPresentationState(widget.builder);
+      return _FinishedPresentationState(widget.builder, onFinishPressed: (BuildContext context) => _finishQuiz());
     } else {
       return _ActivePresentationState(
         widget.builder,
