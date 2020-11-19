@@ -1,16 +1,13 @@
-# ikleeralles
+IkLeerAlles is an app for students and scholars to teach themselfs. Tests can be entered and shared with other students.
 
-A new Flutter project.
+The app is associated with the website www.ikleeralles.nl. 
 
-## Getting Started
+The app is built in Flutter using scoped-model. 
 
-This project is a starting point for a Flutter application.
+<div>
+<img src="https://www.deurman.com/res/ikleeralles_1.jpg"/>
+  
+<img src="https://www.deurman.com/res/ikleeralles_2.jpg"/>
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<img src="https://www.deurman.com/res/ikleeralles_3.jpg"/>
+</div>
