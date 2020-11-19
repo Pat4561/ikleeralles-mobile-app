@@ -7,7 +7,7 @@ The app is built in Flutter using scoped-model.
 <div>
 <img src="https://www.deurman.com/res/ikleeralles_1.jpg"/>
   
-<img src="https://www.deurman.com/res/ikleeralles_2.jpg"/>
+<img src="https://www.deurman.com/res/ikleeralles_2.jpeg"/>
 
-<img src="https://www.deurman.com/res/ikleeralles_3.jpg"/>
+<img src="https://www.deurman.com/res/ikleeralles_3.jpeg"/>
 </div>
