@@ -3,6 +3,7 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/background_builder.dart';
 import 'package:ikleeralles/ui/cells/actions.dart';
@@ -23,7 +24,8 @@ class ExercisesTable extends OperationBasedTable {
   final bool showBackground;
 
   ExercisesTable ({ this.folderId, this.onTrashPressed, this.onMyFolderPressed, this.onPublicListsPressed, this.showBackground = false,
-    @required OperationManager operationManager, @required this.selectionManager, @required this.onExerciseListPressed, this.tablePadding, Key key }) : super(operationManager, key: key);
+    @required OperationManager operationManager, @required this.selectionManager, @required PlatformDataProvider platformDataProvider, @required this.onExerciseListPressed, this.tablePadding, Key key }) :
+        super(operationManager, key: key, platformDataProvider: platformDataProvider);
 
   @override
   State<StatefulWidget> createState() {
@@ -103,6 +105,7 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
     return Container(
       child: ExerciseListCell(
           exerciseList,
+          platformDataProvider: widget.platformDataProvider,
           isSelected: widget.selectionManager.objects.contains(exerciseList),
           onSelectionChange: (exerciseList, isSelected) {
             widget.selectionManager.toggle(exerciseList);

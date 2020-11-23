@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/exercises/actions.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
@@ -110,6 +110,8 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
     return _foldersOperationManager;
   }
 
+  PlatformDataProvider getPlatformDataProvider();
+
   @override
   void initState() {
     _exercisesOperationManager = createExercisesOperationManager();
@@ -198,7 +200,7 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   }
 
   void onStartPressed(List<ExerciseList> exercises) {
-    var quizInput = QuizInput(exercises);
+    var quizInput = QuizInput(exercises, platformDataProvider: getPlatformDataProvider());
     quizInput.initialize(context);
     QuizOptionsBottomSheetPresenter(
       quizInput: quizInput
@@ -208,7 +210,7 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   void onExerciseListPressed(ExerciseList exerciseList) {
     Navigator.push(context, MaterialPageRoute(
         builder: (BuildContext context) {
-          return ExerciseEditorPage(exerciseList: exerciseList);
+          return ExerciseEditorPage(exerciseList: exerciseList, platformDataProvider: getPlatformDataProvider());
         }
     ));
   }
@@ -216,7 +218,7 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
   void onAddPressed() {
     Navigator.push(context, MaterialPageRoute(
       builder: (BuildContext context) {
-        return ExerciseEditorPage();
+        return ExerciseEditorPage(platformDataProvider: getPlatformDataProvider());
       }
     ));
   }

@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/logic/quiz/result.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
@@ -80,6 +81,7 @@ class SingleQuizResultFragment extends MainResultFragment {
           original: result.input.exerciseLists.first.original,
           totalQuestionsCount: result.set.totalQuestionsCount,
           grade: result.grade.value,
+          platformDataProvider: result.input.platformDataProvider,
           name: result.title,
         ),
         Visibility(child: ErrorOverviewList(
@@ -110,6 +112,7 @@ class CombinedQuizResultFragment extends MainResultFragment {
           totalQuestionsCount: result.set.totalQuestionsCount,
           grade: result.grade.value,
           name: result.title,
+          platformDataProvider: result.input.platformDataProvider,
         ),
         CombinedResultDetailsList(
           result,
@@ -203,8 +206,9 @@ class _MainResultCell extends StatelessWidget {
   final double grade;
   final int totalQuestionsCount;
   final String directionType;
+  final PlatformDataProvider platformDataProvider;
 
-  _MainResultCell ({ @required this.name, @required this.original, @required this.translated, @required this.grade, @required this.totalQuestionsCount, @required this.directionType });
+  _MainResultCell ({ @required this.name, @required this.original, @required this.translated, @required this.grade, @required this.totalQuestionsCount, @required this.directionType, @required this.platformDataProvider });
 
   Widget _gradeBox(String text, { double size, TextStyle textStyle, BoxDecoration decoration }) {
     return Container(
@@ -303,9 +307,9 @@ class _MainResultCell extends StatelessWidget {
                       ),
                       Row(
                         children: <Widget>[
-                          _languageLabel(language: this.original, caption: FlutterI18n.translate(context, TranslationKeys.term)),
+                          _languageLabel(language: platformDataProvider.languageData.get(this.original), caption: FlutterI18n.translate(context, TranslationKeys.term)),
                           SizedBox(width: 15),
-                          _languageLabel(language: this.translated, caption: FlutterI18n.translate(context, TranslationKeys.definition)),
+                          _languageLabel(language: platformDataProvider.languageData.get(this.translated), caption: FlutterI18n.translate(context, TranslationKeys.definition)),
                         ],
                       ),
                       Container(

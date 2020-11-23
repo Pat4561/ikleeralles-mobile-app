@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/operations/abstract.dart';
 import 'package:ikleeralles/logic/operations/exercises.dart';
@@ -10,8 +11,9 @@ import 'package:ikleeralles/ui/themed/appbar.dart';
 class FolderPage extends StatefulWidget {
 
   final Folder folder;
+  final PlatformDataProvider platformDataProvider;
 
-  FolderPage (this.folder);
+  FolderPage (this.folder, { @required this.platformDataProvider });
 
   @override
   State<StatefulWidget> createState() {
@@ -30,6 +32,9 @@ class _FolderPageState extends ExercisesOverviewPageState<FolderPage> {
   }
 
   @override
+  PlatformDataProvider getPlatformDataProvider() => widget.platformDataProvider;
+
+  @override
   Widget body(BuildContext context) {
     return ExercisesTable(
       operationManager: exercisesOperationManager,
@@ -37,6 +42,7 @@ class _FolderPageState extends ExercisesOverviewPageState<FolderPage> {
       selectionManager: selectionManager,
       onExerciseListPressed: onExerciseListPressed,
       tablePadding: EdgeInsets.all(0),
+      platformDataProvider: widget.platformDataProvider,
       showBackground: true,
     );
   }

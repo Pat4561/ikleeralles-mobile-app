@@ -44,6 +44,9 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
 
 
   @override
+  PlatformDataProvider getPlatformDataProvider() => platformDataProvider;
+
+  @override
   void initState() {
 
     _trashOperationManager = OperationManager(
@@ -73,7 +76,7 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
   void _onFolderPressed(Folder folder) {
     Navigator.push(context, MaterialPageRoute(
       builder: (BuildContext context) {
-        return FolderPage(folder);
+        return FolderPage(folder, platformDataProvider: platformDataProvider);
       }
     ));
   }
@@ -152,6 +155,7 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
       onMyFolderPressed: _onMyFoldersPressed,
       onPublicListsPressed: _onPublicListsPressed,
       onTrashPressed: _onTrashPressed,
+      platformDataProvider: platformDataProvider,
       tablePadding: EdgeInsets.only(
         top: 25,
         bottom: 25

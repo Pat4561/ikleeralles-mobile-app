@@ -74,6 +74,7 @@ class _SearchPageState extends State<SearchPage> {
         key: searchTableKey,
         onExerciseListPressed: _onExerciseListPressed,
         operationManager: _operationManager,
+        platformDataProvider: widget.platformDataProvider,
       ),
     );
   }

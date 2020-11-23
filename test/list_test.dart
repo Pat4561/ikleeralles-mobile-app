@@ -11,7 +11,8 @@ void main() {
     );
     var lists = await SecuredApi(AccessToken(loginResult.accessToken)).getExerciseLists();
     var folders = await SecuredApi(AccessToken(loginResult.accessToken)).getFolders();
-    
+    print(lists);
+    print(folders);
   });
 
 }

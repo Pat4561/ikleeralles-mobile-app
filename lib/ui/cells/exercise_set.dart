@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/badge.dart';
 import 'package:ikleeralles/ui/hyperlink.dart';
@@ -18,6 +19,7 @@ class ExerciseSetCell extends StatelessWidget {
   final String term;
   final String definition;
   final bool readOnly;
+  final PlatformDataProvider platformDataProvider;
   final Function(BuildContext context, { @required ExerciseSetInputSide side }) onAddNewEntryPressed;
   final Function(BuildContext context, String text, { @required int index, @required ExerciseSetInputSide side }) onFieldChange;
   final Function(BuildContext context, { @required int index, @required ExerciseSetInputSide side }) onFieldEditingEnded;
@@ -25,7 +27,7 @@ class ExerciseSetCell extends StatelessWidget {
   final Function(BuildContext) onDeletePressed;
 
   ExerciseSetCell (this.set, { @required this.rowNumber, @required this.term, @required this.definition,
-    @required this.onDeletePressed, @required this.onAddNewEntryPressed, @required this.onFieldChange, @required this.onDeleteField, @required this.readOnly, @required this.onFieldEditingEnded });
+    @required this.onDeletePressed, @required this.onAddNewEntryPressed, @required this.platformDataProvider, @required this.onFieldChange, @required this.onDeleteField, @required this.readOnly, @required this.onFieldEditingEnded });
 
   Widget _topActionsBar(BuildContext context, { double badgeSize = 30, double marginBetweenContainers = marginBetweenContainers, double marginBetweenInputs = marginBetweenInputs }) {
     return Container(
@@ -100,7 +102,7 @@ class ExerciseSetCell extends StatelessWidget {
                       _SetEntriesInnerCol(
                         _SetEntries(set.original),
                         readOnly: readOnly,
-                        inputTypeLabel: this.term,
+                        inputTypeLabel: platformDataProvider.languageData.get(this.term),
                         onFieldChange: (BuildContext context, String newText, { int index}) => onFieldChange(context, newText, side: ExerciseSetInputSide.term, index: index),
                         onEditingComplete: (BuildContext context, { int index }) => onFieldEditingEnded(context, side: ExerciseSetInputSide.term, index: index),
                         onDeleteField: (BuildContext context, { int index }) => onDeleteField(context, side: ExerciseSetInputSide.term, index: index),
@@ -113,7 +115,7 @@ class ExerciseSetCell extends StatelessWidget {
                       _SetEntriesInnerCol(
                         _SetEntries(set.translated),
                         readOnly: readOnly,
-                        inputTypeLabel: this.definition,
+                        inputTypeLabel: platformDataProvider.languageData.get(this.definition),
                         onFieldChange: (BuildContext context, String newText, { int index}) => onFieldChange(context, newText, side: ExerciseSetInputSide.definition, index: index),
                         onEditingComplete: (BuildContext context, { int index }) => onFieldEditingEnded(context, side: ExerciseSetInputSide.definition, index: index),
                         onDeleteField: (BuildContext context, { int index }) => onDeleteField(context, side: ExerciseSetInputSide.definition, index: index),

@@ -8,8 +8,16 @@ class OptionsBottomSheetPresenter<T> extends BottomSheetPresenter {
   final List<T> items;
   final T selectedItem;
   final Function(T) onPressed;
+  final String Function(T) toLabel;
 
-  OptionsBottomSheetPresenter ({ this.title, this.selectedItem, @required this.items, @required this.onPressed });
+  OptionsBottomSheetPresenter ({ this.title, this.selectedItem, @required this.items, @required this.onPressed, this.toLabel });
+
+  String _label(T selectedItem) {
+    if (toLabel != null) {
+      return toLabel(selectedItem);
+    }
+    return selectedItem.toString();
+  }
 
   @override
   Widget body(BuildContext context) {
@@ -26,7 +34,7 @@ class OptionsBottomSheetPresenter<T> extends BottomSheetPresenter {
                 children: <Widget>[
                   Expanded(
                     child: Text(
-                        this.items[position].toString(),
+                        _label(this.items[position]),
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,

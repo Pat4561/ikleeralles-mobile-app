@@ -58,6 +58,7 @@ class ExerciseEditorList extends StatelessWidget {
                 rowNumber: row + 1,
                 readOnly: controller.readOnly,
                 definition: definition,
+                platformDataProvider: controller.platformDataProvider,
                 term: term,
                 onDeletePressed: (BuildContext context) {
                   FocusScope.of(context).unfocus();

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/exceptions.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/operations/search.dart';
 import 'package:ikleeralles/network/api/routes.dart';
 import 'package:ikleeralles/network/api/helper.dart';
@@ -89,6 +90,18 @@ class Api {
       route: Routes.userInfo,
       toObject: (Map map) => UserResult(map)
     );
+  }
+
+  Future<Map<String, String>> getLanguages() async {
+
+    var response = await requestHelper.executeRequest(
+      route: Routes.languages
+    );
+
+    List items = json.decode(response.body);
+
+    return LanguageData.parse(items.map((e) => e as Map).toList());
+
   }
 
   Future<List<String>> getLevels() async {

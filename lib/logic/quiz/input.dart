@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/quiz/options.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/constants.dart';
@@ -23,11 +24,13 @@ class QuizDirectionTypeGenerator {
 
   final ExerciseList exerciseList;
 
-  QuizDirectionTypeGenerator (this.exerciseList);
+  final PlatformDataProvider platformDataProvider;
+
+  QuizDirectionTypeGenerator (this.exerciseList, { @required this.platformDataProvider });
 
   Map<QuizDirectionType, QuizDirection> generate(BuildContext context) {
-    String original = "${exerciseList.original} - ${exerciseList.translated}";
-    String translated = "${exerciseList.translated} - ${exerciseList.original}";
+    String original = "${platformDataProvider.languageData.get(exerciseList.original)} - ${platformDataProvider.languageData.get(exerciseList.translated)}";
+    String translated = "${platformDataProvider.languageData.get(exerciseList.translated)} - ${platformDataProvider.languageData.get(exerciseList.original)}";
     return {
       QuizDirectionType.originalToTranslation: QuizDirection(
           name: original,
@@ -136,6 +139,8 @@ class QuizInput {
 
   final List<ExerciseList> exerciseLists;
 
+  final PlatformDataProvider platformDataProvider;
+
   final QuizQuestionCollection _questionCollection = QuizQuestionCollection();
 
   QuizDirectionTypeGenerator _directionTypeGenerator;
@@ -147,8 +152,8 @@ class QuizInput {
   String _title;
 
 
-  QuizInput (this.exerciseLists) {
-    _directionTypeGenerator = QuizDirectionTypeGenerator(this.exerciseLists.first);
+  QuizInput (this.exerciseLists, { @required this.platformDataProvider }) {
+    _directionTypeGenerator = QuizDirectionTypeGenerator(this.exerciseLists.first, platformDataProvider: platformDataProvider);
   }
 
   void initialize(BuildContext context) {
@@ -171,7 +176,7 @@ class QuizInput {
   }
 
   QuizInput filter(ExerciseList exerciseList) {
-    return QuizInput([exerciseList]);
+    return QuizInput([exerciseList], platformDataProvider: platformDataProvider);
   }
 
   List<QuizQuestion> select({ @required QuizSelectionRange range, @required QuizDirectionType directionType }) {

@@ -1,8 +1,8 @@
-import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/options.dart';
 import 'package:ikleeralles/ui/custom/exercise_controller.dart';
@@ -17,9 +17,10 @@ class _ReadOnlySliverAppBar extends StatelessWidget {
   final String definition;
   final String term;
   final String title;
+  final PlatformDataProvider platformDataProvider;
   final Function(BuildContext) onCopyTestPressed;
 
-  _ReadOnlySliverAppBar ({ @required this.definition, @required this.term, @required this.title, @required this.onCopyTestPressed });
+  _ReadOnlySliverAppBar ({ @required this.definition, @required this.term, @required this.title, @required this.onCopyTestPressed, @required this.platformDataProvider });
 
   Widget _labelBox(String labelText, String value) {
     return Container(
@@ -89,9 +90,9 @@ class _ReadOnlySliverAppBar extends StatelessWidget {
                 SizedBox(height: 20),
                 Row(
                   children: <Widget>[
-                    Expanded(child: _labelBox(FlutterI18n.translate(context, TranslationKeys.term), term)),
+                    Expanded(child: _labelBox(FlutterI18n.translate(context, TranslationKeys.term), platformDataProvider.languageData.get(term))),
                     SizedBox(width: 20),
-                    Expanded(child: _labelBox(FlutterI18n.translate(context, TranslationKeys.definition), definition))
+                    Expanded(child: _labelBox(FlutterI18n.translate(context, TranslationKeys.definition), platformDataProvider.languageData.get(definition)))
                   ],
                 )
               ],
@@ -110,18 +111,19 @@ class _EditableSliverAppBar  extends StatelessWidget {
   final TextEditingController titleTextController;
   final ValueNotifier<String> termValueNotifier;
   final ValueNotifier<String> definitionValueNotifier;
+  final PlatformDataProvider platformDataProvider;
   final List<String> termOptions;
   final List<String> definitionOptions;
 
   _EditableSliverAppBar ({ @required this.onSaveTestPressed, @required this.titleTextController, @required this.termValueNotifier, @required this.termOptions,
-    @required this.definitionValueNotifier, @required this.definitionOptions });
+    @required this.definitionValueNotifier, @required this.definitionOptions, @required this.platformDataProvider });
 
   Widget _buildOptionsButton(BuildContext context, ValueNotifier<String> valueNotifier, { @required String labelText, @required List<String> options }) {
     return ValueListenableBuilder<String>(
       valueListenable: valueNotifier,
       builder: (BuildContext context, String value, Widget widget) {
         return ThemedSelect(
-            placeholder: value,
+            placeholder: platformDataProvider.languageData.get(value),
             labelText: labelText,
             radius: 4,
             height: 35,
@@ -131,6 +133,7 @@ class _EditableSliverAppBar  extends StatelessWidget {
                   title: labelText,
                   items: options,
                   selectedItem: valueNotifier.value,
+                  toLabel: (value) => platformDataProvider.languageData.get(value),
                   onPressed: (item) {
                     valueNotifier.value = item;
                     Navigator.pop(context);
@@ -211,8 +214,9 @@ class ExerciseEditorPage extends StatefulWidget {
 
   final ExerciseList exerciseList;
   final bool readOnly;
+  final PlatformDataProvider platformDataProvider;
 
-  ExerciseEditorPage ({ this.exerciseList, this.readOnly = false });
+  ExerciseEditorPage ({ this.exerciseList, this.readOnly = false, @required this.platformDataProvider });
 
   @override
   State<StatefulWidget> createState() {
@@ -236,9 +240,9 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
 
   void _initializeController() {
     if (widget.exerciseList != null) {
-      _exerciseListController = ExerciseListController.existingList(widget.exerciseList);
+      _exerciseListController = ExerciseListController.existingList(widget.exerciseList, platformDataProvider: widget.platformDataProvider);
     } else {
-      _exerciseListController = ExerciseListController.newList();
+      _exerciseListController = ExerciseListController.newList(platformDataProvider: widget.platformDataProvider);
     }
     _exerciseListController.readOnly = widget.readOnly;
   }
@@ -263,6 +267,7 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
                 title: _exerciseListController.titleTextController.text,
                 term: _exerciseListController.termValueNotifier.value,
                 definition: _exerciseListController.definitionValueNotifier.value,
+                platformDataProvider: widget.platformDataProvider,
                 onCopyTestPressed: (BuildContext context) => _exerciseEditorActionsHandler.copyList(context),
               )];
             } else {
@@ -272,8 +277,9 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
                   termValueNotifier: _exerciseListController.termValueNotifier,
                   onSaveTestPressed: (BuildContext context) => _exerciseEditorActionsHandler.saveList(context),
                   titleTextController: _exerciseListController.titleTextController,
-                  termOptions: _exerciseListController.termsProvider.all(),
-                  definitionOptions: _exerciseListController.definitionsProvider.all(),
+                  termOptions: _exerciseListController.termsProvider.allKeys(),
+                  definitionOptions: _exerciseListController.definitionsProvider.allKeys(),
+                  platformDataProvider: widget.platformDataProvider,
                 )
               ];
             }

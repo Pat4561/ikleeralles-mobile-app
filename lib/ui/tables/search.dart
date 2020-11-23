@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/background_builder.dart';
 import 'package:ikleeralles/ui/tables/operation_based.dart';
@@ -10,7 +11,8 @@ class SearchTable extends OperationBasedTable {
 
   final Function(ExerciseList) onExerciseListPressed;
 
-  SearchTable ({ @required OperationManager operationManager, GlobalKey<SearchTableState> key, this.onExerciseListPressed  }) : super(operationManager, key: key);
+  SearchTable ({ @required OperationManager operationManager, @required PlatformDataProvider platformDataProvider, GlobalKey<SearchTableState> key, this.onExerciseListPressed  }) :
+        super(operationManager, platformDataProvider: platformDataProvider, key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -42,6 +44,7 @@ class SearchTableState extends OperationBasedTableState<SearchTable> {
           ),
           child: SearchExerciseListCell(
             result[position],
+            platformDataProvider: widget.platformDataProvider,
             onPressed: (exerciseList) => widget.onExerciseListPressed(result[position]),
           ),
         );

@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:ikleeralles/network/api/base.dart';
 import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/network/models/folder.dart';
@@ -18,7 +16,7 @@ class ExercisesActionsManager extends Model {
 
 
   Future move(List<ExerciseList> exercises, { Folder folder }) {
-
+    //TODO: Implement!!
   }
 
   Future<ExerciseList> merge(List<ExerciseList> exercises, { String name }) async {
@@ -43,7 +41,7 @@ class ExercisesActionsManager extends Model {
   }
 
   Future deleteExercises(List<ExerciseList> exercises) {
-
+    //TODO: Implement!!
   }
 
   Future restoreExerciseList(ExerciseList exerciseList) {
