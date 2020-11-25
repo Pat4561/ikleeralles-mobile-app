@@ -12,6 +12,7 @@ import 'package:ikleeralles/network/models/folder.dart';
 import 'package:ikleeralles/pages/exercises_overview.dart';
 import 'package:ikleeralles/pages/folder.dart';
 import 'package:ikleeralles/pages/search.dart';
+import 'package:ikleeralles/ui/badge.dart';
 import 'package:ikleeralles/ui/bottomsheets/folders.dart';
 import 'package:ikleeralles/ui/bottomsheets/trash.dart';
 import 'package:ikleeralles/ui/dialogs/create_folder.dart';
@@ -142,6 +143,104 @@ class _HomePageState extends ExercisesOverviewPageState<HomePage> {
       title: FlutterI18n.translate(context, TranslationKeys.myLists),
       disablePopping: true,
       showUserInfo: true,
+      leading: IconButton(
+        padding: EdgeInsets.all(0),
+        icon: Icon(Icons.menu, color: Colors.white),
+        onPressed: () => scaffoldKey.currentState.openDrawer(),
+      ),
+    );
+  }
+
+  Widget drawer(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          SafeArea(
+            top: true,
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(
+                          color: BrandColors.borderColor,
+                          width: 0.5
+                      )
+                  )
+              ),
+              padding: EdgeInsets.symmetric(
+                  vertical: 25,
+                  horizontal: 10
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text("Ikleeralles.nl", style: TextStyle(fontFamily: Fonts.justAnotherHand, fontSize: 38),)
+                ],
+              ),
+            )
+          ),
+          ListTile(
+            leading: Icon(Icons.person, color: BrandColors.secondaryButtonColor),
+            title: Text('Mijn lijsten', style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold, color: BrandColors.secondaryButtonColor)),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.group, color: Colors.black),
+            title: Text('Groepen', style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold)),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.list, color: Colors.black),
+            title: Text('Publieke lijsten', style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold)),
+            trailing: Text(
+              "10.000+",
+              style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: Fonts.ubuntu
+              ),
+            ),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.monetization_on, color: Colors.black),
+            title: Text('Premium', style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold)),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          ),
+          ListTile(
+            title: Text('Uitloggen', style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold)),
+            trailing: Icon(Icons.exit_to_app, color: Colors.red),
+            onTap: () {
+              // Update the state of the app.
+              // ...
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget scaffold(BuildContext context) {
+    return Scaffold(
+        key: scaffoldKey,
+        appBar: appBar(context),
+        body: body(context),
+        drawer: drawer(context),
+        floatingActionButton: floatingActionButton(context),
+        bottomNavigationBar: bottomNavigationBar(context)
     );
   }
 

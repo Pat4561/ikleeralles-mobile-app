@@ -16,12 +16,14 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool disablePopping;
   final bool showUserInfo;
   final List<Widget> actions;
+  final Widget leading;
 
-  ThemedAppBar ({ this.title, this.actions, this.disablePopping = false, this.showUserInfo = false });
+  ThemedAppBar ({ this.title, this.actions, this.disablePopping = false, this.showUserInfo = false, this.leading });
 
   bool canPop(BuildContext context) {
     return Navigator.canPop(context) && !disablePopping;
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                     Visibility(
                       child: Container(
                         width: 64,
-                        child: IconButton(
+                        child: leading ?? IconButton(
                           padding: EdgeInsets.all(0),
                           icon: Icon(Icons.arrow_back, color: Colors.white),
                           onPressed: () {
@@ -45,11 +47,11 @@ class ThemedAppBar extends StatelessWidget implements PreferredSizeWidget {
                           },
                         ),
                       ),
-                      visible: canPop(context),
+                      visible: leading != null || canPop(context),
                     ),
                     Expanded(
                       child: Container(
-                          padding: canPop(context) ? EdgeInsets.only(
+                          padding: canPop(context) || leading != null ? EdgeInsets.only(
                               right: 20,
                               left: 5
                           ) : EdgeInsets.symmetric(

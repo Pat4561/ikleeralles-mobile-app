@@ -227,6 +227,54 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
 
   Widget body(BuildContext context);
 
+  Widget floatingActionButton(BuildContext context) {
+    if (selectionManager.objects.length > 0) {
+      return FloatingActionButton(
+        onPressed: () {
+          onStartPressed(selectionManager.objects);
+        },
+        child: SvgPicture.asset(
+            AssetPaths.start
+        ),
+      );
+    } else {
+      return FloatingActionButton(
+        onPressed: onAddPressed,
+        child: SvgPicture.asset(
+            AssetPaths.add
+        ),
+      );
+    }
+  }
+
+  Widget bottomNavigationBar(BuildContext context) {
+    return Visibility(
+      child: SelectionBar(
+        selectionCount: selectionManager.objects.length,
+        onMovePressed: () {
+          onMovePressed(selectionManager.objects);
+        },
+        onDeletePressed: () {
+          onDeletePressed(selectionManager.objects);
+        },
+        onMergePressed: () {
+          onMergePressed(selectionManager.objects);
+        },
+      ),
+      visible: selectionManager.objects.length > 0,
+    );
+  }
+
+  Widget scaffold(BuildContext context) {
+    return Scaffold(
+        key: scaffoldKey,
+        appBar: appBar(context),
+        body: body(context),
+        floatingActionButton: floatingActionButton(context),
+        bottomNavigationBar: bottomNavigationBar(context)
+    );
+  }
+
   OperationManager createExercisesOperationManager();
 
   @override
@@ -235,45 +283,7 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
       model: selectionManager,
       child: ScopedModelDescendant<SelectionManager<ExerciseList>>(
         builder: (BuildContext context, Widget widget, SelectionManager manager) {
-          return Scaffold(
-              key: scaffoldKey,
-              appBar: appBar(context),
-              body: body(context),
-              floatingActionButton: () {
-                if (selectionManager.objects.length > 0) {
-                  return FloatingActionButton(
-                    onPressed: () {
-                      onStartPressed(selectionManager.objects);
-                    },
-                    child: SvgPicture.asset(
-                        AssetPaths.start
-                    ),
-                  );
-                } else {
-                  return FloatingActionButton(
-                    onPressed: onAddPressed,
-                    child: SvgPicture.asset(
-                        AssetPaths.add
-                    ),
-                  );
-                }
-              }(),
-              bottomNavigationBar: Visibility(
-                child: SelectionBar(
-                  selectionCount: selectionManager.objects.length,
-                  onMovePressed: () {
-                    onMovePressed(selectionManager.objects);
-                  },
-                  onDeletePressed: () {
-                    onDeletePressed(selectionManager.objects);
-                  },
-                  onMergePressed: () {
-                    onMergePressed(selectionManager.objects);
-                  },
-                ),
-                visible: selectionManager.objects.length > 0,
-              )
-          );
+          return scaffold(context);
         },
       ),
     );
