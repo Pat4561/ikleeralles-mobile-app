@@ -129,8 +129,9 @@ class ThemedSearchAppBar extends StatefulWidget implements PreferredSizeWidget  
 
   final PlatformDataProvider platformDataProvider;
   final Function(String search, String year, String level) onPerformSearch;
+  final Widget leading;
 
-  ThemedSearchAppBar ({ @required this.platformDataProvider, @required this.onPerformSearch });
+  ThemedSearchAppBar ({ @required this.platformDataProvider, @required this.onPerformSearch, this.leading });
 
   @override
   State<StatefulWidget> createState() {
@@ -226,7 +227,7 @@ class ThemedSearchAppBarState extends State<ThemedSearchAppBar>  {
                           Visibility(
                             child: Container(
                               width: 64,
-                              child: IconButton(
+                              child: this.widget.leading ?? IconButton(
                                 padding: EdgeInsets.all(0),
                                 icon: Icon(Icons.arrow_back, color: Colors.white),
                                 onPressed: () {

@@ -49,7 +49,7 @@ class _SearchPageState extends State<SearchPage> {
   void _onExerciseListPressed(ExerciseList exerciseList) {
     Navigator.push(context, MaterialPageRoute(
         builder: (BuildContext context) {
-          return ExerciseEditorPage(exerciseList: exerciseList, readOnly: true);
+          return ExerciseEditorPage(exerciseList: exerciseList, readOnly: true, platformDataProvider: widget.platformDataProvider);
         }
     ));
   }
