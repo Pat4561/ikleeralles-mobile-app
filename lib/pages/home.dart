@@ -1,22 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
-import 'package:ikleeralles/logic/managers/exercises/actions.dart';
-import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/operations/exercises.dart';
 import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/logic/operations/search.dart';
 import 'package:ikleeralles/logic/operations/trash.dart';
-import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/pages/exercise_list.dart';
 import 'package:ikleeralles/pages/exercises_overview.dart';
-import 'package:ikleeralles/ui/bottomsheets/folders.dart';
-import 'package:ikleeralles/ui/bottomsheets/quiz_options.dart';
-import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/tables/search.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
@@ -226,7 +219,19 @@ class _MyExercisesSubPage extends NavigationDrawerContentChild {
 
   @override
   Widget body(BuildContext context) {
-    throw UnimplementedError();
+    return ExercisesTable(
+      key: _overviewController.exercisesTableKey,
+      selectionManager: _overviewController.selectionManager,
+      operationManager: _overviewController.exercisesOperationManager,
+      onExerciseListPressed: (exerciseList) => _overviewController.onExerciseListPressed(context, exerciseList),
+      onMyFolderPressed: () => _overviewController.onMyFoldersPressed(context),
+      onTrashPressed: () => _overviewController.onTrashPressed(context),
+      platformDataProvider: _overviewController.platformDataProvider,
+      tablePadding: EdgeInsets.only(
+          top: 25,
+          bottom: 25
+      ),
+    );
   }
 
   @override
