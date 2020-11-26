@@ -115,7 +115,7 @@ abstract class NavigationDrawerContentChild {
   Widget appBar(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
     return navigationDrawerController.appBar(context, scaffoldKey, title);
   }
-
+   
   NavigationDrawerContentChild (this.navigationDrawerController, { @required this.key });
 
 }
