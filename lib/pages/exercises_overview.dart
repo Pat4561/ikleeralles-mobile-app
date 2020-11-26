@@ -15,8 +15,12 @@ import 'package:ikleeralles/network/models/folder.dart';
 import 'package:ikleeralles/pages/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/folders.dart';
 import 'package:ikleeralles/ui/bottomsheets/quiz_options.dart';
+import 'package:ikleeralles/ui/bottomsheets/trash.dart';
+import 'package:ikleeralles/ui/dialogs/create_folder.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
+import 'package:ikleeralles/ui/tables/folders.dart';
+import 'package:ikleeralles/ui/tables/trash.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -91,7 +95,6 @@ class SelectionBar extends StatelessWidget {
 
 }
 
-
 class ExercisesOverviewController {
 
   final SelectionManager<ExerciseList> selectionManager = SelectionManager<ExerciseList>();
@@ -100,14 +103,21 @@ class ExercisesOverviewController {
 
   final GlobalKey<ExercisesTableState> exercisesTableKey = GlobalKey<ExercisesTableState>();
 
+  final GlobalKey<FoldersTableState> foldersTableKey = GlobalKey<FoldersTableState>();
+
+  final GlobalKey<TrashTableState> trashTableKey = GlobalKey<TrashTableState>();
+
   final OperationManager foldersOperationManager;
 
   final OperationManager exercisesOperationManager;
 
+  final OperationManager trashOperationManager;
+
   final PlatformDataProvider platformDataProvider;
 
   ExercisesOverviewController ({
-    @required this.foldersOperationManager,
+    this.foldersOperationManager,
+    this.trashOperationManager,
     @required this.exercisesOperationManager,
     @required this.platformDataProvider
   });
@@ -212,8 +222,70 @@ class ExercisesOverviewController {
     ));
   }
 
-  void resetSelection() {
+  void onRecoverPressed(BuildContext context, ExerciseList exerciseList) {
+    Navigator.pop(context);
+    int index = trashTableKey.currentState.removeObject(exerciseList);
+    exercisesTableKey.currentState.insertObject(exerciseList, index: 0);
+    actionsManager.restoreExerciseList(exerciseList).catchError((e) {
+      exercisesTableKey.currentState.removeObject(exerciseList);
+      trashTableKey.currentState.insertObject(exerciseList, index: index);
+      showToast(FlutterI18n.translate(context, TranslationKeys.restoreError));
+    });
+  }
 
+  void onFolderPressed(BuildContext context, Folder folder) {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (BuildContext context) {
+          return FolderPage(folder, platformDataProvider: platformDataProvider);
+        }
+    ));
+  }
+
+  void onDeleteFolderPressed(BuildContext context, Folder folder) {
+    int index = foldersTableKey.currentState.removeObject(folder);
+    actionsManager.deleteFolder(folder).catchError((e) {
+      foldersTableKey.currentState.insertObject(folder, index: index);
+      showToast(FlutterI18n.translate(context, TranslationKeys.folderDeleteError));
+    });
+  }
+
+  void createFolderPressed(BuildContext context) {
+    CreateFolderDialog.show(
+        context,
+        onCreatePressed: (value) {
+          Navigator.pop(context);
+
+          Folder folder = Folder.create(name: value);
+          foldersTableKey.currentState.insertObject(folder, index: 0);
+
+          actionsManager.createFolder(value).catchError((e) {
+            foldersTableKey.currentState.removeObject(folder);
+            showToast(FlutterI18n.translate(context, TranslationKeys.folderCreateError));
+          });
+        }
+    );
+  }
+
+  void onMyFoldersPressed(BuildContext context) {
+    FoldersBottomSheetPresenter(
+        key: foldersTableKey,
+        operationManager: foldersOperationManager,
+        onFolderPressed: (folder) => onFolderPressed(context, folder),
+        onDeleteFolderPressed: (folder) => onDeleteFolderPressed(context, folder),
+        createFolderPressed: () => createFolderPressed(context)
+    ).show(context);
+  }
+
+  void onTrashPressed(BuildContext context) {
+    TrashBottomSheetPresenter(
+        key: trashTableKey,
+        operationManager: trashOperationManager,
+        onRecoverPressed: onRecoverPressed
+    ).show(context);
+  }
+
+  void resetSelection() {
+    selectionManager.unSelectAll();
   }
 
 }
@@ -264,7 +336,6 @@ class ExercisesOverviewBuilder {
   }
 
 }
-
 
 class FolderPage extends StatefulWidget {
 
@@ -322,7 +393,11 @@ class _FolderPageState extends State<FolderPage> {
                 title: this.widget.folder.name,
               ),
               body: ExercisesTable(
-                controller: _overviewController,
+                operationManager: _overviewController.exercisesOperationManager,
+                key: _overviewController.exercisesTableKey,
+                selectionManager: _overviewController.selectionManager,
+                onExerciseListPressed: (exerciseList) => _overviewController.onExerciseListPressed(context, exerciseList),
+                platformDataProvider: this.widget.platformDataProvider,
                 tablePadding: EdgeInsets.all(0),
                 showBackground: true,
               ),
@@ -336,3 +411,5 @@ class _FolderPageState extends State<FolderPage> {
 
 
 }
+
+

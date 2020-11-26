@@ -9,6 +9,7 @@ import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/operations/exercises.dart';
 import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/logic/operations/search.dart';
+import 'package:ikleeralles/logic/operations/trash.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/pages/exercise_list.dart';
@@ -196,7 +197,9 @@ class _MyExercisesSubPage extends NavigationDrawerContentChild {
 
   ExercisesOverviewController _overviewController;
 
-  _MyExercisesSubPage (NavigationDrawerController controller, String key) : super(controller, key: key) {
+  ExercisesOverviewBuilder _overviewBuilder;
+
+  _MyExercisesSubPage (NavigationDrawerController controller, String key, { @required PlatformDataProvider platformDataProvider }) : super(controller, key: key) {
     _overviewController = ExercisesOverviewController(
         foldersOperationManager: OperationManager(
           operationBuilder: () {
@@ -208,7 +211,16 @@ class _MyExercisesSubPage extends NavigationDrawerContentChild {
             return ExercisesDownloadOperation();
           }
         ),
+        trashOperationManager: OperationManager(
+          operationBuilder: () {
+            return TrashDownloadOperation();
+          }
+        ),
         platformDataProvider: platformDataProvider
+    );
+
+    _overviewBuilder = ExercisesOverviewBuilder(
+      _overviewController
     );
   }
 
@@ -219,24 +231,19 @@ class _MyExercisesSubPage extends NavigationDrawerContentChild {
 
   @override
   Widget bottomNavigationBar(BuildContext context) {
-    return Visibility(
-      child: SelectionBar(
-        selectionCount: selectionManager.objects.length,
-        onMovePressed: () {
-          onMovePressed(selectionManager.objects);
-        },
-        onDeletePressed: () {
-          onDeletePressed(selectionManager.objects);
-        },
-        onMergePressed: () {
-          onMergePressed(selectionManager.objects);
-        },
-      ),
-      visible: selectionManager.objects.length > 0,
-    );
+    return _overviewBuilder.bottomNavigationBar(context);
+  }
+
+  @override
+  Widget floatingActionButton(BuildContext context) {
+    return _overviewBuilder.floatingActionButton(context);
   }
 
 }
+
+
+
+
 
 
 class _PublicSearchSubPage extends NavigationDrawerContentChild {
@@ -316,7 +323,7 @@ class _HomePageState extends State<HomePage> {
   NavigationDrawerContentChild _getContentChild(String key) {
     switch (key) {
       case _HomePageDrawer.keyMyLists:
-        return _MyExercisesSubPage(_navigationDrawerController, _HomePageDrawer.keyMyLists);
+        return _MyExercisesSubPage(_navigationDrawerController, _HomePageDrawer.keyMyLists, platformDataProvider: platformDataProvider);
       case _HomePageDrawer.keyGroups:
         return _GroupsSubPage(_navigationDrawerController, _HomePageDrawer.keyGroups);
       case _HomePageDrawer.keyPublicLists:
