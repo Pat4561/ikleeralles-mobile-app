@@ -2,11 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/managers/exercises/actions.dart';
+import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
+import 'package:ikleeralles/logic/operations/exercises.dart';
+import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/logic/operations/search.dart';
+import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/pages/exercise_list.dart';
+import 'package:ikleeralles/pages/exercises_overview.dart';
+import 'package:ikleeralles/ui/bottomsheets/folders.dart';
+import 'package:ikleeralles/ui/bottomsheets/quiz_options.dart';
+import 'package:ikleeralles/ui/snackbar.dart';
+import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/tables/search.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
 
@@ -93,7 +103,6 @@ class _HomePageDrawer extends StatelessWidget {
 
 }
 
-typedef AppBarBuilder = Function(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey);
 
 abstract class NavigationDrawerContentChild {
 
@@ -179,6 +188,57 @@ class _GroupsSubPage extends NavigationDrawerContentChild {
 
 }
 
+class _MyExercisesSubPage extends NavigationDrawerContentChild {
+
+
+  @override
+  String get title => "Mijn overhoringen";
+
+  ExercisesOverviewController _overviewController;
+
+  _MyExercisesSubPage (NavigationDrawerController controller, String key) : super(controller, key: key) {
+    _overviewController = ExercisesOverviewController(
+        foldersOperationManager: OperationManager(
+          operationBuilder: () {
+            return FoldersDownloadOperation();
+          }
+        ),
+        exercisesOperationManager: OperationManager(
+          operationBuilder: () {
+            return ExercisesDownloadOperation();
+          }
+        ),
+        platformDataProvider: platformDataProvider
+    );
+  }
+
+  @override
+  Widget body(BuildContext context) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Widget bottomNavigationBar(BuildContext context) {
+    return Visibility(
+      child: SelectionBar(
+        selectionCount: selectionManager.objects.length,
+        onMovePressed: () {
+          onMovePressed(selectionManager.objects);
+        },
+        onDeletePressed: () {
+          onDeletePressed(selectionManager.objects);
+        },
+        onMergePressed: () {
+          onMergePressed(selectionManager.objects);
+        },
+      ),
+      visible: selectionManager.objects.length > 0,
+    );
+  }
+
+}
+
+
 class _PublicSearchSubPage extends NavigationDrawerContentChild {
 
   final GlobalKey<SearchTableState> _searchTableKey = GlobalKey<SearchTableState>();
@@ -256,7 +316,7 @@ class _HomePageState extends State<HomePage> {
   NavigationDrawerContentChild _getContentChild(String key) {
     switch (key) {
       case _HomePageDrawer.keyMyLists:
-        return _PremiumInfoSubPage(_navigationDrawerController, _HomePageDrawer.keyMyLists);
+        return _MyExercisesSubPage(_navigationDrawerController, _HomePageDrawer.keyMyLists);
       case _HomePageDrawer.keyGroups:
         return _GroupsSubPage(_navigationDrawerController, _HomePageDrawer.keyGroups);
       case _HomePageDrawer.keyPublicLists:
