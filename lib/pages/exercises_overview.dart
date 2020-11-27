@@ -2,19 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/exercises/actions.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
+import 'package:ikleeralles/logic/operations/exercises.dart';
 import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
+import 'package:ikleeralles/network/models/folder.dart';
 import 'package:ikleeralles/pages/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/folders.dart';
 import 'package:ikleeralles/ui/bottomsheets/quiz_options.dart';
+import 'package:ikleeralles/ui/bottomsheets/trash.dart';
+import 'package:ikleeralles/ui/dialogs/create_folder.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
+import 'package:ikleeralles/ui/tables/folders.dart';
+import 'package:ikleeralles/ui/tables/trash.dart';
+import 'package:ikleeralles/ui/themed/appbar.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 
@@ -88,7 +95,7 @@ class SelectionBar extends StatelessWidget {
 
 }
 
-abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends State<T> {
+class ExercisesOverviewController {
 
   final SelectionManager<ExerciseList> selectionManager = SelectionManager<ExerciseList>();
 
@@ -96,32 +103,26 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
 
   final GlobalKey<ExercisesTableState> exercisesTableKey = GlobalKey<ExercisesTableState>();
 
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<FoldersTableState> foldersTableKey = GlobalKey<FoldersTableState>();
 
-  OperationManager _exercisesOperationManager;
+  final GlobalKey<TrashTableState> trashTableKey = GlobalKey<TrashTableState>();
 
-  OperationManager _foldersOperationManager;
+  final OperationManager foldersOperationManager;
 
-  OperationManager get exercisesOperationManager {
-    return _exercisesOperationManager;
-  }
+  final OperationManager exercisesOperationManager;
 
-  OperationManager get foldersOperationManager {
-    return _foldersOperationManager;
-  }
+  final OperationManager trashOperationManager;
 
-  @override
-  void initState() {
-    _exercisesOperationManager = createExercisesOperationManager();
-    _foldersOperationManager = OperationManager(
-        operationBuilder: () {
-          return FoldersDownloadOperation();
-        }
-    );
-    super.initState();
-  }
+  final PlatformDataProvider platformDataProvider;
 
-  void onMovePressed(List<ExerciseList> exercises) {
+  ExercisesOverviewController ({
+    this.foldersOperationManager,
+    this.trashOperationManager,
+    @required this.exercisesOperationManager,
+    @required this.platformDataProvider
+  });
+
+  void onMovePressed(BuildContext context, List<ExerciseList> exercises) {
     LoadingMessageHandler loadingMessageHandler = LoadingMessageHandler();
 
     FoldersBottomSheetPresenter(
@@ -150,130 +151,269 @@ abstract class ExercisesOverviewPageState<T extends StatefulWidget> extends Stat
     ).show(context);
   }
 
-  void onMergePressed(List<ExerciseList> exercises) {
+  void onMergePressed(BuildContext context, List<ExerciseList> exercises) {
     LoadingMessageHandler loadingMessageHandler = LoadingMessageHandler();
     loadingMessageHandler.show(context);
     actionsManager.merge(
-      exercises,
-      name: FlutterI18n.translate(context, TranslationKeys.newMergedListName)
+        exercises,
+        name: FlutterI18n.translate(context, TranslationKeys.newMergedListName)
     ).then((exerciseList) {
       exercisesTableKey.currentState.insertObject(
-        exerciseList,
-        index: 0
+          exerciseList,
+          index: 0
       );
       loadingMessageHandler.clear(
-        callback: () {
-          showToast(FlutterI18n.translate(context, TranslationKeys.successMerged),
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-          );
-        }
+          callback: () {
+            showToast(FlutterI18n.translate(context, TranslationKeys.successMerged),
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+            );
+          }
       );
 
     }).catchError((e){
       loadingMessageHandler.clear(
-        callback: () {
-          showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
-        }
+          callback: () {
+            showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
+          }
       );
     }).whenComplete(() {
       selectionManager.unSelectAll();
     });
   }
 
-  void onDeletePressed(List<ExerciseList> exercises) {
+  void onDeletePressed(BuildContext context, List<ExerciseList> exercises) {
 
     List resultList = exercisesTableKey.currentState.widget.operationManager.currentState.result;
     List copiedList = List.from(resultList);
     exercisesTableKey.currentState.removeObjects(exercises);
     actionsManager.deleteExercises(
-      exercises
+        exercises
     ).catchError((e) {
       exercisesTableKey.currentState.restoreResult(
-        copiedList
+          copiedList
       );
       showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));
     });
 
   }
 
-  void onStartPressed(List<ExerciseList> exercises) {
-    var quizInput = QuizInput(exercises);
+  void onStartPressed(BuildContext context, List<ExerciseList> exercises) {
+    var quizInput = QuizInput(exercises, platformDataProvider: platformDataProvider);
     quizInput.initialize(context);
     QuizOptionsBottomSheetPresenter(
-      quizInput: quizInput
+        quizInput: quizInput
     ).show(context);
   }
 
-  void onExerciseListPressed(ExerciseList exerciseList) {
+  void onExerciseListPressed(BuildContext context, ExerciseList exerciseList) {
     Navigator.push(context, MaterialPageRoute(
         builder: (BuildContext context) {
-          return ExerciseEditorPage(exerciseList: exerciseList);
+          return ExerciseEditorPage(exerciseList: exerciseList, platformDataProvider: platformDataProvider);
         }
     ));
   }
 
-  void onAddPressed() {
+  void onAddPressed(BuildContext context) {
     Navigator.push(context, MaterialPageRoute(
-      builder: (BuildContext context) {
-        return ExerciseEditorPage();
-      }
+        builder: (BuildContext context) {
+          return ExerciseEditorPage(platformDataProvider: platformDataProvider);
+        }
     ));
   }
 
-  Widget appBar(BuildContext context);
+  void onRecoverPressed(BuildContext context, ExerciseList exerciseList) {
+    Navigator.pop(context);
+    int index = trashTableKey.currentState.removeObject(exerciseList);
+    exercisesTableKey.currentState.insertObject(exerciseList, index: 0);
+    actionsManager.restoreExerciseList(exerciseList).catchError((e) {
+      exercisesTableKey.currentState.removeObject(exerciseList);
+      trashTableKey.currentState.insertObject(exerciseList, index: index);
+      showToast(FlutterI18n.translate(context, TranslationKeys.restoreError));
+    });
+  }
 
-  Widget body(BuildContext context);
+  void onFolderPressed(BuildContext context, Folder folder) {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (BuildContext context) {
+          return FolderPage(folder, platformDataProvider: platformDataProvider);
+        }
+    ));
+  }
 
-  OperationManager createExercisesOperationManager();
+  void onDeleteFolderPressed(BuildContext context, Folder folder) {
+    int index = foldersTableKey.currentState.removeObject(folder);
+    actionsManager.deleteFolder(folder).catchError((e) {
+      foldersTableKey.currentState.insertObject(folder, index: index);
+      showToast(FlutterI18n.translate(context, TranslationKeys.folderDeleteError));
+    });
+  }
+
+  void createFolderPressed(BuildContext context) {
+    CreateFolderDialog.show(
+        context,
+        onCreatePressed: (value) {
+          Navigator.pop(context);
+
+          Folder folder = Folder.create(name: value);
+          foldersTableKey.currentState.insertObject(folder, index: 0);
+
+          actionsManager.createFolder(value).catchError((e) {
+            foldersTableKey.currentState.removeObject(folder);
+            showToast(FlutterI18n.translate(context, TranslationKeys.folderCreateError));
+          });
+        }
+    );
+  }
+
+  void onMyFoldersPressed(BuildContext context) {
+    FoldersBottomSheetPresenter(
+        key: foldersTableKey,
+        operationManager: foldersOperationManager,
+        onFolderPressed: (folder) => onFolderPressed(context, folder),
+        onDeleteFolderPressed: (folder) => onDeleteFolderPressed(context, folder),
+        createFolderPressed: () => createFolderPressed(context)
+    ).show(context);
+  }
+
+  void onTrashPressed(BuildContext context) {
+    TrashBottomSheetPresenter(
+        key: trashTableKey,
+        operationManager: trashOperationManager,
+        onRecoverPressed: onRecoverPressed
+    ).show(context);
+  }
+
+  void resetSelection() {
+    selectionManager.unSelectAll();
+  }
+
+}
+
+class ExercisesOverviewBuilder {
+
+
+  final ExercisesOverviewController controller;
+
+  ExercisesOverviewBuilder (this.controller);
+
+  Widget floatingActionButton(BuildContext context) {
+    if (controller.selectionManager.objects.length > 0) {
+      return FloatingActionButton(
+        onPressed: () {
+          controller.onStartPressed(context, controller.selectionManager.objects);
+        },
+        child: SvgPicture.asset(
+            AssetPaths.start
+        ),
+      );
+    } else {
+      return FloatingActionButton(
+        onPressed: () => controller.onAddPressed(context),
+        child: SvgPicture.asset(
+            AssetPaths.add
+        ),
+      );
+    }
+  }
+
+  Widget bottomNavigationBar(BuildContext context) {
+    return Visibility(
+      child: SelectionBar(
+        selectionCount: controller.selectionManager.objects.length,
+        onMovePressed: () {
+          controller.onMovePressed(context, controller.selectionManager.objects);
+        },
+        onDeletePressed: () {
+          controller.onDeletePressed(context, controller.selectionManager.objects);
+        },
+        onMergePressed: () {
+          controller.onMergePressed(context, controller.selectionManager.objects);
+        },
+      ),
+      visible: controller.selectionManager.objects.length > 0,
+    );
+  }
+
+}
+
+class FolderPage extends StatefulWidget {
+
+  final Folder folder;
+  final PlatformDataProvider platformDataProvider;
+
+  FolderPage (this.folder, { @required this.platformDataProvider });
+
+  @override
+  State<StatefulWidget> createState() {
+    return _FolderPageState();
+  }
+
+}
+
+class _FolderPageState extends State<FolderPage> {
+
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  ExercisesOverviewController _overviewController;
+
+  ExercisesOverviewBuilder _overviewBuilder;
+
+  @override
+  void initState() {
+    super.initState();
+    _overviewController = ExercisesOverviewController(
+        foldersOperationManager: OperationManager(
+            operationBuilder: () {
+              return FoldersDownloadOperation();
+            }
+        ),
+        exercisesOperationManager: OperationManager(
+            operationBuilder: () {
+              return ExercisesDownloadOperation(folderId: widget.folder.id);
+            },
+            onReset: () {
+              if (_overviewController != null) {
+                _overviewController.resetSelection();
+              }
+            }
+        ),
+        platformDataProvider: widget.platformDataProvider
+    );
+    _overviewBuilder = ExercisesOverviewBuilder(_overviewController);
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModel(
-      model: selectionManager,
+      model: _overviewController.selectionManager,
       child: ScopedModelDescendant<SelectionManager<ExerciseList>>(
         builder: (BuildContext context, Widget widget, SelectionManager manager) {
           return Scaffold(
-              key: scaffoldKey,
-              appBar: appBar(context),
-              body: body(context),
-              floatingActionButton: () {
-                if (selectionManager.objects.length > 0) {
-                  return FloatingActionButton(
-                    onPressed: () {
-                      onStartPressed(selectionManager.objects);
-                    },
-                    child: SvgPicture.asset(
-                        AssetPaths.start
-                    ),
-                  );
-                } else {
-                  return FloatingActionButton(
-                    onPressed: onAddPressed,
-                    child: SvgPicture.asset(
-                        AssetPaths.add
-                    ),
-                  );
-                }
-              }(),
-              bottomNavigationBar: Visibility(
-                child: SelectionBar(
-                  selectionCount: selectionManager.objects.length,
-                  onMovePressed: () {
-                    onMovePressed(selectionManager.objects);
-                  },
-                  onDeletePressed: () {
-                    onDeletePressed(selectionManager.objects);
-                  },
-                  onMergePressed: () {
-                    onMergePressed(selectionManager.objects);
-                  },
-                ),
-                visible: selectionManager.objects.length > 0,
-              )
-          );
+              key: _scaffoldKey,
+              appBar: ThemedAppBar(
+                title: this.widget.folder.name,
+              ),
+              body: ExercisesTable(
+                operationManager: _overviewController.exercisesOperationManager,
+                key: _overviewController.exercisesTableKey,
+                selectionManager: _overviewController.selectionManager,
+                onExerciseListPressed: (exerciseList) => _overviewController.onExerciseListPressed(context, exerciseList),
+                platformDataProvider: this.widget.platformDataProvider,
+                tablePadding: EdgeInsets.all(0),
+                showBackground: true,
+              ),
+              floatingActionButton: _overviewBuilder.floatingActionButton(context),
+              bottomNavigationBar: _overviewBuilder.bottomNavigationBar(context)
+          );;
         },
       ),
     );
   }
+
+
 }
+
+

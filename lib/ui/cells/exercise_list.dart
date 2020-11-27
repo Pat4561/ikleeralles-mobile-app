@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/dates.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/cells/inner.dart';
 import 'package:ikleeralles/ui/themed/checkbox.dart';
@@ -8,11 +9,12 @@ import 'package:ikleeralles/ui/themed/checkbox.dart';
 class ExerciseListCell extends StatelessWidget {
 
   final ExerciseList exerciseList;
+  final PlatformDataProvider platformDataProvider;
   final Function(ExerciseList) onPressed;
   final Function(ExerciseList exerciseList, bool isSelected) onSelectionChange;
   final bool isSelected;
 
-  ExerciseListCell (this.exerciseList, { @required this.onPressed, @required this.onSelectionChange, @required this.isSelected });
+  ExerciseListCell (this.exerciseList, { @required this.onPressed, @required this.onSelectionChange, @required this.platformDataProvider, @required this.isSelected });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class ExerciseListCell extends StatelessWidget {
               }
           ),
           title: exerciseList.name,
-          subTitle: "${exerciseList.original} - ${exerciseList.translated}",
+          subTitle: "${platformDataProvider.languageData.get(exerciseList.original)} - ${platformDataProvider.languageData.get(exerciseList.translated)}",
           trailing: Text(
             Dates.format(exerciseList.date),
             style: TextStyle(

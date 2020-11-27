@@ -1,25 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
-import 'package:ikleeralles/logic/operations/abstract.dart';
 import 'package:ikleeralles/logic/operations/exercises.dart';
+import 'package:ikleeralles/logic/operations/folders.dart';
+import 'package:ikleeralles/logic/operations/search.dart';
 import 'package:ikleeralles/logic/operations/trash.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
-import 'package:ikleeralles/network/models/folder.dart';
+import 'package:ikleeralles/pages/exercise_list.dart';
 import 'package:ikleeralles/pages/exercises_overview.dart';
-import 'package:ikleeralles/pages/folder.dart';
-import 'package:ikleeralles/pages/search.dart';
-import 'package:ikleeralles/ui/bottomsheets/folders.dart';
-import 'package:ikleeralles/ui/bottomsheets/trash.dart';
-import 'package:ikleeralles/ui/dialogs/create_folder.dart';
-import 'package:ikleeralles/ui/snackbar.dart';
+import 'package:ikleeralles/ui/navigation_drawer.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
-import 'package:ikleeralles/ui/tables/folders.dart';
-import 'package:ikleeralles/ui/tables/trash.dart';
+import 'package:ikleeralles/ui/tables/search.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -30,148 +26,317 @@ class HomePage extends StatefulWidget {
 
 }
 
+class _HomePageDrawer extends StatelessWidget {
 
+  static const String keyMyLists = "myLists";
+  static const String keyGroups = "groups";
+  static const String keyPublicLists = "publicLists";
+  static const String keyPremium = "premium";
+  static const String keyLogout = "logout";
 
-class _HomePageState extends ExercisesOverviewPageState<HomePage> {
+  final Function(String) onPressed;
+  final NavigationDrawerController drawerController;
 
-  final GlobalKey<FoldersTableState> foldersTableKey = GlobalKey<FoldersTableState>();
+  _HomePageDrawer (this.drawerController, { @required this.onPressed });
 
-  final GlobalKey<TrashTableState> trashTableKey = GlobalKey<TrashTableState>();
-
-  final PlatformDataProvider platformDataProvider = PlatformDataProvider();
-
-  OperationManager _trashOperationManager;
-
-
-  @override
-  void initState() {
-
-    _trashOperationManager = OperationManager(
-      operationBuilder: () {
-        return TrashDownloadOperation();
-      }
-    );
-
-
-
-    platformDataProvider.load();
-
-    super.initState();
-  }
-
-  void _onRecoverPressed(ExerciseList exerciseList) {
-    Navigator.pop(context);
-    int index = trashTableKey.currentState.removeObject(exerciseList);
-    exercisesTableKey.currentState.insertObject(exerciseList, index: 0);
-    actionsManager.restoreExerciseList(exerciseList).catchError((e) {
-      exercisesTableKey.currentState.removeObject(exerciseList);
-      trashTableKey.currentState.insertObject(exerciseList, index: index);
-      showToast(FlutterI18n.translate(context, TranslationKeys.restoreError));
-    });
-  }
-
-  void _onFolderPressed(Folder folder) {
-    Navigator.push(context, MaterialPageRoute(
-      builder: (BuildContext context) {
-        return FolderPage(folder);
-      }
-    ));
-  }
-
-  void _onDeleteFolderPressed(Folder folder) {
-    int index = foldersTableKey.currentState.removeObject(folder);
-    actionsManager.deleteFolder(folder).catchError((e) {
-      foldersTableKey.currentState.insertObject(folder, index: index);
-      showToast(FlutterI18n.translate(context, TranslationKeys.folderDeleteError));
-    });
-  }
-
-  void _createFolderPressed() {
-    CreateFolderDialog.show(
-      context,
-      onCreatePressed: (value) {
-        Navigator.pop(context);
-
-        Folder folder = Folder.create(name: value);
-        foldersTableKey.currentState.insertObject(folder, index: 0);
-
-        actionsManager.createFolder(value).catchError((e) {
-          foldersTableKey.currentState.removeObject(folder);
-          showToast(FlutterI18n.translate(context, TranslationKeys.folderCreateError));
-        });
-      }
+  Widget _header(BuildContext context) {
+    return SafeArea(
+        top: true,
+        child: Container(
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+                      color: BrandColors.borderColor,
+                      width: 0.5
+                  )
+              )
+          ),
+          padding: EdgeInsets.symmetric(
+              vertical: 25,
+              horizontal: 10
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(Constants.appName, style: TextStyle(fontFamily: Fonts.justAnotherHand, fontSize: 38))
+            ],
+          ),
+        )
     );
   }
 
-  void _onMyFoldersPressed() {
-    FoldersBottomSheetPresenter(
-      key: foldersTableKey,
-      operationManager: foldersOperationManager,
-      onFolderPressed: _onFolderPressed,
-      onDeleteFolderPressed: _onDeleteFolderPressed,
-      createFolderPressed: _createFolderPressed
-    ).show(context);
+  Widget _menuItem(BuildContext context, { @required IconData iconData, @required String title, @required String key }) {
+    bool isActive = drawerController.activeChild.key == key;
+    Color color = isActive ? BrandColors.secondaryButtonColor : Colors.black;
+    return ListTile(
+      leading: Icon(iconData, color: color),
+      title: Text(title, style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold, color: color)),
+      onTap: () {
+        onPressed(key);
+      },
+    );
   }
-
-  void _onTrashPressed() {
-    TrashBottomSheetPresenter(
-      key: trashTableKey,
-      operationManager: _trashOperationManager,
-      onRecoverPressed: _onRecoverPressed
-    ).show(context);
-  }
-
-  void _onPublicListsPressed() {
-    Navigator.push(context, MaterialPageRoute(
-      builder: (BuildContext context) {
-        return SearchPage(
-          platformDataProvider: platformDataProvider
-        );
-      }
-    ));
-  }
-
-
 
   @override
-  Widget appBar(BuildContext context) {
-    return ThemedAppBar(
-      title: FlutterI18n.translate(context, TranslationKeys.myLists),
-      disablePopping: true,
-      showUserInfo: true,
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: <Widget>[
+          _header(context),
+          _menuItem(context, iconData: Icons.person, title: FlutterI18n.translate(context, TranslationKeys.myLists), key: _HomePageDrawer.keyMyLists),
+          _menuItem(context, iconData: Icons.group, title: FlutterI18n.translate(context, TranslationKeys.myGroups), key: _HomePageDrawer.keyGroups),
+          _menuItem(context, iconData: Icons.public, title: FlutterI18n.translate(context, TranslationKeys.publicLists), key: _HomePageDrawer.keyPublicLists),
+          _menuItem(context, iconData: Icons.monetization_on, title: FlutterI18n.translate(context, TranslationKeys.premium), key: _HomePageDrawer.keyPremium),
+          ListTile(
+            title: Text(FlutterI18n.translate(context, TranslationKeys.signOut), style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold)),
+            trailing: Icon(Icons.exit_to_app, color: Colors.red),
+            onTap: () => onPressed(keyLogout),
+          )
+        ],
+      ),
+    );
+  }
+
+}
+
+class _PremiumInfoSubPage extends NavigationDrawerContentChild {
+
+
+  _PremiumInfoSubPage (NavigationDrawerController controller, String key, { String title }) : super(controller, key: key, title: title);
+
+  @override
+  Widget body(BuildContext context) {
+    return Container();
+  }
+
+}
+
+class _GroupsSubPage extends NavigationDrawerContentChild {
+
+  _GroupsSubPage (NavigationDrawerController controller, String key, { String title }) : super(controller, key: key, title: title);
+
+  @override
+  Widget body(BuildContext context) {
+    return Container();
+  }
+
+}
+
+class _MyExercisesSubPage extends NavigationDrawerContentChild {
+
+
+
+  ExercisesOverviewController _overviewController;
+
+  ExercisesOverviewBuilder _overviewBuilder;
+
+  _MyExercisesSubPage (NavigationDrawerController controller, String key, { @required PlatformDataProvider platformDataProvider, String title }) : super(controller, key: key, title: title) {
+    _overviewController = ExercisesOverviewController(
+        foldersOperationManager: OperationManager(
+          operationBuilder: () {
+            return FoldersDownloadOperation();
+          }
+        ),
+        exercisesOperationManager: OperationManager(
+          operationBuilder: () {
+            return ExercisesDownloadOperation();
+          }
+        ),
+        trashOperationManager: OperationManager(
+          operationBuilder: () {
+            return TrashDownloadOperation();
+          }
+        ),
+        platformDataProvider: platformDataProvider
+    );
+
+    _overviewBuilder = ExercisesOverviewBuilder(
+      _overviewController
     );
   }
 
   @override
   Widget body(BuildContext context) {
-    return ExercisesTable(
-      key: exercisesTableKey,
-      selectionManager: selectionManager,
-      operationManager: exercisesOperationManager,
-      onExerciseListPressed: onExerciseListPressed,
-      onMyFolderPressed: _onMyFoldersPressed,
-      onPublicListsPressed: _onPublicListsPressed,
-      onTrashPressed: _onTrashPressed,
-      tablePadding: EdgeInsets.only(
-        top: 25,
-        bottom: 25
+    return ScopedModel<SelectionManager>(
+      model: _overviewController.selectionManager,
+      child: ScopedModelDescendant<SelectionManager>(
+          builder: (BuildContext context, Widget widget, SelectionManager manager) {
+            return ExercisesTable(
+              key: _overviewController.exercisesTableKey,
+              selectionManager: _overviewController.selectionManager,
+              operationManager: _overviewController.exercisesOperationManager,
+              onExerciseListPressed: (exerciseList) => _overviewController.onExerciseListPressed(context, exerciseList),
+              onMyFolderPressed: () => _overviewController.onMyFoldersPressed(context),
+              onTrashPressed: () => _overviewController.onTrashPressed(context),
+              platformDataProvider: _overviewController.platformDataProvider,
+              tablePadding: EdgeInsets.only(
+                  top: 25,
+                  bottom: 25
+              ),
+            );
+          }
+      ),
+    );
+
+  }
+
+  @override
+  Widget bottomNavigationBar(BuildContext context) {
+    return ScopedModel<SelectionManager>(
+      model: _overviewController.selectionManager,
+      child: ScopedModelDescendant<SelectionManager>(
+          builder: (BuildContext context, Widget widget, SelectionManager manager) {
+            return _overviewBuilder.bottomNavigationBar(context);
+          }
       ),
     );
   }
 
   @override
-  OperationManager<Operation> createExercisesOperationManager() {
-    return OperationManager(
-      operationBuilder: () {
-        return ExercisesDownloadOperation();
-      },
-      onReset: () {
-        selectionManager.unSelectAll();
-      }
+  Widget floatingActionButton(BuildContext context) {
+    return ScopedModel<SelectionManager>(
+      model: _overviewController.selectionManager,
+      child: ScopedModelDescendant<SelectionManager>(
+        builder: (BuildContext context, Widget widget, SelectionManager manager) {
+          return _overviewBuilder.floatingActionButton(context);
+        }
+      ),
     );
   }
 
+}
 
+
+class _PublicSearchSubPage extends NavigationDrawerContentChild {
+
+  final GlobalKey<SearchTableState> _searchTableKey = GlobalKey<SearchTableState>();
+
+  final SearchQuery _searchQuery = SearchQuery();
+
+  final PlatformDataProvider platformDataProvider;
+
+  OperationManager _operationManager;
+
+  @override
+  String get title => "Publieke lijsten";
+
+  _PublicSearchSubPage (NavigationDrawerController controller, String key, { @required this.platformDataProvider, String title }) : super(controller, key: key, title: title) {
+    _searchQuery.update(
+        level: this.platformDataProvider.levels.first,
+        year: this.platformDataProvider.years.first
+    );
+    _operationManager = OperationManager(
+        operationBuilder: () {
+          return SearchOperation(_searchQuery);
+        }
+    );
+  }
+
+  void _onExerciseListPressed(BuildContext context, ExerciseList exerciseList) {
+    Navigator.push(context, MaterialPageRoute(
+        builder: (BuildContext context) {
+          return ExerciseEditorPage(exerciseList: exerciseList, readOnly: true, platformDataProvider: platformDataProvider);
+        }
+    ));
+  }
+
+  @override
+  Widget body(BuildContext context) {
+    return SearchTable(
+      key: _searchTableKey,
+      onExerciseListPressed: (exerciseList) => _onExerciseListPressed(context, exerciseList),
+      operationManager: _operationManager,
+      platformDataProvider: platformDataProvider,
+    );
+  }
+
+  @override
+  Widget appBar(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
+
+    return ThemedSearchAppBar(
+        platformDataProvider: platformDataProvider,
+        onPerformSearch: (String search, String year, String level) {
+          _searchQuery.update(
+              search: search,
+              year: year,
+              level: level
+          );
+          _searchTableKey.currentState.showRefresh();
+        },
+        leading: IconButton(
+          padding: EdgeInsets.all(0),
+          icon: Icon(Icons.menu, color: Colors.white),
+          onPressed: () => scaffoldKey.currentState.openDrawer(),
+        ),
+    );
+
+  }
+}
+
+class _HomePageState extends State<HomePage> {
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final PlatformDataProvider platformDataProvider = PlatformDataProvider();
+
+  NavigationDrawerController _navigationDrawerController;
+
+  NavigationDrawerContentChild _getContentChild(String key) {
+    switch (key) {
+      case _HomePageDrawer.keyMyLists:
+        return _MyExercisesSubPage(_navigationDrawerController, _HomePageDrawer.keyMyLists,
+            platformDataProvider: platformDataProvider, title: FlutterI18n.translate(context, TranslationKeys.myLists));
+      case _HomePageDrawer.keyGroups:
+        return _GroupsSubPage(_navigationDrawerController, _HomePageDrawer.keyGroups, title: FlutterI18n.translate(context, TranslationKeys.myGroups));
+      case _HomePageDrawer.keyPublicLists:
+        return _PublicSearchSubPage(_navigationDrawerController, _HomePageDrawer.keyPublicLists,
+            platformDataProvider: platformDataProvider, title: FlutterI18n.translate(context, TranslationKeys.publicLists));
+      case _HomePageDrawer.keyPremium:
+        return _PremiumInfoSubPage(
+            _navigationDrawerController, _HomePageDrawer.keyPremium, title: FlutterI18n.translate(context, TranslationKeys.premium));
+    }
+    return null;
+  }
+
+  @override
+  void initState() {
+    platformDataProvider.load();
+    _navigationDrawerController = NavigationDrawerController();
+    _navigationDrawerController.activeChild = _getContentChild(_HomePageDrawer.keyMyLists);
+    super.initState();
+  }
+
+  void _onNavigationOptionPressed(String key) {
+    if (key == _HomePageDrawer.keyLogout) {
+
+    } else {
+      _navigationDrawerController.activeChild = _getContentChild(key);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: _navigationDrawerController.notifier,
+      builder: (BuildContext context, NavigationDrawerContentChild child, Widget widget) {
+        return Scaffold(
+            key: scaffoldKey,
+            appBar: _navigationDrawerController.activeChild.appBar(context, scaffoldKey),
+            body: _navigationDrawerController.activeChild.body(context),
+            drawer: _HomePageDrawer(
+              _navigationDrawerController,
+              onPressed: _onNavigationOptionPressed,
+            ),
+            floatingActionButton: _navigationDrawerController.activeChild.floatingActionButton(context),
+            bottomNavigationBar: _navigationDrawerController.activeChild.bottomNavigationBar(context)
+        );
+      },
+    );
+  }
 
 }
+
+
+
 

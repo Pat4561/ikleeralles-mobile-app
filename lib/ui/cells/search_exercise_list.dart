@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/dates.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 
 class SearchExerciseListCell extends StatelessWidget {
 
   final ExerciseList exerciseList;
+  final PlatformDataProvider platformDataProvider;
   final Function(ExerciseList) onPressed;
 
-  SearchExerciseListCell (this.exerciseList, { this.onPressed });
+  SearchExerciseListCell (this.exerciseList, { this.onPressed, @required this.platformDataProvider });
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +65,7 @@ class SearchExerciseListCell extends StatelessWidget {
                               bottom: 20
                             ),
                             child: Text(
-                              "${exerciseList.original} - ${exerciseList.translated}",
+                              "${platformDataProvider.languageData.get(exerciseList.original)} - ${platformDataProvider.languageData.get(exerciseList.translated)}",
                               style: TextStyle(
                                   color: BrandColors.textColorLighter,
                                   fontSize: 13,

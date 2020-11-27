@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 
@@ -7,7 +8,9 @@ abstract class OperationBasedTable extends StatefulWidget {
 
   final OperationManager operationManager;
 
-  OperationBasedTable (this.operationManager, { Key key }) : super(key: key);
+  final PlatformDataProvider platformDataProvider;
+
+  OperationBasedTable (this.operationManager, { Key key, this.platformDataProvider }) : super(key: key);
 
 }
 

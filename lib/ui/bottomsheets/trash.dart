@@ -18,7 +18,7 @@ class TrashBottomSheetPresenter extends BottomSheetPresenter {
     return TrashTable(
       operationManager: operationManager,
       key: key,
-      onRecoverPressed: onRecoverPressed,
+      onRecoverPressed: (exerciseList) => onRecoverPressed(context, exerciseList),
     );
   }
 

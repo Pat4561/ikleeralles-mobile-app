@@ -15,8 +15,14 @@ import 'package:scoped_model/scoped_model.dart';
 
 class ExerciseListController {
 
-  final SetInputTypeProvider termsProvider = SetInputTypeProvider();
-  final SetInputTypeProvider definitionsProvider = SetInputTypeProvider();
+  SetInputTypeProvider _termsProvider;
+  SetInputTypeProvider get termsProvider => _termsProvider;
+
+  SetInputTypeProvider _definitionsProvider;
+  SetInputTypeProvider get definitionsProvider => _definitionsProvider;
+
+  PlatformDataProvider _platformDataProvider;
+  PlatformDataProvider get platformDataProvider => _platformDataProvider;
 
   TextEditingController _titleTextController;
   TextEditingController get titleTextController => _titleTextController;
@@ -43,21 +49,29 @@ class ExerciseListController {
     _setsController.readOnly = value;
   }
 
-  ExerciseSetsController _createSetsController({ ExerciseDetails details }) => ExerciseSetsController(details: details, termValueNotifier: _termValueNotifier, definitionValueNotifier: _definitionValueNotifier, readOnly: readOnly);
+  ExerciseSetsController _createSetsController({ ExerciseDetails details }) => ExerciseSetsController(
+      details: details, termValueNotifier: _termValueNotifier, definitionValueNotifier: _definitionValueNotifier, readOnly: readOnly, platformDataProvider: _platformDataProvider
+  );
 
-  ExerciseListController.newList() {
+  ExerciseListController.newList({@required PlatformDataProvider platformDataProvider }) {
+    _platformDataProvider = platformDataProvider;
+    _termsProvider = SetInputTypeProvider(_platformDataProvider);
+    _definitionsProvider = SetInputTypeProvider(_platformDataProvider);
     _titleTextController = TextEditingController();
-    _termValueNotifier = ValueNotifier<String>(termsProvider.defaultValue());
-    _definitionValueNotifier = ValueNotifier<String>(definitionsProvider.defaultValue());
+    _termValueNotifier = ValueNotifier<String>(_termsProvider.defaultValue());
+    _definitionValueNotifier = ValueNotifier<String>(_definitionsProvider.defaultValue());
     _setsController = _createSetsController();
   }
 
-  ExerciseListController.existingList(ExerciseList list, { readOnly = false }) {
+  ExerciseListController.existingList(ExerciseList list, { readOnly = false, @required PlatformDataProvider platformDataProvider }) {
+    _platformDataProvider = platformDataProvider;
+    _termsProvider = SetInputTypeProvider(_platformDataProvider);
+    _definitionsProvider = SetInputTypeProvider(_platformDataProvider);
     _readOnly = readOnly;
     _list = list;
     _titleTextController = TextEditingController(text: list.name);
-    _termValueNotifier = ValueNotifier<String>(list.original ?? termsProvider.defaultValue());
-    _definitionValueNotifier = ValueNotifier<String>(list.translated ?? definitionsProvider.defaultValue());
+    _termValueNotifier = ValueNotifier<String>(list.original ?? _termsProvider.defaultValue());
+    _definitionValueNotifier = ValueNotifier<String>(list.translated ?? _definitionsProvider.defaultValue());
     _setsController = _createSetsController(details: ExerciseDetails(list.content));
   }
 
@@ -111,6 +125,8 @@ class ExerciseSetsController extends Model {
   final ValueNotifier<String> termValueNotifier;
   final ValueNotifier<String> definitionValueNotifier;
 
+  final PlatformDataProvider platformDataProvider;
+
   static const int minSetLength = 5;
   static const int batchSize = 3;
 
@@ -140,7 +156,7 @@ class ExerciseSetsController extends Model {
     _isEdited = false;
   }
 
-  ExerciseSetsController ({ ExerciseDetails details, @required this.termValueNotifier, @required this.definitionValueNotifier, this.readOnly = false }) {
+  ExerciseSetsController ({ ExerciseDetails details, @required this.termValueNotifier, @required this.definitionValueNotifier, @required this.platformDataProvider, this.readOnly = false }) {
     if (details != null) {
       _sets = details.sets;
     }

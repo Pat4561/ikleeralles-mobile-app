@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Constants {
@@ -138,6 +137,9 @@ class TranslationKeys {
   static const String quizErrors = "quizErrors";
   static const String again = "again";
   static const String errorsMade = "errorsMade";
+  static const String myGroups = "myGroups";
+  static const String signOut = "signOut";
+  static const String premium = "premium";
 }
 
 class WebUrls {

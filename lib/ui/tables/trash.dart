@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
-import 'package:ikleeralles/logic/operations/abstract.dart';
-import 'package:ikleeralles/logic/operations/trash.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/background_builder.dart';
 import 'package:ikleeralles/ui/cells/deleted_exercise_list.dart';

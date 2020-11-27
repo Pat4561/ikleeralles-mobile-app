@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
@@ -58,6 +58,7 @@ class ExerciseEditorList extends StatelessWidget {
                 rowNumber: row + 1,
                 readOnly: controller.readOnly,
                 definition: definition,
+                platformDataProvider: controller.platformDataProvider,
                 term: term,
                 onDeletePressed: (BuildContext context) {
                   FocusScope.of(context).unfocus();
