@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/operations/exercises.dart';
@@ -13,6 +15,7 @@ import 'package:ikleeralles/ui/navigation_drawer.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/tables/search.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -81,12 +84,12 @@ class _HomePageDrawer extends StatelessWidget {
       child: ListView(
         children: <Widget>[
           _header(context),
-          _menuItem(context, iconData: Icons.person, title: "Mijn lijsten", key: _HomePageDrawer.keyMyLists),
-          _menuItem(context, iconData: Icons.group, title: "Groepen", key: _HomePageDrawer.keyGroups),
-          _menuItem(context, iconData: Icons.public, title: "Publieke lijsten", key: _HomePageDrawer.keyPublicLists),
-          _menuItem(context, iconData: Icons.monetization_on, title: "Premium", key: _HomePageDrawer.keyPremium),
+          _menuItem(context, iconData: Icons.person, title: FlutterI18n.translate(context, TranslationKeys.myLists), key: _HomePageDrawer.keyMyLists),
+          _menuItem(context, iconData: Icons.group, title: FlutterI18n.translate(context, TranslationKeys.myGroups), key: _HomePageDrawer.keyGroups),
+          _menuItem(context, iconData: Icons.public, title: FlutterI18n.translate(context, TranslationKeys.publicLists), key: _HomePageDrawer.keyPublicLists),
+          _menuItem(context, iconData: Icons.monetization_on, title: FlutterI18n.translate(context, TranslationKeys.premium), key: _HomePageDrawer.keyPremium),
           ListTile(
-            title: Text('Uitloggen', style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold)),
+            title: Text(FlutterI18n.translate(context, TranslationKeys.signOut), style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold)),
             trailing: Icon(Icons.exit_to_app, color: Colors.red),
             onTap: () => onPressed(keyLogout),
           )
@@ -100,10 +103,7 @@ class _HomePageDrawer extends StatelessWidget {
 class _PremiumInfoSubPage extends NavigationDrawerContentChild {
 
 
-  _PremiumInfoSubPage (NavigationDrawerController controller, String key) : super(controller, key: key);
-
-  @override
-  String get title => "Premium";
+  _PremiumInfoSubPage (NavigationDrawerController controller, String key, { String title }) : super(controller, key: key, title: title);
 
   @override
   Widget body(BuildContext context) {
@@ -114,10 +114,7 @@ class _PremiumInfoSubPage extends NavigationDrawerContentChild {
 
 class _GroupsSubPage extends NavigationDrawerContentChild {
 
-  _GroupsSubPage (NavigationDrawerController controller, String key) : super(controller, key: key);
-
-  @override
-  String get title => "Groepen";
+  _GroupsSubPage (NavigationDrawerController controller, String key, { String title }) : super(controller, key: key, title: title);
 
   @override
   Widget body(BuildContext context) {
@@ -129,14 +126,12 @@ class _GroupsSubPage extends NavigationDrawerContentChild {
 class _MyExercisesSubPage extends NavigationDrawerContentChild {
 
 
-  @override
-  String get title => "Mijn overhoringen";
 
   ExercisesOverviewController _overviewController;
 
   ExercisesOverviewBuilder _overviewBuilder;
 
-  _MyExercisesSubPage (NavigationDrawerController controller, String key, { @required PlatformDataProvider platformDataProvider }) : super(controller, key: key) {
+  _MyExercisesSubPage (NavigationDrawerController controller, String key, { @required PlatformDataProvider platformDataProvider, String title }) : super(controller, key: key, title: title) {
     _overviewController = ExercisesOverviewController(
         foldersOperationManager: OperationManager(
           operationBuilder: () {
@@ -163,29 +158,51 @@ class _MyExercisesSubPage extends NavigationDrawerContentChild {
 
   @override
   Widget body(BuildContext context) {
-    return ExercisesTable(
-      key: _overviewController.exercisesTableKey,
-      selectionManager: _overviewController.selectionManager,
-      operationManager: _overviewController.exercisesOperationManager,
-      onExerciseListPressed: (exerciseList) => _overviewController.onExerciseListPressed(context, exerciseList),
-      onMyFolderPressed: () => _overviewController.onMyFoldersPressed(context),
-      onTrashPressed: () => _overviewController.onTrashPressed(context),
-      platformDataProvider: _overviewController.platformDataProvider,
-      tablePadding: EdgeInsets.only(
-          top: 25,
-          bottom: 25
+    return ScopedModel<SelectionManager>(
+      model: _overviewController.selectionManager,
+      child: ScopedModelDescendant<SelectionManager>(
+          builder: (BuildContext context, Widget widget, SelectionManager manager) {
+            return ExercisesTable(
+              key: _overviewController.exercisesTableKey,
+              selectionManager: _overviewController.selectionManager,
+              operationManager: _overviewController.exercisesOperationManager,
+              onExerciseListPressed: (exerciseList) => _overviewController.onExerciseListPressed(context, exerciseList),
+              onMyFolderPressed: () => _overviewController.onMyFoldersPressed(context),
+              onTrashPressed: () => _overviewController.onTrashPressed(context),
+              platformDataProvider: _overviewController.platformDataProvider,
+              tablePadding: EdgeInsets.only(
+                  top: 25,
+                  bottom: 25
+              ),
+            );
+          }
+      ),
+    );
+
+  }
+
+  @override
+  Widget bottomNavigationBar(BuildContext context) {
+    return ScopedModel<SelectionManager>(
+      model: _overviewController.selectionManager,
+      child: ScopedModelDescendant<SelectionManager>(
+          builder: (BuildContext context, Widget widget, SelectionManager manager) {
+            return _overviewBuilder.bottomNavigationBar(context);
+          }
       ),
     );
   }
 
   @override
-  Widget bottomNavigationBar(BuildContext context) {
-    return _overviewBuilder.bottomNavigationBar(context);
-  }
-
-  @override
   Widget floatingActionButton(BuildContext context) {
-    return _overviewBuilder.floatingActionButton(context);
+    return ScopedModel<SelectionManager>(
+      model: _overviewController.selectionManager,
+      child: ScopedModelDescendant<SelectionManager>(
+        builder: (BuildContext context, Widget widget, SelectionManager manager) {
+          return _overviewBuilder.floatingActionButton(context);
+        }
+      ),
+    );
   }
 
 }
@@ -204,7 +221,7 @@ class _PublicSearchSubPage extends NavigationDrawerContentChild {
   @override
   String get title => "Publieke lijsten";
 
-  _PublicSearchSubPage (NavigationDrawerController controller, String key, { @required this.platformDataProvider }) : super(controller, key: key) {
+  _PublicSearchSubPage (NavigationDrawerController controller, String key, { @required this.platformDataProvider, String title }) : super(controller, key: key, title: title) {
     _searchQuery.update(
         level: this.platformDataProvider.levels.first,
         year: this.platformDataProvider.years.first
@@ -268,13 +285,16 @@ class _HomePageState extends State<HomePage> {
   NavigationDrawerContentChild _getContentChild(String key) {
     switch (key) {
       case _HomePageDrawer.keyMyLists:
-        return _MyExercisesSubPage(_navigationDrawerController, _HomePageDrawer.keyMyLists, platformDataProvider: platformDataProvider);
+        return _MyExercisesSubPage(_navigationDrawerController, _HomePageDrawer.keyMyLists,
+            platformDataProvider: platformDataProvider, title: FlutterI18n.translate(context, TranslationKeys.myLists));
       case _HomePageDrawer.keyGroups:
-        return _GroupsSubPage(_navigationDrawerController, _HomePageDrawer.keyGroups);
+        return _GroupsSubPage(_navigationDrawerController, _HomePageDrawer.keyGroups, title: FlutterI18n.translate(context, TranslationKeys.myGroups));
       case _HomePageDrawer.keyPublicLists:
-        return _PublicSearchSubPage(_navigationDrawerController, _HomePageDrawer.keyPublicLists, platformDataProvider: platformDataProvider);
+        return _PublicSearchSubPage(_navigationDrawerController, _HomePageDrawer.keyPublicLists,
+            platformDataProvider: platformDataProvider, title: FlutterI18n.translate(context, TranslationKeys.publicLists));
       case _HomePageDrawer.keyPremium:
-        return _PremiumInfoSubPage(_navigationDrawerController, _HomePageDrawer.keyPremium);
+        return _PremiumInfoSubPage(
+            _navigationDrawerController, _HomePageDrawer.keyPremium, title: FlutterI18n.translate(context, TranslationKeys.premium));
     }
     return null;
   }

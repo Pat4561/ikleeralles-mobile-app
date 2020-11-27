@@ -373,7 +373,11 @@ class _FolderPageState extends State<FolderPage> {
             operationBuilder: () {
               return ExercisesDownloadOperation(folderId: widget.folder.id);
             },
-            onReset: () => _overviewController.resetSelection()
+            onReset: () {
+              if (_overviewController != null) {
+                _overviewController.resetSelection();
+              }
+            }
         ),
         platformDataProvider: widget.platformDataProvider
     );

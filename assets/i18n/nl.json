@@ -97,6 +97,8 @@
   "showErrors": "Toon fouten ({count})",
   "quizErrors": "Fouten overhoren",
   "again": "Opnieuw",
-  "errorsMade": "Gemaakte fouten"
-
+  "errorsMade": "Gemaakte fouten",
+  "premium": "Premium",
+  "signOut": "Uitloggen",
+  "myGroups": "Groepen"
 }
