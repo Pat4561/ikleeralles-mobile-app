@@ -6,7 +6,7 @@ abstract class NavigationDrawerContentChild {
   final String key;
   final NavigationDrawerController navigationDrawerController;
 
-  final String title;
+  String title(BuildContext context);
 
   Widget body(BuildContext context);
 
@@ -19,10 +19,10 @@ abstract class NavigationDrawerContentChild {
   }
 
   Widget appBar(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey) {
-    return navigationDrawerController.appBar(context, scaffoldKey, title);
+    return navigationDrawerController.appBar(context, scaffoldKey, title(context));
   }
 
-  NavigationDrawerContentChild (this.navigationDrawerController, { @required this.key, this.title });
+  NavigationDrawerContentChild (this.navigationDrawerController, { @required this.key });
 
 }
 

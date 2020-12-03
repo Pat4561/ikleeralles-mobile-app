@@ -87,7 +87,7 @@ class _HomePageDrawer extends StatelessWidget {
           _menuItem(context, iconData: Icons.person, title: FlutterI18n.translate(context, TranslationKeys.myLists), key: _HomePageDrawer.keyMyLists),
           _menuItem(context, iconData: Icons.group, title: FlutterI18n.translate(context, TranslationKeys.myGroups), key: _HomePageDrawer.keyGroups),
           _menuItem(context, iconData: Icons.public, title: FlutterI18n.translate(context, TranslationKeys.publicLists), key: _HomePageDrawer.keyPublicLists),
-          _menuItem(context, iconData: Icons.monetization_on, title: FlutterI18n.translate(context, TranslationKeys.premium), key: _HomePageDrawer.keyPremium),
+          _menuItem(context, iconData: Icons.shopping_basket, title: FlutterI18n.translate(context, TranslationKeys.premium), key: _HomePageDrawer.keyPremium),
           ListTile(
             title: Text(FlutterI18n.translate(context, TranslationKeys.signOut), style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold)),
             trailing: Icon(Icons.exit_to_app, color: Colors.red),
@@ -103,23 +103,34 @@ class _HomePageDrawer extends StatelessWidget {
 class _PremiumInfoSubPage extends NavigationDrawerContentChild {
 
 
-  _PremiumInfoSubPage (NavigationDrawerController controller, String key, { String title }) : super(controller, key: key, title: title);
+  _PremiumInfoSubPage (NavigationDrawerController controller, String key) : super(controller, key: key);
 
   @override
   Widget body(BuildContext context) {
     return Container();
+  }
+
+  @override
+  String title(BuildContext context) {
+    return FlutterI18n.translate(context, TranslationKeys.premium);
   }
 
 }
 
 class _GroupsSubPage extends NavigationDrawerContentChild {
 
-  _GroupsSubPage (NavigationDrawerController controller, String key, { String title }) : super(controller, key: key, title: title);
+  _GroupsSubPage (NavigationDrawerController controller, String key) : super(controller, key: key);
 
   @override
   Widget body(BuildContext context) {
     return Container();
   }
+
+  @override
+  String title(BuildContext context) {
+    return FlutterI18n.translate(context, TranslationKeys.myGroups);
+  }
+
 
 }
 
@@ -131,7 +142,7 @@ class _MyExercisesSubPage extends NavigationDrawerContentChild {
 
   ExercisesOverviewBuilder _overviewBuilder;
 
-  _MyExercisesSubPage (NavigationDrawerController controller, String key, { @required PlatformDataProvider platformDataProvider, String title }) : super(controller, key: key, title: title) {
+  _MyExercisesSubPage (NavigationDrawerController controller, String key, { @required PlatformDataProvider platformDataProvider }) : super(controller, key: key) {
     _overviewController = ExercisesOverviewController(
         foldersOperationManager: OperationManager(
           operationBuilder: () {
@@ -205,6 +216,12 @@ class _MyExercisesSubPage extends NavigationDrawerContentChild {
     );
   }
 
+  @override
+  String title(BuildContext context) {
+    return FlutterI18n.translate(context, TranslationKeys.myLists);
+  }
+
+
 }
 
 
@@ -218,10 +235,8 @@ class _PublicSearchSubPage extends NavigationDrawerContentChild {
 
   OperationManager _operationManager;
 
-  @override
-  String get title => "Publieke lijsten";
 
-  _PublicSearchSubPage (NavigationDrawerController controller, String key, { @required this.platformDataProvider, String title }) : super(controller, key: key, title: title) {
+  _PublicSearchSubPage (NavigationDrawerController controller, String key, { @required this.platformDataProvider }) : super(controller, key: key) {
     _searchQuery.update(
         level: this.platformDataProvider.levels.first,
         year: this.platformDataProvider.years.first
@@ -272,6 +287,13 @@ class _PublicSearchSubPage extends NavigationDrawerContentChild {
     );
 
   }
+
+  @override
+  String title(BuildContext context) {
+    return FlutterI18n.translate(context, TranslationKeys.publicLists);
+  }
+
+
 }
 
 class _HomePageState extends State<HomePage> {
@@ -286,15 +308,15 @@ class _HomePageState extends State<HomePage> {
     switch (key) {
       case _HomePageDrawer.keyMyLists:
         return _MyExercisesSubPage(_navigationDrawerController, _HomePageDrawer.keyMyLists,
-            platformDataProvider: platformDataProvider, title: FlutterI18n.translate(context, TranslationKeys.myLists));
+            platformDataProvider: platformDataProvider);
       case _HomePageDrawer.keyGroups:
-        return _GroupsSubPage(_navigationDrawerController, _HomePageDrawer.keyGroups, title: FlutterI18n.translate(context, TranslationKeys.myGroups));
+        return _GroupsSubPage(_navigationDrawerController, _HomePageDrawer.keyGroups);
       case _HomePageDrawer.keyPublicLists:
         return _PublicSearchSubPage(_navigationDrawerController, _HomePageDrawer.keyPublicLists,
-            platformDataProvider: platformDataProvider, title: FlutterI18n.translate(context, TranslationKeys.publicLists));
+            platformDataProvider: platformDataProvider);
       case _HomePageDrawer.keyPremium:
         return _PremiumInfoSubPage(
-            _navigationDrawerController, _HomePageDrawer.keyPremium, title: FlutterI18n.translate(context, TranslationKeys.premium));
+            _navigationDrawerController, _HomePageDrawer.keyPremium);
     }
     return null;
   }

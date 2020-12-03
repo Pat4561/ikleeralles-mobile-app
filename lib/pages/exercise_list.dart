@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
+import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/options.dart';
+import 'package:ikleeralles/ui/bottomsheets/quiz_options.dart';
 import 'package:ikleeralles/ui/custom/exercise_controller.dart';
 import 'package:ikleeralles/ui/tables/exercise_editor.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
@@ -252,7 +254,11 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
   }
 
   void _startTest() {
-
+    var quizInput = QuizInput([widget.exerciseList], platformDataProvider: widget.platformDataProvider);
+    quizInput.initialize(context);
+    QuizOptionsBottomSheetPresenter(
+        quizInput: quizInput
+    ).show(context);
   }
 
   @override
