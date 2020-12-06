@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
@@ -15,6 +16,7 @@ import 'package:ikleeralles/ui/navigation_drawer.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/tables/search.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
+import 'package:ikleeralles/ui/themed/button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class HomePage extends StatefulWidget {
@@ -100,6 +102,126 @@ class _HomePageDrawer extends StatelessWidget {
 
 }
 
+class _PremiumInfoCard extends StatelessWidget {
+
+  final String title;
+  final String subtitle;
+  final String iconAssetPath;
+  final List<String> labels;
+
+  _PremiumInfoCard (this.title, { @required this.iconAssetPath, @required this.subtitle, @required this.labels });
+
+  Widget _label(String text) {
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            child: Icon(Icons.check, color: Colors.green),
+            width: 40,
+            height: 20,
+          ),
+          Expanded(
+            child: Text(text, style: TextStyle(
+                fontFamily: Fonts.ubuntu,
+                fontSize: 16
+            )),
+          ),
+          Container(
+            width: 40,
+            height: 20,
+          )
+        ],
+      ),
+      margin: EdgeInsets.only(
+        bottom: 6
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(5),
+      decoration: BoxDecoration(
+          color: BrandColors.lightGreyBackgroundColor,
+          borderRadius: BorderRadius.circular(10)
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(5),
+            child: Row(
+              children: [
+                Container(
+                    child: SvgPicture.asset(
+                      iconAssetPath,
+                      width: 50,
+                      height: 50,
+                    )
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 10
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            child: Text(title, style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontFamily: Fonts.ubuntu,
+                                fontSize: 22
+                            ))
+                        ),
+                        Container(
+                            child: Text(subtitle, style: TextStyle(
+                                fontFamily: Fonts.ubuntu,
+                                fontWeight: FontWeight.bold
+                            ))
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              children: () {
+                return labels.map((e) => _label(e)).toList();
+              }(),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 10, bottom: 5, right: 10),
+            child: ThemedButton(
+              "Kiezen",
+              icon: Icons.check_circle_outline,
+              iconSize: 18,
+              buttonColor: BrandColors.secondaryButtonColor,
+              fontSize: 13,
+              contentPadding: EdgeInsets.symmetric(
+                  horizontal: 10
+              ),
+              borderRadius: BorderRadius.circular(15),
+              onPressed: () {
+
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+}
+
 class _PremiumInfoSubPage extends NavigationDrawerContentChild {
 
 
@@ -107,7 +229,37 @@ class _PremiumInfoSubPage extends NavigationDrawerContentChild {
 
   @override
   Widget body(BuildContext context) {
-    return Container();
+    return Container(
+      child: ListView(
+        padding: EdgeInsets.all(20),
+        children: [
+          _PremiumInfoCard("Plus",
+              iconAssetPath: "assets/svg/sub_plus.svg",
+              subtitle: "€ 1,99 /maand",
+              labels: [
+                "20 Woordenlijsten scannen",
+                "Woordjes achteraf goedrekenen",
+                "Woordenlijsten samenvoegen",
+                "Uitgebreide overhoortijd",
+                "Met Enter naar volgende woord",
+                "Herstellen uit prullenbak",
+                "Aantal vragen instellen",
+                "Toegang tot toekomstige optie"
+              ]
+          ),
+          SizedBox(height: 20),
+          _PremiumInfoCard("Pro",
+              iconAssetPath: "assets/svg/sub_pro.svg",
+              subtitle: "€ 11,99 /jaar",
+              labels: [
+                "Onbeperkt woordenlijsten scannen",
+                "Alle functionaliteit van Plus",
+                "Korting van 50%!"
+              ]
+          )
+        ],
+      ),
+    );
   }
 
   @override
