@@ -8,6 +8,7 @@ import 'package:ikleeralles/network/api/routes.dart';
 import 'package:ikleeralles/network/api/helper.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/keys.dart';
+import 'package:ikleeralles/network/models/group.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
 import 'package:ikleeralles/network/models/user_result.dart';
 import 'package:ikleeralles/network/models/folder.dart';
@@ -46,6 +47,20 @@ class Api {
     if (result == null)
       throw InvalidCredentialsException();
     return result;
+  }
+
+  Future<List<Group>> getMyGroups() async {
+    return requestHelper.multiObjectsRequest(
+      route: Routes.myGroups,
+      toObject: (Map map) => Group(map)
+    );
+  }
+
+  Future<List<ExerciseList>> getGroupExerciseLists(int groupId) async {
+    return requestHelper.multiObjectsRequest(
+      route: Routes.groupExerciseLists(groupId),
+      toObject: (Map map) => ExerciseList(map)
+    );
   }
 
   Future<List<Folder>> getFolders() async {

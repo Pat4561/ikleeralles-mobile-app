@@ -15,4 +15,7 @@ class Routes {
   static String exerciseList(int listId) => "list/$listId";
   static String translate = "translate";
   static String languages = "translate/languages";
+  static String myGroups = "group/me";
+  static String groupExerciseLists(int groupId) => "group/$groupId";
+
 }
