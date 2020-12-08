@@ -25,4 +25,7 @@ class ObjectKeys {
   static String translatedImage = "translatedImage";
   static String color = "color";
   static String text = "text";
+  static String members = "members";
+  static String username = "username";
+  static String role = "role";
 }

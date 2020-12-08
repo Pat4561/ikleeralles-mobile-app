@@ -13,6 +13,7 @@ import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/network/models/folder.dart';
 import 'package:ikleeralles/pages/exercise_list.dart';
+import 'package:ikleeralles/pages/folder.dart';
 import 'package:ikleeralles/ui/bottomsheets/folders.dart';
 import 'package:ikleeralles/ui/bottomsheets/quiz_options.dart';
 import 'package:ikleeralles/ui/bottomsheets/trash.dart';
@@ -337,83 +338,5 @@ class ExercisesOverviewBuilder {
 
 }
 
-class FolderPage extends StatefulWidget {
-
-  final Folder folder;
-  final PlatformDataProvider platformDataProvider;
-
-  FolderPage (this.folder, { @required this.platformDataProvider });
-
-  @override
-  State<StatefulWidget> createState() {
-    return _FolderPageState();
-  }
-
-}
-
-class _FolderPageState extends State<FolderPage> {
-
-
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  ExercisesOverviewController _overviewController;
-
-  ExercisesOverviewBuilder _overviewBuilder;
-
-  @override
-  void initState() {
-    super.initState();
-    _overviewController = ExercisesOverviewController(
-        foldersOperationManager: OperationManager(
-            operationBuilder: () {
-              return FoldersDownloadOperation();
-            }
-        ),
-        exercisesOperationManager: OperationManager(
-            operationBuilder: () {
-              return ExercisesDownloadOperation(folderId: widget.folder.id);
-            },
-            onReset: () {
-              if (_overviewController != null) {
-                _overviewController.resetSelection();
-              }
-            }
-        ),
-        platformDataProvider: widget.platformDataProvider
-    );
-    _overviewBuilder = ExercisesOverviewBuilder(_overviewController);
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ScopedModel(
-      model: _overviewController.selectionManager,
-      child: ScopedModelDescendant<SelectionManager<ExerciseList>>(
-        builder: (BuildContext context, Widget widget, SelectionManager manager) {
-          return Scaffold(
-              key: _scaffoldKey,
-              appBar: ThemedAppBar(
-                title: this.widget.folder.name,
-              ),
-              body: ExercisesTable(
-                operationManager: _overviewController.exercisesOperationManager,
-                key: _overviewController.exercisesTableKey,
-                selectionManager: _overviewController.selectionManager,
-                onExerciseListPressed: (exerciseList) => _overviewController.onExerciseListPressed(context, exerciseList),
-                platformDataProvider: this.widget.platformDataProvider,
-                tablePadding: EdgeInsets.all(0),
-                showBackground: true,
-              ),
-              floatingActionButton: _overviewBuilder.floatingActionButton(context),
-              bottomNavigationBar: _overviewBuilder.bottomNavigationBar(context)
-          );;
-        },
-      ),
-    );
-  }
-
-
-}
 
 
