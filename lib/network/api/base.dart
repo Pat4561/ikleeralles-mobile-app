@@ -56,10 +56,10 @@ class Api {
     );
   }
 
-  Future<List<ExerciseList>> getGroupExerciseLists(int groupId) async {
-    return requestHelper.multiObjectsRequest(
-      route: Routes.groupExerciseLists(groupId),
-      toObject: (Map map) => ExerciseList(map)
+  Future<Group> getGroup(int groupId) async {
+    return requestHelper.singleObjectRequest<Group>(
+        route: Routes.groupExerciseLists(groupId),
+        toObject: (Map map) => Group(map)
     );
   }
 

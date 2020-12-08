@@ -94,6 +94,7 @@
   "finishedQuizTitle": "Einde van de overhoring",
   "finishedQuizSubTitle": "Je hebt alle vragen beantwoord, klik op afronden om je resultaat te zien en verder te gaan",
   "questions": "{count} vragen",
+  "members": "{count} leden",
   "showErrors": "Toon fouten ({count})",
   "quizErrors": "Fouten overhoren",
   "again": "Opnieuw",

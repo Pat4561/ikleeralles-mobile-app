@@ -140,6 +140,8 @@ class TranslationKeys {
   static const String myGroups = "myGroups";
   static const String signOut = "signOut";
   static const String premium = "premium";
+  static const String members = "members";
+
 }
 
 class WebUrls {

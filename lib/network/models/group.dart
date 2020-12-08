@@ -1,5 +1,6 @@
 import 'package:ikleeralles/network/keys.dart';
 import 'package:ikleeralles/network/models/abstract.dart';
+import 'package:ikleeralles/network/models/exercise_list.dart';
 
 class GroupMember extends ObjectBase {
 
@@ -38,6 +39,7 @@ class Group extends ObjectBase {
   DateTime date;
   String name;
   List<GroupMember> members;
+  List<ExerciseList> lists;
 
   Group (Map<String, dynamic> dictionary) : super(dictionary);
 
@@ -50,6 +52,12 @@ class Group extends ObjectBase {
     List items = dictionary[ObjectKeys.members];
     if (items != null)
       members = items.map((v) => GroupMember(v)).toList();
+
+
+    List exercises = dictionary[ObjectKeys.lists];
+    if (exercises != null)
+      lists = exercises.map((e) => ExerciseList(e)).toList();
+
   }
 
   @override

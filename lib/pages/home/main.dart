@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
         return MyExercisesSubPage(_navigationDrawerController, _HomePageDrawer.keyMyLists,
             platformDataProvider: platformDataProvider);
       case _HomePageDrawer.keyGroups:
-        return GroupsSubPage(_navigationDrawerController, _HomePageDrawer.keyGroups);
+        return GroupsSubPage(_navigationDrawerController, _HomePageDrawer.keyGroups, platformDataProvider: platformDataProvider);
       case _HomePageDrawer.keyPublicLists:
         return PublicSearchSubPage(_navigationDrawerController, _HomePageDrawer.keyPublicLists,
             platformDataProvider: platformDataProvider);
