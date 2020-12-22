@@ -101,5 +101,7 @@
   "errorsMade": "Gemaakte fouten",
   "premium": "Premium",
   "signOut": "Uitloggen",
-  "myGroups": "Groepen"
+  "myGroups": "Groepen",
+  "pricingAnnual": "{price} per jaar",
+  "pricingMonthly": "{price} per maand"
 }

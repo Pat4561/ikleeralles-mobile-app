@@ -141,6 +141,8 @@ class TranslationKeys {
   static const String signOut = "signOut";
   static const String premium = "premium";
   static const String members = "members";
+  static const String pricingAnnual = "pricingAnnual";
+  static const String pricingMonthly = "pricingMonthly";
 
 }
 
@@ -159,4 +161,6 @@ class AssetPaths {
   static const String merge = 'assets/svg/merge.svg';
   static const String move = 'assets/svg/move.svg';
   static const String finish = 'assets/svg/finish.svg';
+  static const String subPro = 'assets/svg/sub_pro.svg';
+  static const String subPlus = 'assets/svg/sub_plus.svg';
 }

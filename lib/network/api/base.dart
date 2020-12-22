@@ -137,6 +137,15 @@ class Api {
     );
   }
 
+  Future<String> getPremiumInfo() async {
+    var response = await requestHelper.executeRequest(
+      route: Routes.premiumInfo,
+      method: RequestMethod.get
+    );
+    print(response.body);
+    return response.body;
+  }
+
   Future<Folder> deleteFolder(Folder folder) async {
     return requestHelper.singleObjectRequest<Folder>(
         route: Routes.deleteFolder(folder.id),
