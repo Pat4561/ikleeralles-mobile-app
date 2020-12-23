@@ -8,6 +8,7 @@ import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/bottomsheets/options.dart';
 import 'package:ikleeralles/ui/bottomsheets/quiz_options.dart';
 import 'package:ikleeralles/ui/custom/exercise_controller.dart';
+import 'package:ikleeralles/ui/logout_handler.dart';
 import 'package:ikleeralles/ui/tables/exercise_editor.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
 import 'package:ikleeralles/ui/themed/select.dart';
@@ -233,11 +234,21 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
 
   ExerciseEditorActionsHandler _exerciseEditorActionsHandler;
 
+  LogoutHandler _logoutHandler;
+
   @override
   void initState() {
+    _logoutHandler = LogoutHandler(context);
+    _logoutHandler.listen();
     _initializeController();
     _initializeEditorHandler();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _logoutHandler.unListen();
   }
 
   void _initializeController() {

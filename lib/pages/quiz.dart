@@ -11,6 +11,7 @@ import 'package:ikleeralles/ui/custom/quiz/builder.dart';
 import 'package:ikleeralles/ui/custom/quiz/question_presentation.dart';
 import 'package:ikleeralles/ui/dialogs/navigation_dialog.dart';
 import 'package:ikleeralles/ui/dialogs/quiz_result.dart';
+import 'package:ikleeralles/ui/logout_handler.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -228,6 +229,21 @@ class QuizPageState extends State<QuizPage> {
   final GlobalKey<AnswerFormState> _answerFormKey = GlobalKey<AnswerFormState>();
 
   final GlobalKey<QuizQuestionPresentationState> _quizQuestionPresentationKey = GlobalKey<QuizQuestionPresentationState>();
+
+  LogoutHandler _logoutHandler;
+
+  @override
+  void initState() {
+    super.initState();
+    _logoutHandler = LogoutHandler(context);
+    _logoutHandler.listen();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _logoutHandler.unListen();
+  }
 
   void _unMarkAsIncorrectAnswer() {
     widget.builder.quizSet.unMarkAsIncorrectAnswer();

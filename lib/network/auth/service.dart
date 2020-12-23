@@ -57,6 +57,12 @@ class AuthService {
 
   }
 
+  Future logout() async  {
+    await UserInfo.clearCache();
+    this.userInfoValueNotifier.value = null;
+    this._securedApi = null;
+  }
+
   Future sendPurchaseInfoToServer(PurchaserInfo purchaserInfo) {
     //TODO: Implement sending to server!
   }

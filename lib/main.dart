@@ -3,6 +3,8 @@ import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/network/auth/service.dart';
+import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/pages/login.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
@@ -19,16 +21,33 @@ Future main() async {
   await Purchases.setup("lZwNhhpJqSOiIzyEtooQCAJyqLNikxuD");
 
   await flutterI18nDelegate.load(null);
+
+
   runApp(MainApp(flutterI18nDelegate));
 }
 
-class MainApp extends StatelessWidget {
+
+
+
+class MainApp extends StatefulWidget {
 
   static const String localizationAssetPath = "assets/i18n";
 
   final FlutterI18nDelegate flutterI18nDelegate;
 
   MainApp (this.flutterI18nDelegate);
+
+  @override
+  State<StatefulWidget> createState() {
+    return MainAppState();
+  }
+}
+
+
+
+class MainAppState extends State<MainApp> {
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +71,11 @@ class MainApp extends StatelessWidget {
       ),
       home: LoginPage(),
       localizationsDelegates: [
-        this.flutterI18nDelegate,
+        this.widget.flutterI18nDelegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate
       ],
     );
   }
+
 }

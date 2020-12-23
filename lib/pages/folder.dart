@@ -7,6 +7,7 @@ import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/network/models/folder.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/pages/exercises_overview.dart';
+import 'package:ikleeralles/ui/logout_handler.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -30,13 +31,25 @@ class _FolderPageState extends State<FolderPage> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  LogoutHandler _logoutHandler;
+
   ExercisesOverviewController _overviewController;
 
   ExercisesOverviewBuilder _overviewBuilder;
 
   @override
+  void dispose() {
+    super.dispose();
+    _logoutHandler.unListen();
+  }
+
+  @override
   void initState() {
     super.initState();
+    _logoutHandler = LogoutHandler(
+      context
+    );
+    _logoutHandler.listen();
     _overviewController = ExercisesOverviewController(
         foldersOperationManager: OperationManager(
             operationBuilder: () {

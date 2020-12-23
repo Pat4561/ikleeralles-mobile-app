@@ -8,6 +8,7 @@ import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/models/group.dart';
 import 'package:ikleeralles/pages/exercises_overview.dart';
+import 'package:ikleeralles/ui/logout_handler.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -61,9 +62,15 @@ class GroupPageState extends State<GroupPage> {
 
   ExercisesOverviewBuilder _overviewBuilder;
 
+  LogoutHandler _logoutHandler;
+
   @override
   void initState() {
     super.initState();
+    _logoutHandler = LogoutHandler(
+      context
+    );
+    _logoutHandler.listen();
     _overviewController = ExercisesOverviewController(
         exercisesOperationManager: OperationManager(
             operationBuilder: () {
@@ -79,6 +86,12 @@ class GroupPageState extends State<GroupPage> {
     );
     _overviewBuilder = GroupExercisesOverviewBuilder(_overviewController);
 
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _logoutHandler.unListen();
   }
 
   @override

@@ -1,7 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/network/keys.dart';
-import 'package:ikleeralles/network/models/abstract.dart';
 import 'package:ikleeralles/network/models/user_result.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Credentials {
 
@@ -60,7 +61,17 @@ class UserInfo {
   final UserResult userResult;
   final AccessToken accessToken;
 
+  static const String cachingKey = "userInfoCache";
+
   UserInfo ({ this.credentials, this.userResult, this.accessToken });
+
+  static UserInfo fromMap(Map map) {
+    return UserInfo(
+      credentials: Credentials.fromMap(map[UserInfoKeys.credentials]),
+      accessToken: AccessToken.fromMap(map[UserInfoKeys.accessToken]),
+      userResult: UserResult(map[UserInfoKeys.userResult])
+    );
+  }
 
   Map toMap() {
     return {
@@ -70,6 +81,30 @@ class UserInfo {
     };
   }
 
+  Future save() async {
+    String jsonStr = json.encode(toMap());
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setString(UserInfo.cachingKey, jsonStr);
+  }
 
-  
+  static Future<UserInfo> loadCached() async {
+    try {
+      var prefs = await SharedPreferences.getInstance();
+      String userInfoStr = prefs.getString(cachingKey);
+      if (userInfoStr != null) {
+        Map<String, dynamic> map = json.decode(userInfoStr);
+        return UserInfo.fromMap(map);
+      }
+    } catch (e) {
+
+    }
+    return null;
+
+  }
+
+  static Future clearCache() async {
+    var prefs = await SharedPreferences.getInstance();
+    await prefs.setString(UserInfo.cachingKey, "");
+  }
+
 }

@@ -27,7 +27,6 @@ class LoginPage extends StatefulWidget {
 
 }
 
-//TODO: Subscribe to the valuenotifier and redirect
 
 class LoginPageState extends State<LoginPage> {
 

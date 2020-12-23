@@ -8,6 +8,7 @@ import 'package:ikleeralles/logic/operations/exercises.dart';
 import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/logic/operations/search.dart';
 import 'package:ikleeralles/logic/operations/trash.dart';
+import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/pages/exercise_list.dart';
 import 'package:ikleeralles/pages/exercises_overview.dart';
@@ -15,6 +16,8 @@ import 'package:ikleeralles/pages/home/groups.dart';
 import 'package:ikleeralles/pages/home/my_exercises.dart';
 import 'package:ikleeralles/pages/home/premium.dart';
 import 'package:ikleeralles/pages/home/public.dart';
+import 'package:ikleeralles/pages/login.dart';
+import 'package:ikleeralles/ui/logout_handler.dart';
 import 'package:ikleeralles/ui/navigation_drawer.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/tables/search.dart';
@@ -105,8 +108,6 @@ class _HomePageDrawer extends StatelessWidget {
 }
 
 
-
-
 class _HomePageState extends State<HomePage> {
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -114,6 +115,8 @@ class _HomePageState extends State<HomePage> {
   final PlatformDataProvider platformDataProvider = PlatformDataProvider();
 
   NavigationDrawerController _navigationDrawerController;
+
+  LogoutHandler _logoutHandler;
 
   NavigationDrawerContentChild _getContentChild(String key) {
     switch (key) {
@@ -132,17 +135,27 @@ class _HomePageState extends State<HomePage> {
     return null;
   }
 
+
+
   @override
   void initState() {
     platformDataProvider.load();
     _navigationDrawerController = NavigationDrawerController();
     _navigationDrawerController.activeChild = _getContentChild(_HomePageDrawer.keyMyLists);
+    _logoutHandler = LogoutHandler(context);
+    _logoutHandler.listen();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _logoutHandler.unListen();
   }
 
   void _onNavigationOptionPressed(String key) {
     if (key == _HomePageDrawer.keyLogout) {
-
+      AuthService().logout();
     } else {
       _navigationDrawerController.activeChild = _getContentChild(key);
     }
