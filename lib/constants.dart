@@ -143,7 +143,20 @@ class TranslationKeys {
   static const String members = "members";
   static const String pricingAnnual = "pricingAnnual";
   static const String pricingMonthly = "pricingMonthly";
+  static const String chosen = "chosen";
+  static const String chose = "chose";
+  static const String restoreIAP = "restoreIAP";
+  static const String benefitScans = "benefitScans";
+  static const String benefitAdvancedQuizOptions = "benefitAdvancedQuizOptions";
+  static const String benefitCombineQuiz = "benefitCombineQuiz";
+  static const String benefitUnlimitedScans = "benefitUnlimitedScans";
+  static const String successPurchase = "successPurchase";
 
+}
+
+class Packages {
+  static const String pro = "pro";
+  static const String plus = "plus";
 }
 
 class WebUrls {

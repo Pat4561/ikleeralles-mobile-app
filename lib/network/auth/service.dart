@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/api/base.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 class AuthService {
 
 
@@ -53,6 +54,10 @@ class AuthService {
     );
     updateUserInfo(userInfo);
 
+  }
+
+  Future sendPurchaseInfoToServer(PurchaserInfo purchaserInfo) {
+    //TODO: Implement sending to server!
   }
 
   //The webview should return a loginresult and credentials

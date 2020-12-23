@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/exceptions.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/operations/search.dart';
@@ -10,6 +11,7 @@ import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/keys.dart';
 import 'package:ikleeralles/network/models/group.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
+import 'package:ikleeralles/network/models/package.dart';
 import 'package:ikleeralles/network/models/user_result.dart';
 import 'package:ikleeralles/network/models/folder.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
@@ -28,6 +30,7 @@ class Api {
   Api () {
     this.requestHelper = createRequestHelper();
   }
+
 
   Future<LoginResult> authorize({ String username, String password }) async {
     var result = await requestHelper.singleObjectRequest<LoginResult>(
@@ -137,15 +140,6 @@ class Api {
     );
   }
 
-  Future<String> getPremiumInfo() async {
-    var response = await requestHelper.executeRequest(
-      route: Routes.premiumInfo,
-      method: RequestMethod.get
-    );
-    print(response.body);
-    return response.body;
-  }
-
   Future<Folder> deleteFolder(Folder folder) async {
     return requestHelper.singleObjectRequest<Folder>(
         route: Routes.deleteFolder(folder.id),
@@ -221,6 +215,22 @@ class Api {
         method: RequestMethod.post,
         body: body
     );
+  }
+
+  Future<WebPackageType> getWebPackageType() async {
+
+    var response = await requestHelper.executeRequest(
+      route: Routes.premiumInfo
+    );
+    var map = json.decode(response.body);
+    String type = map[ObjectKeys.subscriptionType];
+    if (type == Packages.pro) {
+      return WebPackageType.pro;
+    } else if (type == Packages.plus) {
+      return WebPackageType.plus;
+    } else {
+      return WebPackageType.none;
+    }
   }
 
 

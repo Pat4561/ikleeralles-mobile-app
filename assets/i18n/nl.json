@@ -102,6 +102,14 @@
   "premium": "Premium",
   "signOut": "Uitloggen",
   "myGroups": "Groepen",
-  "pricingAnnual": "{price} per jaar",
-  "pricingMonthly": "{price} per maand"
+  "pricingAnnual": "per jaar",
+  "pricingMonthly": "per maand",
+  "chose": "Kiezen",
+  "chosen": "Gekozen",
+  "restoreIAP": "Eerdere aankopen herstellen",
+  "benefitScans": "20 woordenlijsten scannen",
+  "benefitAdvancedQuizOptions": "Uitgebreide overhooropties",
+  "benefitCombineQuiz": "Woordenlijsten combineren",
+  "benefitUnlimitedScans": "Onbeperkt woordenlijsten scannen",
+  "purchaseSuccess": "Je aankoop was succesvol, je bent nu een Premium-member!"
 }

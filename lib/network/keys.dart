@@ -28,4 +28,6 @@ class ObjectKeys {
   static String members = "members";
   static String username = "username";
   static String role = "role";
+  static String type = "type";
+  static String subscriptionType = "subscriptionType";
 }

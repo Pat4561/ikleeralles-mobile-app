@@ -38,4 +38,11 @@ class UserInfo {
 
   UserInfo ({ this.credentials, this.userResult, this.accessToken });
 
+
+  Future save() {
+    //Implement save function
+  }
+
+
+
 }
