@@ -52,6 +52,7 @@ class AuthService {
         userResult: userResult,
         credentials: credentials
     );
+    await userInfo.save();
     updateUserInfo(userInfo);
 
   }

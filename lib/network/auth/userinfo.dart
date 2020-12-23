@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/network/keys.dart';
+import 'package:ikleeralles/network/models/abstract.dart';
 import 'package:ikleeralles/network/models/user_result.dart';
 
 class Credentials {
@@ -15,6 +16,14 @@ class Credentials {
       password: map[AuthKeys.password]
     );
   }
+
+
+  Map toMap() {
+    return {
+      AuthKeys.username: usernameOrEmail,
+      AuthKeys.password: password
+    };
+  }
 }
 
 class AccessToken {
@@ -28,7 +37,22 @@ class AccessToken {
     }
   }
 
+  static AccessToken fromMap (Map map) {
+    return AccessToken(
+      map[AuthKeys.token],
+      validTill: DateTime.fromMicrosecondsSinceEpoch(map[AuthKeys.validTill])
+    );
+  }
+
+  Map toMap() {
+    return {
+      AuthKeys.token: token,
+      AuthKeys.validTill: validTill.millisecondsSinceEpoch
+    };
+  }
+
 }
+
 
 class UserInfo {
 
@@ -38,11 +62,14 @@ class UserInfo {
 
   UserInfo ({ this.credentials, this.userResult, this.accessToken });
 
-
-  Future save() {
-    //Implement save function
+  Map toMap() {
+    return {
+      UserInfoKeys.credentials: credentials.toMap(),
+      UserInfoKeys.userResult: userResult.toMap(),
+      UserInfoKeys.accessToken: accessToken.toMap()
+    };
   }
 
 
-
+  
 }

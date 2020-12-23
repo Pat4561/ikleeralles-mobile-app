@@ -1,9 +1,18 @@
 
+
+class UserInfoKeys {
+  static String userResult = "userResult";
+  static String accessToken = "accessToken";
+  static String credentials = "credentials";
+}
+
 class AuthKeys {
   static String username = "username";
   static String password = "password";
   static String hasPremium = "hasPremium";
   static String accessToken = "access_token";
+  static String validTill = "validTill";
+  static String token = "token";
 }
 
 class ObjectKeys {
