@@ -144,6 +144,9 @@ class _HomePageState extends State<HomePage> {
     _navigationDrawerController.activeChild = _getContentChild(_HomePageDrawer.keyMyLists);
     _logoutHandler = LogoutHandler(context);
     _logoutHandler.listen();
+
+
+
     super.initState();
   }
 

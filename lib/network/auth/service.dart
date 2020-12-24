@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/api/base.dart';
@@ -35,6 +37,37 @@ class AuthService {
 
   void unListen( Function() onUserInfoUpdated ) {
     this.userInfoValueNotifier.removeListener(onUserInfoUpdated);
+  }
+
+
+  Future tryLoginFromCache() async {
+    Completer completer = Completer();
+    try {
+      var cachedUserInfo = await UserInfo.loadCached();
+      if (cachedUserInfo != null) {
+
+        var loginResult = await Api().authorize(
+            username: cachedUserInfo.credentials.usernameOrEmail,
+            password: cachedUserInfo.credentials.password
+        );
+        var accessToken = AccessToken(loginResult.accessToken);
+        var userResult = await SecuredApi(accessToken).getUser();
+
+        var userInfo = UserInfo(
+            accessToken: accessToken,
+            userResult: userResult,
+            credentials: cachedUserInfo.credentials
+        );
+
+        await userInfo.save();
+        updateUserInfo(userInfo);
+
+      }
+      completer.complete();
+    } catch (e) {
+      completer.complete(e);
+    }
+    return completer.future;
   }
 
   Future login({ String usernameOrEmail, String password }) async {

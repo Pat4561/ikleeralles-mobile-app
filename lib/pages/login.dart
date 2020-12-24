@@ -127,6 +127,8 @@ class LoginPageState extends State<LoginPage> {
     super.initState();
     _validators = Validators(this.context);
 
+    loginManager.loadingDelegate.attachFuture(AuthService().tryLoginFromCache());
+
     AuthService().listen(
       redirectToLogin
     );
