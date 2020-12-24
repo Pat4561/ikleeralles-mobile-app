@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:ikleeralles/logic/managers/purchases.dart';
 import 'package:ikleeralles/network/keys.dart';
 import 'package:ikleeralles/network/models/user_result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -60,16 +61,18 @@ class UserInfo {
   final Credentials credentials;
   final UserResult userResult;
   final AccessToken accessToken;
+  final List<String> activeIAPSubs;
 
   static const String cachingKey = "userInfoCache";
 
-  UserInfo ({ this.credentials, this.userResult, this.accessToken });
+  UserInfo ({ this.credentials, this.userResult, this.accessToken, this.activeIAPSubs });
 
   static UserInfo fromMap(Map map) {
     return UserInfo(
       credentials: Credentials.fromMap(map[UserInfoKeys.credentials]),
       accessToken: AccessToken.fromMap(map[UserInfoKeys.accessToken]),
-      userResult: UserResult(map[UserInfoKeys.userResult])
+      userResult: UserResult(map[UserInfoKeys.userResult]),
+      activeIAPSubs: map[UserInfoKeys.activeIAPSubs]
     );
   }
 
@@ -77,7 +80,8 @@ class UserInfo {
     return {
       UserInfoKeys.credentials: credentials.toMap(),
       UserInfoKeys.userResult: userResult.toMap(),
-      UserInfoKeys.accessToken: accessToken.toMap()
+      UserInfoKeys.accessToken: accessToken.toMap(),
+      UserInfoKeys.activeIAPSubs: activeIAPSubs
     };
   }
 
@@ -107,4 +111,12 @@ class UserInfo {
     await prefs.setString(UserInfo.cachingKey, "");
   }
 
+
+  bool get hasPremium {
+    return userResult.hasPremium ||
+        activeIAPSubs.contains(IAPSku.monthlySubAndroid) ||
+        activeIAPSubs.contains(IAPSku.monthlySubIOS) ||
+        activeIAPSubs.contains(IAPSku.yearlySubIOS) ||
+        activeIAPSubs.contains(IAPSku.yearlySubAndroid);
+  }
 }

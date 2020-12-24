@@ -39,12 +39,12 @@ class LoginManager extends Model {
   }
 
   Future register({ LoginResult loginResult, Credentials credentials }) {
-    Future future = AuthService().registerFromWeb(
+    /*Future future = AuthService().registerFromWeb(
       loginResult: loginResult,
       credentials: credentials
     );
     loadingDelegate.attachFuture(future);
-    return future;
+    return future; */
   }
 
 

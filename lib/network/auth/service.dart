@@ -52,11 +52,12 @@ class AuthService {
         );
         var accessToken = AccessToken(loginResult.accessToken);
         var userResult = await SecuredApi(accessToken).getUser();
-
+        var purchaserInfo = await Purchases.getPurchaserInfo();
         var userInfo = UserInfo(
             accessToken: accessToken,
             userResult: userResult,
-            credentials: cachedUserInfo.credentials
+            credentials: cachedUserInfo.credentials,
+            activeIAPSubs: purchaserInfo.activeSubscriptions
         );
 
         await userInfo.save();
@@ -80,10 +81,12 @@ class AuthService {
     var credentials = Credentials(usernameOrEmail: usernameOrEmail, password: password);
     var accessToken = AccessToken(loginResult.accessToken);
     var userResult = await SecuredApi(accessToken).getUser();
+    var purchaserInfo = await Purchases.getPurchaserInfo();
     var userInfo = UserInfo(
         accessToken: accessToken,
         userResult: userResult,
-        credentials: credentials
+        credentials: credentials,
+        activeIAPSubs: purchaserInfo.activeSubscriptions
     );
     await userInfo.save();
     updateUserInfo(userInfo);
@@ -100,17 +103,6 @@ class AuthService {
     //TODO: Implement sending to server!
   }
 
-  //The webview should return a loginresult and credentials
-  Future registerFromWeb({ LoginResult loginResult, Credentials credentials }) async {
-    var accessToken = AccessToken(loginResult.accessToken);
-    var userResult = await SecuredApi(accessToken).getUser();
-    var userInfo = UserInfo(
-        accessToken: accessToken,
-        userResult: userResult,
-        credentials: credentials
-    );
-    updateUserInfo(userInfo);
-  }
 
 
 

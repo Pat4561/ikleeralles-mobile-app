@@ -4,6 +4,7 @@ class UserInfoKeys {
   static String userResult = "userResult";
   static String accessToken = "accessToken";
   static String credentials = "credentials";
+  static String activeIAPSubs = "activeIAPSubs";
 }
 
 class AuthKeys {
