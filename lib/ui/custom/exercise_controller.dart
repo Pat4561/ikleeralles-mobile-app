@@ -58,8 +58,8 @@ class ExerciseListController {
     _termsProvider = SetInputTypeProvider(_platformDataProvider);
     _definitionsProvider = SetInputTypeProvider(_platformDataProvider);
     _titleTextController = TextEditingController();
-    _termValueNotifier = ValueNotifier<String>(_termsProvider.defaultValue());
-    _definitionValueNotifier = ValueNotifier<String>(_definitionsProvider.defaultValue());
+    _termValueNotifier = ValueNotifier<String>(_termsProvider.defaultKey());
+    _definitionValueNotifier = ValueNotifier<String>(_definitionsProvider.defaultKey());
     _setsController = _createSetsController();
   }
 
@@ -70,8 +70,8 @@ class ExerciseListController {
     _readOnly = readOnly;
     _list = list;
     _titleTextController = TextEditingController(text: list.name);
-    _termValueNotifier = ValueNotifier<String>(list.original ?? _termsProvider.defaultValue());
-    _definitionValueNotifier = ValueNotifier<String>(list.translated ?? _definitionsProvider.defaultValue());
+    _termValueNotifier = ValueNotifier<String>(list.original ?? _termsProvider.defaultKey());
+    _definitionValueNotifier = ValueNotifier<String>(list.translated ?? _definitionsProvider.defaultKey());
     _setsController = _createSetsController(details: ExerciseDetails(list.content));
   }
 

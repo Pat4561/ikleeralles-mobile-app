@@ -12,6 +12,10 @@ class SetInputTypeProvider {
     return provider.languageData.get("nl");
   }
 
+  String defaultKey() {
+    return "nl";
+  }
+
   List<String> allValues() {
     return provider.languageData.allValues();
   }
