@@ -3,9 +3,11 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/purchases.dart';
+import 'package:ikleeralles/pages/home/main.dart';
 import 'package:ikleeralles/ui/background_builder.dart';
 import 'package:ikleeralles/ui/navigation_drawer.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
+import 'package:ikleeralles/ui/themed/appbar.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
 import 'package:purchases_flutter/object_wrappers.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -131,11 +133,47 @@ class PremiumInfoCard extends StatelessWidget {
 
 }
 
+class PremiumInfoPage extends StatelessWidget {
+
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final PremiumInfoSubPage child = PremiumInfoSubPage.standalone();
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        key: scaffoldKey,
+        appBar: ThemedAppBar(
+          title: FlutterI18n.translate(context, TranslationKeys.premium),
+          leading: IconButton(icon: Icon(Icons.close, color: Colors.white), onPressed: () {
+           Navigator.pop(context);
+          }),
+        ),
+        body: child.body(context)
+    );
+  }
+
+  static void show(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(
+      builder: (BuildContext context) {
+        return PremiumInfoPage();
+      }
+    ));
+  }
+
+}
 
 
 class PremiumInfoSubPage extends NavigationDrawerContentChild {
 
   final IAPManager _iapManager = IAPManager();
+
+  PremiumInfoSubPage.standalone () : super(null, key: null) {
+    _iapManager.load();
+  }
 
   PremiumInfoSubPage (NavigationDrawerController controller, String key) : super(controller, key: key) {
     _iapManager.load();

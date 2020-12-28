@@ -17,6 +17,7 @@ import 'package:ikleeralles/pages/home/my_exercises.dart';
 import 'package:ikleeralles/pages/home/premium.dart';
 import 'package:ikleeralles/pages/home/public.dart';
 import 'package:ikleeralles/pages/login.dart';
+import 'package:ikleeralles/ui/dialogs/premium_lock.dart';
 import 'package:ikleeralles/ui/logout_handler.dart';
 import 'package:ikleeralles/ui/navigation_drawer.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
@@ -34,12 +35,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageDrawer extends StatelessWidget {
-
-  static const String keyMyLists = "myLists";
-  static const String keyGroups = "groups";
-  static const String keyPublicLists = "publicLists";
-  static const String keyPremium = "premium";
-  static const String keyLogout = "logout";
 
   final Function(String) onPressed;
   final NavigationDrawerController drawerController;
@@ -91,14 +86,14 @@ class _HomePageDrawer extends StatelessWidget {
       child: ListView(
         children: <Widget>[
           _header(context),
-          _menuItem(context, iconData: Icons.person, title: FlutterI18n.translate(context, TranslationKeys.myLists), key: _HomePageDrawer.keyMyLists),
-          _menuItem(context, iconData: Icons.group, title: FlutterI18n.translate(context, TranslationKeys.myGroups), key: _HomePageDrawer.keyGroups),
-          _menuItem(context, iconData: Icons.public, title: FlutterI18n.translate(context, TranslationKeys.publicLists), key: _HomePageDrawer.keyPublicLists),
-          _menuItem(context, iconData: Icons.shopping_basket, title: FlutterI18n.translate(context, TranslationKeys.premium), key: _HomePageDrawer.keyPremium),
+          _menuItem(context, iconData: Icons.person, title: FlutterI18n.translate(context, TranslationKeys.myLists), key: HomePageNavigator.keyMyLists),
+          _menuItem(context, iconData: Icons.group, title: FlutterI18n.translate(context, TranslationKeys.myGroups), key: HomePageNavigator.keyGroups),
+          _menuItem(context, iconData: Icons.public, title: FlutterI18n.translate(context, TranslationKeys.publicLists), key: HomePageNavigator.keyPublicLists),
+          _menuItem(context, iconData: Icons.shopping_basket, title: FlutterI18n.translate(context, TranslationKeys.premium), key: HomePageNavigator.keyPremium),
           ListTile(
             title: Text(FlutterI18n.translate(context, TranslationKeys.signOut), style: TextStyle(fontFamily: Fonts.ubuntu, fontSize: 16, fontWeight: FontWeight.bold)),
             trailing: Icon(Icons.exit_to_app, color: Colors.red),
-            onTap: () => onPressed(keyLogout),
+            onTap: () => onPressed(HomePageNavigator.keyLogout),
           )
         ],
       ),
@@ -107,6 +102,19 @@ class _HomePageDrawer extends StatelessWidget {
 
 }
 
+typedef NavigatorCallback = void Function(String);
+
+class HomePageNavigator {
+
+
+  static const String keyMyLists = "myLists";
+  static const String keyGroups = "groups";
+  static const String keyPublicLists = "publicLists";
+  static const String keyPremium = "premium";
+  static const String keyLogout = "logout";
+
+
+}
 
 class _HomePageState extends State<HomePage> {
 
@@ -120,28 +128,30 @@ class _HomePageState extends State<HomePage> {
 
   NavigationDrawerContentChild _getContentChild(String key) {
     switch (key) {
-      case _HomePageDrawer.keyMyLists:
-        return MyExercisesSubPage(_navigationDrawerController, _HomePageDrawer.keyMyLists,
+      case HomePageNavigator.keyMyLists:
+        return MyExercisesSubPage(_navigationDrawerController, HomePageNavigator.keyMyLists,
             platformDataProvider: platformDataProvider);
-      case _HomePageDrawer.keyGroups:
-        return GroupsSubPage(_navigationDrawerController, _HomePageDrawer.keyGroups, platformDataProvider: platformDataProvider);
-      case _HomePageDrawer.keyPublicLists:
-        return PublicSearchSubPage(_navigationDrawerController, _HomePageDrawer.keyPublicLists,
+      case HomePageNavigator.keyGroups:
+        return GroupsSubPage(_navigationDrawerController, HomePageNavigator.keyGroups, platformDataProvider: platformDataProvider);
+      case HomePageNavigator.keyPublicLists:
+        return PublicSearchSubPage(_navigationDrawerController, HomePageNavigator.keyPublicLists,
             platformDataProvider: platformDataProvider);
-      case _HomePageDrawer.keyPremium:
+      case HomePageNavigator.keyPremium:
         return PremiumInfoSubPage(
-            _navigationDrawerController, _HomePageDrawer.keyPremium);
+            _navigationDrawerController, HomePageNavigator.keyPremium);
     }
     return null;
   }
 
 
-
   @override
   void initState() {
     platformDataProvider.load();
+
+
+
     _navigationDrawerController = NavigationDrawerController();
-    _navigationDrawerController.activeChild = _getContentChild(_HomePageDrawer.keyMyLists);
+    _navigationDrawerController.activeChild = _getContentChild(HomePageNavigator.keyMyLists);
     _logoutHandler = LogoutHandler(context);
     _logoutHandler.listen();
 
@@ -157,7 +167,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onNavigationOptionPressed(String key) {
-    if (key == _HomePageDrawer.keyLogout) {
+    if (key == HomePageNavigator.keyLogout) {
       AuthService().logout();
     } else {
       _navigationDrawerController.activeChild = _getContentChild(key);
