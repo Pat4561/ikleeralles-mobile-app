@@ -151,6 +151,9 @@ class TranslationKeys {
   static const String benefitCombineQuiz = "benefitCombineQuiz";
   static const String benefitUnlimitedScans = "benefitUnlimitedScans";
   static const String successPurchase = "successPurchase";
+  static const String premiumLockTitle = "premiumLockTitle";
+  static const String premiumLockDesc = "premiumLockDesc";
+  static const String premiumLockViewAction = "premiumLockViewAction";
 
 }
 

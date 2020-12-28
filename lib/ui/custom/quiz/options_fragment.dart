@@ -3,6 +3,8 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/quiz/options.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
+import 'package:ikleeralles/network/auth/service.dart';
+import 'package:ikleeralles/ui/dialogs/premium_lock.dart';
 import 'package:ikleeralles/ui/extensions/value_controller.dart';
 import 'package:ikleeralles/ui/numeric_input.dart';
 import 'package:ikleeralles/ui/extensions/group_controller.dart';
@@ -91,7 +93,7 @@ class _QuizOptionsUI {
     );
   }
 
-  Widget _checkBoxRow(ValueController<bool> controller, { @required String label, double checkBoxSize = 30 }) {
+  Widget _checkBoxRow(ValueController<bool> controller, { @required String label, double checkBoxSize = 30, Function(bool, Function(bool)) outerUpdateCallback }) {
     return Row(
       children: <Widget>[
         Container(child: SizedBox(
@@ -103,7 +105,13 @@ class _QuizOptionsUI {
                   return Checkbox(
                       value: selectedValue,
                       activeColor: BrandColors.secondaryButtonColor,
-                      onChanged: (newValue) => updateCallback(newValue)
+                      onChanged: (newValue) {
+                        if (outerUpdateCallback != null) {
+                          outerUpdateCallback(selectedValue, updateCallback);
+                        } else {
+                          updateCallback(selectedValue);
+                        }
+                      }
                   );
                 }
             ),
@@ -159,6 +167,8 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
   ValueController<int> _timeCorrectAnswerController;
   ValueController<int> _timeIncorrectAnswerController;
 
+  final PremiumLocker _premiumLocker = PremiumLocker();
+
   bool _showAdvanced = false;
 
   QuizOptionsFragmentData getData() {
@@ -188,6 +198,7 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
   }
 
   void initializeControllers() {
+
 
     _directionTypeController = GroupController<CustomOption<QuizDirectionType>>(
         options: [
@@ -320,7 +331,20 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
                           selectedValue.start.round().toString(),
                           selectedValue.end.round().toString()
                       ),
-                      onChanged: (rangeValues) => updateCallback(rangeValues),
+                      onChanged: (rangeValues) {
+                        updateCallback(rangeValues);
+
+                        if (!_premiumLocker.isPremium) {
+                          _premiumLocker.schedulePresentation(
+                              context,
+                              undoAction: () {
+                                updateCallback(RangeValues(1, max));
+                              }
+                          );
+                        }
+
+
+                      },
                     );
                   }
               )
@@ -358,12 +382,25 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
                   color: Color.fromRGBO(240, 240, 240, 1)
               ),
               onLeftButtonPressed: (BuildContext context) {
-                if (selectedValue - 1 > 0) {
-                  updateCallback(selectedValue - 1);
+                if (!_premiumLocker.isPremium) {
+                  _premiumLocker.schedulePresentation(
+                      context
+                  );
+                } else {
+                  if (selectedValue - 1 > 0) {
+                    updateCallback(selectedValue - 1);
+                  }
                 }
+
               },
               onRightButtonPressed: (BuildContext context) {
-                updateCallback(selectedValue + 1);
+                if (!_premiumLocker.isPremium) {
+                  _premiumLocker.schedulePresentation(
+                      context
+                  );
+                } else {
+                  updateCallback(selectedValue + 1);
+                }
               },
               textStyle: TextStyle(
                   fontFamily: Fonts.ubuntu,
@@ -405,7 +442,19 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
                 bottom: 15
             ),
           ),
-          _checkBoxRow(_enterToNextAnswerController, label: FlutterI18n.translate(context, TranslationKeys.enterToNextAnswer)),
+          _checkBoxRow(
+              _enterToNextAnswerController,
+              label: FlutterI18n.translate(context, TranslationKeys.enterToNextAnswer),
+              outerUpdateCallback: (bool isSelected, Function(bool) updateCallback) {
+                if (!_premiumLocker.isPremium) {
+                  _premiumLocker.schedulePresentation(
+                      context
+                  );
+                } else {
+                  updateCallback(isSelected);
+                }
+              }
+          ),
         ],
       ),
     );
