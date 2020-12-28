@@ -10,6 +10,7 @@ import 'package:ikleeralles/ui/custom/quiz/answer_form/abstract.dart';
 import 'package:ikleeralles/ui/custom/quiz/builder.dart';
 import 'package:ikleeralles/ui/custom/quiz/question_presentation.dart';
 import 'package:ikleeralles/ui/dialogs/navigation_dialog.dart';
+import 'package:ikleeralles/ui/dialogs/premium_lock.dart';
 import 'package:ikleeralles/ui/dialogs/quiz_result.dart';
 import 'package:ikleeralles/ui/logout_handler.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
@@ -230,6 +231,8 @@ class QuizPageState extends State<QuizPage> {
 
   final GlobalKey<QuizQuestionPresentationState> _quizQuestionPresentationKey = GlobalKey<QuizQuestionPresentationState>();
 
+  final PremiumLocker _premiumLocker = PremiumLocker();
+
   LogoutHandler _logoutHandler;
 
   @override
@@ -246,6 +249,10 @@ class QuizPageState extends State<QuizPage> {
   }
 
   void _unMarkAsIncorrectAnswer() {
+    if (!_premiumLocker.isPremium) {
+      _premiumLocker.schedulePresentation(context);
+      return;
+    }
     widget.builder.quizSet.unMarkAsIncorrectAnswer();
   }
 
