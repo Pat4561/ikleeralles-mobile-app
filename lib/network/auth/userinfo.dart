@@ -68,11 +68,13 @@ class UserInfo {
   UserInfo ({ this.credentials, this.userResult, this.accessToken, this.activeIAPSubs });
 
   static UserInfo fromMap(Map map) {
+    List activeSubs = map[UserInfoKeys.activeIAPSubs];
+    List<String> activeSubsStrList = activeSubs.map((e) => e.toString()).toList();
     return UserInfo(
       credentials: Credentials.fromMap(map[UserInfoKeys.credentials]),
       accessToken: AccessToken.fromMap(map[UserInfoKeys.accessToken]),
       userResult: UserResult(map[UserInfoKeys.userResult]),
-      activeIAPSubs: map[UserInfoKeys.activeIAPSubs]
+      activeIAPSubs: activeSubsStrList
     );
   }
 
@@ -100,7 +102,7 @@ class UserInfo {
         return UserInfo.fromMap(map);
       }
     } catch (e) {
-
+      print(e);
     }
     return null;
 
