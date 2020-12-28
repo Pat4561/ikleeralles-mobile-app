@@ -18,6 +18,7 @@ import 'package:ikleeralles/ui/bottomsheets/folders.dart';
 import 'package:ikleeralles/ui/bottomsheets/quiz_options.dart';
 import 'package:ikleeralles/ui/bottomsheets/trash.dart';
 import 'package:ikleeralles/ui/dialogs/create_folder.dart';
+import 'package:ikleeralles/ui/dialogs/premium_lock.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/tables/folders.dart';
@@ -108,6 +109,8 @@ class ExercisesOverviewController {
 
   final GlobalKey<TrashTableState> trashTableKey = GlobalKey<TrashTableState>();
 
+  final PremiumLocker premiumLocker = PremiumLocker();
+
   final OperationManager foldersOperationManager;
 
   final OperationManager exercisesOperationManager;
@@ -153,6 +156,13 @@ class ExercisesOverviewController {
   }
 
   void onMergePressed(BuildContext context, List<ExerciseList> exercises) {
+
+    if (!premiumLocker.isPremium) {
+      premiumLocker.schedulePresentation(context);
+      return;
+    }
+
+
     LoadingMessageHandler loadingMessageHandler = LoadingMessageHandler();
     loadingMessageHandler.show(context);
     actionsManager.merge(
