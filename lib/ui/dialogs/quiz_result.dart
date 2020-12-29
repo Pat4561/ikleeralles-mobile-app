@@ -289,6 +289,7 @@ class _MainResultCell extends StatelessWidget {
           ),
           Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.only(left: 20),
@@ -305,13 +306,8 @@ class _MainResultCell extends StatelessWidget {
                             bottom: 5
                         ),
                       ),
-                      Row(
-                        children: <Widget>[
-                          _languageLabel(language: platformDataProvider.languageData.get(this.original), caption: FlutterI18n.translate(context, TranslationKeys.term)),
-                          SizedBox(width: 15),
-                          _languageLabel(language: platformDataProvider.languageData.get(this.translated), caption: FlutterI18n.translate(context, TranslationKeys.definition)),
-                        ],
-                      ),
+                      _languageLabel(language: platformDataProvider.languageData.get(this.original), caption: FlutterI18n.translate(context, TranslationKeys.term)),
+                      _languageLabel(language: platformDataProvider.languageData.get(this.translated), caption: FlutterI18n.translate(context, TranslationKeys.definition)),
                       Container(
                         margin: EdgeInsets.only(
                           top: 10

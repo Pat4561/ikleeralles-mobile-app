@@ -291,7 +291,7 @@ class QuizPageState extends State<QuizPage> {
 
 
   void _quizErrors(List<QuizQuestion> questions) {
-
+    widget.builder.quizSet.quizErrors(questions);
   }
 
   void _finishQuiz() {

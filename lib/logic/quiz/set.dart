@@ -126,6 +126,23 @@ class QuizSet extends Model {
 
   }
 
+  void quizErrors(List<QuizQuestion> questions) {
+
+
+    List<String> questionTitles = questions.map((e) => e.title).toList();
+
+    List<QuizQuestion> questionsToAsk = this.inputQuestions.where((element) {
+      return questionTitles.contains(element.title);
+    }).toList();
+
+    _upcomingQuestions = List.of(questionsToAsk);
+    _lastAnswered = null;
+    _askedQuestionsCount = 0;
+    answers = QuizAnswers();
+    randomizeQuestions();
+    notifyListeners();
+  }
+
   void reset() {
     _upcomingQuestions = List.of(this.inputQuestions);
     _lastAnswered = null;
