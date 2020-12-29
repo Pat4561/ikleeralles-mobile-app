@@ -47,9 +47,18 @@ dependencies:
   shared_preferences: ^0.5.12+4
 
 dev_dependencies:
+  flutter_launcher_icons: "^0.8.0"
+  flutter_launcher_name: "^0.0.1"
   flutter_test:
     sdk: flutter
 
+flutter_launcher_name:
+  name: "IkLeerAlles"
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/launcher.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
