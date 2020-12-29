@@ -285,7 +285,9 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
                 term: _exerciseListController.termValueNotifier.value,
                 definition: _exerciseListController.definitionValueNotifier.value,
                 platformDataProvider: widget.platformDataProvider,
-                onCopyTestPressed: (BuildContext context) => _exerciseEditorActionsHandler.copyList(context),
+                onCopyTestPressed: (BuildContext context) {
+                  _exerciseEditorActionsHandler.copyList(context, widget.platformDataProvider);
+                },
               )];
             } else {
               return <Widget>[

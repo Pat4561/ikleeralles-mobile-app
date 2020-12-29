@@ -334,7 +334,7 @@ class ExerciseEditorActionsHandler {
     });
   }
 
-  void copyList(BuildContext context) {
+  void copyList(BuildContext context, PlatformDataProvider platformDataProvider) {
     var exerciseList = controller.copyOfCurrentList(context);
     Future<ExerciseList> copyListFuture = AuthService().securedApi.createExerciseList(exerciseList);
     loadingMessageHandler.show(context);
@@ -343,6 +343,7 @@ class ExerciseEditorActionsHandler {
           builder: (BuildContext context) {
             return ExerciseEditorPage(
               exerciseList: exerciseList,
+              platformDataProvider: platformDataProvider,
             );
           }
       ));
