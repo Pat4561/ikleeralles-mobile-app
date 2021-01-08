@@ -257,6 +257,9 @@ class QuizPageState extends State<QuizPage> {
   }
 
   void _onEnterPressed() {
+
+    FocusScope.of(context).unfocus();
+
     if (!widget.builder.options.visibilityOptions.useEnterToGoToNext) {
       return;
     }
