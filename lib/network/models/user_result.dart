@@ -10,7 +10,7 @@ class UserResult extends ParsableObject {
   int trashCount;
 
   int year;
-  int level;
+  String level;
 
   UserResult (Map<String, dynamic> resultDictionary) : super(resultDictionary);
 
