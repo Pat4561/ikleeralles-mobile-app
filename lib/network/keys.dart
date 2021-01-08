@@ -5,6 +5,10 @@ class UserInfoKeys {
   static String accessToken = "accessToken";
   static String credentials = "credentials";
   static String activeIAPSubs = "activeIAPSubs";
+  static String folderCount = "folderCount";
+  static String trashCount = "trashCount";
+  static String year = "year";
+  static String level = "level";
 }
 
 class AuthKeys {

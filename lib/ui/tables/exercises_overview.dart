@@ -4,6 +4,7 @@ import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
+import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/ui/background_builder.dart';
 import 'package:ikleeralles/ui/cells/actions.dart';
@@ -147,11 +148,11 @@ class ExercisesTableState extends OperationBasedTableState<ExercisesTable> {
           if (section == 0) {
             if (row == 0) {
               return Visibility(child: actionCell(
-                TrashActionCell(onPressed: widget.onTrashPressed)
+                TrashActionCell(onPressed: widget.onTrashPressed, count: AuthService().userInfo.userResult.trashCount)
               ), visible: widget.onTrashPressed != null);
             } else if (row == 1) {
               return Visibility(child: actionCell(
-                MyFoldersActionCell(onPressed: widget.onMyFolderPressed)
+                MyFoldersActionCell(onPressed: widget.onMyFolderPressed, count: AuthService().userInfo.userResult.folderCount),
               ), visible: widget.onMyFolderPressed != null);
             } else if (row == 2) {
               return Visibility(
