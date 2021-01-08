@@ -44,7 +44,7 @@ class ExercisesActionsManager extends Model {
   }
 
   Future deleteExercises(List<ExerciseList> exercises) {
-    //TODO: Implement!!
+    return AuthService().securedApi.deleteExerciseLists(exercises);
   }
 
   Future restoreExerciseList(ExerciseList exerciseList) {
