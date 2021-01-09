@@ -11,11 +11,13 @@ class ThemedSelect extends StatelessWidget  {
   final double radius;
   final Function onPressed;
   final Color color;
+  final Color textColor;
+  final BoxDecoration boxDecoration;
 
 
-  ThemedSelect ({ @required this.placeholder, this.labelText, this.color = Colors.white, this.height = 24, this.radius = 10, this.iconContainerWidth = 30, this.onPressed });
+  ThemedSelect ({ @required this.placeholder, this.textColor, this.boxDecoration, this.labelText, this.color = Colors.white, this.height = 24, this.radius = 10, this.iconContainerWidth = 30, this.onPressed });
 
-  TextStyle textStyle({ FontWeight fontWeight = FontWeight.bold, double fontSize = 14, Color color = Colors.white}) {
+  TextStyle textStyle({ FontWeight fontWeight = FontWeight.w600, double fontSize = 14, Color color = Colors.white}) {
     return TextStyle(
         color: color,
         fontFamily: Fonts.ubuntu,
@@ -29,7 +31,7 @@ class ThemedSelect extends StatelessWidget  {
       margin: EdgeInsets.only(
           top: 10
       ),
-      decoration: BoxDecoration(
+      decoration: boxDecoration ?? BoxDecoration(
           borderRadius: BorderRadius.circular(
               radius
           ),
@@ -38,7 +40,7 @@ class ThemedSelect extends StatelessWidget  {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radius),
           child: Container(
             height: height,
             child: Row(
@@ -82,7 +84,7 @@ class ThemedSelect extends StatelessWidget  {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(this.labelText, style: textStyle()),
+          Text(this.labelText, style: textStyle(color: textColor ?? Colors.white)),
           button(context)
         ],
       );
