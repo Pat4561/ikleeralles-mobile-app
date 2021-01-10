@@ -154,6 +154,10 @@ class TranslationKeys {
   static const String premiumLockTitle = "premiumLockTitle";
   static const String premiumLockDesc = "premiumLockDesc";
   static const String premiumLockViewAction = "premiumLockViewAction";
+  static const String scholar = "scholar";
+  static const String teacher = "teacher";
+  static const String username = "username";
+  static const String email = "email";
 
 }
 

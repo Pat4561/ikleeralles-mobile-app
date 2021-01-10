@@ -50,7 +50,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
 
   Widget _usernameTextField() {
     return ThemedTextField(
-      labelText: "Gebruikersnaam",
+      labelText: FlutterI18n.translate(context, TranslationKeys.username),
       labelColor: Colors.black,
       borderRadius: 15,
       borderColor: Color.fromRGBO(210, 210, 210, 1),
@@ -60,7 +60,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
 
   Widget _passwordTextField() {
     return ThemedTextField(
-      labelText: "Wachtwoord",
+      labelText: FlutterI18n.translate(context, TranslationKeys.password),
       labelColor: Colors.black,
       borderRadius: 15,
       borderColor: Color.fromRGBO(210, 210, 210, 1),
@@ -73,7 +73,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
 
       child: ThemedSelect(
           placeholder: "1",
-          labelText: "Leerjaar",
+          labelText: FlutterI18n.translate(context, TranslationKeys.year),
           boxDecoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(15)),
             border: Border.all(
@@ -96,7 +96,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
       margin: EdgeInsets.only(top: 10, bottom: 10),
       child: ThemedSelect(
           placeholder: "Havo",
-          labelText: "Opleiding",
+          labelText: FlutterI18n.translate(context, TranslationKeys.level),
           boxDecoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(15)),
               border: Border.all(
@@ -117,7 +117,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
 
   Widget _emailTextField() {
     return ThemedTextField(
-      labelText: "Emailadres",
+      labelText: FlutterI18n.translate(context, TranslationKeys.email),
       labelColor: Colors.black,
       borderRadius: 15,
       borderColor: Color.fromRGBO(210, 210, 210, 1),
