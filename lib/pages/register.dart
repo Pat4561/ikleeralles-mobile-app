@@ -22,18 +22,10 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
 
   TabController _tabController;
 
-  TextEditingController usernameTextController = TextEditingController();
-
-  final List<Tab> _tabs = <Tab>[
-    Tab(text: 'Scholier'),
-    Tab(text: 'Docent'),
-  ];
-
 
   @override
   void initState() {
 
-    _tabController = TabController(vsync: this, length: _tabs.length);
     _validators = Validators(context);
     super.initState();
   }
@@ -70,7 +62,6 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
 
   Widget _yearSelector() {
     return Container(
-
       child: ThemedSelect(
           placeholder: "1",
           labelText: FlutterI18n.translate(context, TranslationKeys.year),
@@ -163,53 +154,57 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Container(
+      body: DefaultTabController(
+        length: 2,
+        child: Column(
+          children: [
+            Container(
 
-            child: TabBar(
-              controller: _tabController,
-              tabs: _tabs,
-              unselectedLabelColor: Colors.black45,
-              labelColor: BrandColors.themeColor,
-              labelStyle: TextStyle(
-                fontSize: 15,
-                fontFamily: Fonts.ubuntu
+              child: TabBar(
+                tabs: <Tab>[
+                  Tab(text: FlutterI18n.translate(context, TranslationKeys.scholar)),
+                  Tab(text: FlutterI18n.translate(context, TranslationKeys.teacher)),
+                ],
+                unselectedLabelColor: Colors.black45,
+                labelColor: BrandColors.themeColor,
+                labelStyle: TextStyle(
+                    fontSize: 15,
+                    fontFamily: Fonts.ubuntu
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                Container(
-                  child: ListView(
-                    padding: EdgeInsets.all(15),
-                    children: [
-                      _usernameTextField(),
-                      _passwordTextField(),
-                      _emailTextField(),
-                      _yearSelector(),
-                      _levelSelector(),
-                      _signUpButton()
-                    ],
+            Expanded(
+              child: TabBarView(
+                children: [
+                  Container(
+                    child: ListView(
+                      padding: EdgeInsets.all(15),
+                      children: [
+                        _usernameTextField(),
+                        _passwordTextField(),
+                        _emailTextField(),
+                        _yearSelector(),
+                        _levelSelector(),
+                        _signUpButton()
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                  child: Form(child: ListView(
-                    padding: EdgeInsets.all(15),
-                    children: [
-                      _usernameTextField(),
-                      _passwordTextField(),
-                      _emailTextField(),
-                      _signUpButton()
-                    ],
-                  )),
-                )
-              ],
-            ),
-          )
-        ],
+                  Container(
+                    child: Form(child: ListView(
+                      padding: EdgeInsets.all(15),
+                      children: [
+                        _usernameTextField(),
+                        _passwordTextField(),
+                        _emailTextField(),
+                        _signUpButton()
+                      ],
+                    )),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       )
     );
   }
