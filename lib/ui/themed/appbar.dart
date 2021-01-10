@@ -185,28 +185,6 @@ class ThemedSearchAppBarState extends State<ThemedSearchAppBar>  {
     );
   }
 
-  Widget selectBox({ String labelText, ValueNotifier<String> notifier, List<String> options }) {
-    return ValueListenableBuilder(
-        valueListenable: notifier,
-        builder: (BuildContext context, String value, Widget widget) {
-          return ThemedSelect(
-              placeholder: notifier.value,
-              labelText: labelText,
-              onPressed: (BuildContext context) {
-                OptionsBottomSheetPresenter<String>(
-                    title: labelText,
-                    items: options,
-                    selectedItem: notifier.value,
-                    onPressed: (item) {
-                      Navigator.pop(context);
-                      notifier.value = item;
-                    }
-                ).show(context);
-              }
-          );
-        }
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -267,7 +245,7 @@ class ThemedSearchAppBarState extends State<ThemedSearchAppBar>  {
                       child: Row(
                         children: <Widget>[
                           Expanded(
-                              child: selectBox(
+                              child: ThemedSelect.selectBox(
                                 labelText: FlutterI18n.translate(context, TranslationKeys.year),
                                 options: this.widget.platformDataProvider.years,
                                 notifier: _yearNotifier,
@@ -275,7 +253,7 @@ class ThemedSearchAppBarState extends State<ThemedSearchAppBar>  {
                           ),
                           SizedBox(width: 20),
                           Expanded(
-                              child: selectBox(
+                              child: ThemedSelect.selectBox(
                                 labelText: FlutterI18n.translate(context, TranslationKeys.level),
                                 options: this.widget.platformDataProvider.levels,
                                 notifier: _levelNotifier,

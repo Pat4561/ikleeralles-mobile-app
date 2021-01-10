@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/ui/bottomsheets/options.dart';
 
 
 class ThemedSelect extends StatelessWidget  {
@@ -16,6 +17,30 @@ class ThemedSelect extends StatelessWidget  {
 
 
   ThemedSelect ({ @required this.placeholder, this.textColor, this.boxDecoration, this.labelText, this.color = Colors.white, this.height = 24, this.radius = 10, this.iconContainerWidth = 30, this.onPressed });
+
+  static Widget selectBox({ String labelText, ValueNotifier<String> notifier, List<String> options }) {
+    return ValueListenableBuilder(
+        valueListenable: notifier,
+        builder: (BuildContext context, String value, Widget widget) {
+          return ThemedSelect(
+              placeholder: notifier.value,
+              labelText: labelText,
+              onPressed: (BuildContext context) {
+                OptionsBottomSheetPresenter<String>(
+                    title: labelText,
+                    items: options,
+                    selectedItem: notifier.value,
+                    onPressed: (item) {
+                      Navigator.pop(context);
+                      notifier.value = item;
+                    }
+                ).show(context);
+              }
+          );
+        }
+    );
+  }
+
 
   TextStyle textStyle({ FontWeight fontWeight = FontWeight.w600, double fontSize = 14, Color color = Colors.white}) {
     return TextStyle(
