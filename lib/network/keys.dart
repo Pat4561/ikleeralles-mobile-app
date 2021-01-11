@@ -10,6 +10,7 @@ class UserInfoKeys {
   static String year = "year";
   static String level = "level";
   static String email = "email";
+  static String role = "role";
 }
 
 class AuthKeys {
