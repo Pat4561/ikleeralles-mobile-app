@@ -33,9 +33,10 @@ class Api {
   }
 
   Future<RegistrationResult> register(Registration registration) async {
+    var map = registration.toMap();
     var result = await requestHelper.singleObjectRequest<RegistrationResult>(
       route: Routes.register,
-      body: registration.toMap(),
+      body: map,
       method: RequestMethod.post,
       toObject: (Map map) {
         return RegistrationResult(
@@ -43,6 +44,8 @@ class Api {
         );
       }
     );
+    if (result == null)
+      throw UnKnownRegistrationException();
     return result;
   }
 
