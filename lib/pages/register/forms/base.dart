@@ -20,6 +20,8 @@ abstract class RegisterFormState<T> extends State<RegisterForm> {
 
   Validators _validators;
 
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   TextEditingController _usernameTextController = TextEditingController();
   TextEditingController get usernameTextController => _usernameTextController;
 
@@ -37,7 +39,7 @@ abstract class RegisterFormState<T> extends State<RegisterForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(child: ListView(
+    return Form(key: _formKey, child: ListView(
       padding: EdgeInsets.all(15),
       children: children(context),
     ));
@@ -100,7 +102,10 @@ abstract class RegisterFormState<T> extends State<RegisterForm> {
         ),
         borderRadius: BorderRadius.all(Radius.circular(20)),
         onPressed: () {
-          widget.onSignInPressed(getData());
+          _formKey.currentState.save();
+          if (_formKey.currentState.validate()) {
+            widget.onSignInPressed(getData());
+          }
         },
       ),
       margin: EdgeInsets.only(
