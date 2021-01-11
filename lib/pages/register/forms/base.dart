@@ -27,7 +27,7 @@ abstract class RegisterFormState<T> extends State<RegisterForm> {
   TextEditingController get passwordTextController => _passwordTextController;
 
   TextEditingController _emailTextController = TextEditingController();
-  TextEditingController get emailTextController => emailTextController;
+  TextEditingController get emailTextController => _emailTextController;
 
   @override
   void initState() {

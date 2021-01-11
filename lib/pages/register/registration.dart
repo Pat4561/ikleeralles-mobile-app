@@ -1,3 +1,5 @@
+import 'package:ikleeralles/network/keys.dart';
+
 class Registration {
 
   final String username;
@@ -5,6 +7,14 @@ class Registration {
   final String email;
 
   Registration ({ this.username, this.password, this.email });
+
+  Map<String, dynamic> toMap() {
+    return {
+      AuthKeys.username: username,
+      AuthKeys.password: password,
+      UserInfoKeys.email: email
+    };
+  }
 
 }
 
@@ -27,5 +37,16 @@ class ScholarRegistration extends Registration {
       password: password,
       email: email
   );
+
+  @override
+  Map<String, dynamic> toMap() {
+    var addedKeys = {
+      UserInfoKeys.level: level,
+      UserInfoKeys.year: year.toString()
+    };
+    var map = super.toMap();
+    map.addAll(addedKeys);
+    return map;
+  }
 
 }
