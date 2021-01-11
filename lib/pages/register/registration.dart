@@ -46,7 +46,7 @@ class ScholarRegistration extends Registration {
   );
 
   @override
-  String get role => "scholar";
+  String get role => "student";
 
   @override
   Map<String, dynamic> toMap() {

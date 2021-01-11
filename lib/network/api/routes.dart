@@ -1,5 +1,6 @@
 class Routes {
 
+  static String register = "user";
   static String userInfo = "me";
   static String myExerciseLists = "list/me";
   static String myFolders = "folder/me";

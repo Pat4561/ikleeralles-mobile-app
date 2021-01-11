@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:ikleeralles/pages/register/registration.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/network/auth/service.dart';
@@ -32,6 +33,14 @@ class LoginManager extends Model {
     return future;
   }
 
+
+  Future register(Registration registration) {
+    Future future = AuthService().register(
+      registration
+    );
+    loadingDelegate.attachFuture(future);
+    return future;
+  }
 
 
 }
