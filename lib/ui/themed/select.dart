@@ -18,13 +18,17 @@ class ThemedSelect extends StatelessWidget  {
 
   ThemedSelect ({ @required this.placeholder, this.textColor, this.boxDecoration, this.labelText, this.color = Colors.white, this.height = 24, this.radius = 10, this.iconContainerWidth = 30, this.onPressed });
 
-  static Widget selectBox({ String labelText, ValueNotifier<String> notifier, List<String> options }) {
+  static Widget selectBox({ String labelText, ValueNotifier<String> notifier, List<String> options, BoxDecoration boxDecoration, double height = 24, Color textColor, Color color = Colors.white }) {
     return ValueListenableBuilder(
         valueListenable: notifier,
         builder: (BuildContext context, String value, Widget widget) {
           return ThemedSelect(
               placeholder: notifier.value,
               labelText: labelText,
+              boxDecoration: boxDecoration,
+              textColor: textColor,
+              color: color,
+              height: height,
               onPressed: (BuildContext context) {
                 OptionsBottomSheetPresenter<String>(
                     title: labelText,

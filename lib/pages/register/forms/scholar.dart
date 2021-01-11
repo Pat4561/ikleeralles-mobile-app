@@ -36,18 +36,48 @@ class ScholarRegisterFormState extends RegisterFormState<ScholarRegistration> {
   }
 
   Widget yearSelectBox() {
-    return ThemedSelect.selectBox(
-      labelText: FlutterI18n.translate(context, TranslationKeys.year),
-      options: this.widget.platformDataProvider.years,
-      notifier: _yearNotifier,
+    return Container(
+      margin: EdgeInsets.only(
+          bottom: 10
+      ),
+      child: ThemedSelect.selectBox(
+        labelText: FlutterI18n.translate(context, TranslationKeys.year),
+        options: this.widget.platformDataProvider.years,
+        notifier: _yearNotifier,
+        height: 48,
+        textColor: Colors.black,
+        color: Colors.transparent,
+        boxDecoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            border: Border.all(
+                color: Color.fromRGBO(210, 210, 210, 1),
+                width: 2
+            )
+        ),
+      ),
     );
   }
 
   Widget levelSelectBox() {
-    return ThemedSelect.selectBox(
-      labelText: FlutterI18n.translate(context, TranslationKeys.level),
-      options: this.widget.platformDataProvider.levels,
-      notifier: _levelNotifier,
+    return Container(
+      margin: EdgeInsets.only(
+        bottom: 15
+      ),
+      child: ThemedSelect.selectBox(
+        labelText: FlutterI18n.translate(context, TranslationKeys.level),
+        options: this.widget.platformDataProvider.levels,
+        notifier: _levelNotifier,
+        height: 48,
+        textColor: Colors.black,
+        color: Colors.transparent,
+        boxDecoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(15)),
+            border: Border.all(
+                color: Color.fromRGBO(210, 210, 210, 1),
+                width: 2
+            )
+        ),
+      ),
     );
   }
 
