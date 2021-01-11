@@ -5,9 +5,6 @@ import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/pages/register/forms/scholar.dart';
 import 'package:ikleeralles/pages/register/forms/teacher.dart';
 import 'package:ikleeralles/pages/register/registration.dart';
-import 'package:ikleeralles/ui/themed/button.dart';
-import 'package:ikleeralles/ui/themed/select.dart';
-import 'package:ikleeralles/ui/themed/textfield.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -47,7 +44,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
   }
 
   void onSignInPressed(Registration registration) {
-    
+
   }
 
   @override
