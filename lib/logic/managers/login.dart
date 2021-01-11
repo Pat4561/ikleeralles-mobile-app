@@ -11,15 +11,9 @@ class LoginManager extends Model {
 
   final LoadingDelegate loadingDelegate = LoadingDelegate();
 
-  void handleWebEvent(Map map, { @required Function(LoginResult, Credentials) onRegisteredAccount, @required Function onPasswordForgot }) {
+  void handleWebEvent(Map map, { @required Function onPasswordForgot }) {
     var response = WebResponse(map);
     switch (response.eventType) {
-      case WebResponseEventType.registeredAccount: {
-        var loginResult = LoginResult(response.meta[ObjectKeys.loginResult]);
-        var credentials = Credentials.fromMap(response.meta[ObjectKeys.credentials]);
-        onRegisteredAccount(loginResult, credentials);
-      }
-      break;
       case WebResponseEventType.forgotPassword: {
         onPasswordForgot();
       }
@@ -36,15 +30,6 @@ class LoginManager extends Model {
     );
     loadingDelegate.attachFuture(future);
     return future;
-  }
-
-  Future register({ LoginResult loginResult, Credentials credentials }) {
-    /*Future future = AuthService().registerFromWeb(
-      loginResult: loginResult,
-      credentials: credentials
-    );
-    loadingDelegate.attachFuture(future);
-    return future; */
   }
 
 

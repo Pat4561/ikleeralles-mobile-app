@@ -160,15 +160,6 @@ class LoginPageState extends State<LoginPage> {
               }
           );
 
-        },
-        onRegisteredAccount: (LoginResult loginResult, Credentials credentials) {
-          Navigator.of(webPageContext).pop();
-          loginManager.register(
-            loginResult: loginResult,
-            credentials: credentials
-          ).catchError((e) {
-            showSnackBar(scaffoldKey: scaffoldKey, message: FlutterI18n.translate(context, TranslationKeys.registrationError), isError: true);
-          });
         }
     );
   }
