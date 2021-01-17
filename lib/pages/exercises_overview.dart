@@ -145,6 +145,12 @@ class ExercisesOverviewController {
               );
             });
 
+            exercisesTableKey.currentState.removeObjects(exercises);
+
+            selectionManager.unSelectAll();
+
+
+
           }).catchError((e) {
             loadingMessageHandler.clear(callback: () {
               showToast(FlutterI18n.translate(context, TranslationKeys.errorSubTitle));

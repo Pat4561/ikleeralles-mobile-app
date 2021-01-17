@@ -18,7 +18,7 @@ class ExercisesActionsManager extends Model {
 
 
   Future move(List<ExerciseList> exercises, { Folder folder }) {
-    //TODO: Implement!!
+    return AuthService().securedApi.moveExerciseLists(exercises, folder: folder);
   }
 
   Future<ExerciseList> merge(List<ExerciseList> exercises, { String name }) async {
