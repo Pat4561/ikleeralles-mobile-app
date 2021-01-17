@@ -128,9 +128,12 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
                     model: _loginManager.loadingDelegate,
                     child: ScopedModelDescendant<LoadingDelegate>(
                         builder: (BuildContext context, Widget widget, LoadingDelegate loadingDelegate) {
-                          return Visibility(
-                            visible: _loginManager.loadingDelegate.isLoading,
-                            child: LoadingOverlay(),
+                          return Material(
+                            type: MaterialType.transparency,
+                            child: Visibility(
+                              visible: _loginManager.loadingDelegate.isLoading,
+                              child: LoadingOverlay(),
+                            ),
                           );
                         }
                     )
