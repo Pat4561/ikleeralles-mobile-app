@@ -183,7 +183,7 @@ class Api {
         route: Routes.deleteExerciseLists,
         method: RequestMethod.post,
         body: {
-          ObjectKeys.id: exercises.map((e) => e.id).toList()
+          ObjectKeys.listIds: exercises.map((e) => e.id).toList()
         }
     ).then((response) {
       completer.complete(response.body);
