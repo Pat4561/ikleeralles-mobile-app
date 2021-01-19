@@ -159,6 +159,41 @@ class Api {
     );
   }
 
+  Future moveExerciseLists(List<ExerciseList> exercises, { @required Folder folder }) {
+    Completer completer = Completer();
+    requestHelper.executeRequest(
+        route: Routes.moveExerciseList(folder.id),
+        method: RequestMethod.post,
+        body: {
+          ObjectKeys.listIds: exercises.map((e) => e.id).toList()
+        }
+    ).then((response) {
+      completer.complete();
+    }).catchError((e) {
+      completer.completeError(e);
+    });
+
+    return completer.future;
+  }
+  
+  Future deleteExerciseLists(List<ExerciseList> exercises) {
+    Completer<String> completer = Completer();
+
+    requestHelper.executeRequest(
+        route: Routes.deleteExerciseLists,
+        method: RequestMethod.post,
+        body: {
+          ObjectKeys.listIds: exercises.map((e) => e.id).toList()
+        }
+    ).then((response) {
+      completer.complete(response.body);
+    }).catchError((e) {
+      completer.completeError(e);
+    });
+
+    return completer.future;
+  }
+
   Future<String> getTranslation(String value, { String inputLanguage, String outputLanguage }) {
     Completer<String> completer = Completer();
 

@@ -8,7 +8,9 @@ class Routes {
   static String deletedExerciseLists = "list/deleted";
   static String searchExerciseLists = "list/search";
   static String folder(int folderId) => "folder/$folderId";
+  static String moveExerciseList(int folderId) => "folder/$folderId/list/multiple";
   static String restoreExerciseList = "list/restore";
+  static String deleteExerciseLists = "list/delete";
   static String createFolder = "folder";
   static String deleteFolder(int folderId) => "folder/$folderId/delete";
   static String createExerciseList = "list";
@@ -18,5 +20,6 @@ class Routes {
   static String myGroups = "group/me";
   static String premiumInfo = "user/premium";
   static String groupExerciseLists(int groupId) => "group/$groupId";
+
 
 }

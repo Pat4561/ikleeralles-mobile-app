@@ -22,6 +22,7 @@ class AuthKeys {
 
 class ObjectKeys {
   static String id = "id";
+  static String listIds = "listIds";
   static String deleted = "deleted";
   static String name = "name";
   static String date = "date";
