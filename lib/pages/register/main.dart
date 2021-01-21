@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/exceptions.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/login.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
@@ -28,8 +29,6 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderStateMixin {
 
 
-  TabController _tabController;
-
   PlatformDataProvider _platformDataProvider;
 
   final LoginManager _loginManager = LoginManager();
@@ -46,12 +45,6 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
   void onSignInPressed(Registration registration) {
     _loginManager.register(registration).then((value) {
       Navigator.of(context).pushAndRemoveUntil(
@@ -63,7 +56,11 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
               (route) => false
       );
     }).catchError((e) {
-      showSnackBar(scaffoldKey: _scaffoldKey, message: FlutterI18n.translate(context, TranslationKeys.loginError), isError: true);
+      String message = FlutterI18n.translate(context, TranslationKeys.loginError);
+      if (e is RegistrationException) {
+        message = e.getMessage();
+      }
+      showSnackBar(scaffoldKey: _scaffoldKey, message: message, isError: true);
     });
   }
 
@@ -76,6 +73,7 @@ class _RegisterPageState extends State<RegisterPage> with SingleTickerProviderSt
             return Stack(
               children: [
                 Scaffold(
+                    key: _scaffoldKey,
                     appBar: AppBar(
                       elevation: 0,
                       title: Text(

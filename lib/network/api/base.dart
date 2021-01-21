@@ -39,13 +39,19 @@ class Api {
       body: map,
       method: RequestMethod.post,
       toObject: (Map map) {
-        return RegistrationResult(
-          map
-        );
+        if (map[AuthKeys.accessToken] != null) {
+          return RegistrationResult(
+              map
+          );
+        } else {
+          throw RegistrationException(
+            map
+          );
+        }
+
+
       }
     );
-    if (result == null)
-      throw UnKnownRegistrationException();
     return result;
   }
 

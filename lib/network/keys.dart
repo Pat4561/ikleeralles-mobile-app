@@ -11,6 +11,7 @@ class UserInfoKeys {
   static String level = "level";
   static String email = "email";
   static String role = "role";
+  static String refferal = "refferal";
 }
 
 class AuthKeys {

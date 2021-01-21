@@ -16,7 +16,10 @@ abstract class Registration {
       AuthKeys.username: username,
       AuthKeys.password: password,
       UserInfoKeys.email: email,
-      UserInfoKeys.role: role
+      UserInfoKeys.role: role,
+      UserInfoKeys.year: 1,
+      UserInfoKeys.level: "havo",
+      UserInfoKeys.refferal: ""
     };
   }
 
@@ -50,12 +53,9 @@ class ScholarRegistration extends Registration {
 
   @override
   Map<String, dynamic> toMap() {
-    var addedKeys = {
-      UserInfoKeys.level: level,
-      UserInfoKeys.year: year.toString()
-    };
     var map = super.toMap();
-    map.addAll(addedKeys);
+    map[UserInfoKeys.level] = level;
+    map[UserInfoKeys.year] = year;
     return map;
   }
 

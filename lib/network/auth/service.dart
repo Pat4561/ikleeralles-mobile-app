@@ -73,8 +73,8 @@ class AuthService {
   }
 
   Future<UserInfo> saveNewUserInfo(UserInfo userInfo) async {
-    await userInfo.save();
     updateUserInfo(userInfo);
+    await userInfo.save();
     return userInfo;
   }
 
@@ -100,7 +100,7 @@ class AuthService {
 
     var credentials = Credentials(usernameOrEmail: usernameOrEmail, password: password);
     var userInfo = await createUserInfo(credentials: credentials, accessToken: loginResult.accessToken);
-    saveNewUserInfo(userInfo);
+    await saveNewUserInfo(userInfo);
 
   }
 
@@ -116,7 +116,7 @@ class AuthService {
     );
 
     var userInfo = await createUserInfo(credentials: credentials, accessToken: registerResult.accessToken);
-    saveNewUserInfo(userInfo);
+    await saveNewUserInfo(userInfo);
 
   }
 
