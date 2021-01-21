@@ -149,7 +149,6 @@ class _HomePageState extends State<HomePage> {
     platformDataProvider.load();
 
 
-
     _navigationDrawerController = NavigationDrawerController();
     _navigationDrawerController.activeChild = _getContentChild(HomePageNavigator.keyMyLists);
     _logoutHandler = LogoutHandler(context);

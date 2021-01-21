@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/api/base.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
+import 'package:ikleeralles/pages/register/registration.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 class AuthService {
 
@@ -71,6 +72,25 @@ class AuthService {
     return completer.future;
   }
 
+  Future<UserInfo> saveNewUserInfo(UserInfo userInfo) async {
+    updateUserInfo(userInfo);
+    await userInfo.save();
+    return userInfo;
+  }
+
+  Future<UserInfo> createUserInfo({ @required Credentials credentials, @required String accessToken }) async {
+    var accessTokenObj = AccessToken(accessToken);
+    var userResult = await SecuredApi(accessTokenObj).getUser();
+    var purchaserInfo = await Purchases.getPurchaserInfo();
+    var userInfo = UserInfo(
+        accessToken: accessTokenObj,
+        userResult: userResult,
+        credentials: credentials,
+        activeIAPSubs: purchaserInfo.activeSubscriptions
+    );
+    return userInfo;
+  }
+
   Future login({ String usernameOrEmail, String password }) async {
 
     var loginResult = await Api().authorize(
@@ -79,17 +99,24 @@ class AuthService {
     );
 
     var credentials = Credentials(usernameOrEmail: usernameOrEmail, password: password);
-    var accessToken = AccessToken(loginResult.accessToken);
-    var userResult = await SecuredApi(accessToken).getUser();
-    var purchaserInfo = await Purchases.getPurchaserInfo();
-    var userInfo = UserInfo(
-        accessToken: accessToken,
-        userResult: userResult,
-        credentials: credentials,
-        activeIAPSubs: purchaserInfo.activeSubscriptions
+    var userInfo = await createUserInfo(credentials: credentials, accessToken: loginResult.accessToken);
+    await saveNewUserInfo(userInfo);
+
+  }
+
+  Future register(Registration registration) async {
+
+    var registerResult = await Api().register(
+      registration
     );
-    await userInfo.save();
-    updateUserInfo(userInfo);
+
+    var credentials = Credentials(
+      usernameOrEmail: registration.username,
+      password: registration.password
+    );
+
+    var userInfo = await createUserInfo(credentials: credentials, accessToken: registerResult.accessToken);
+    await saveNewUserInfo(userInfo);
 
   }
 

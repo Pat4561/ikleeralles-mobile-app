@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:ikleeralles/network/api/base.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:ikleeralles/network/auth/service.dart';
 
@@ -199,7 +200,9 @@ class PlatformDataProvider extends Model {
 
     _completer = Completer();
 
-    Future.wait([AuthService().securedApi.getLevels(), AuthService().securedApi.getLanguages()]).then((values) {
+    Api api = Api();
+
+    Future.wait([api.getLevels(), api.getLanguages()]).then((values) {
       this.levels = values[0];
       this.languageData.updateData(values[1]);
       _completer.complete();

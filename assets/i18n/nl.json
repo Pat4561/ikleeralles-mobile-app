@@ -114,5 +114,9 @@
   "purchaseSuccess": "Je aankoop was succesvol, je bent nu een Premium-member!",
   "premiumLockTitle": "Premium optie!",
   "premiumLockDesc": "Voor deze optie heb je een premium account nodig. Je kunt al premium aanschaffen vanaf €1.99 per maand!",
-  "premiumLockViewAction": "Bekijken"
+  "premiumLockViewAction": "Bekijken",
+  "scholar": "Scholier",
+  "teacher": "Docent",
+  "username": "Gebruikersnaam",
+  "email": "Email"
 }

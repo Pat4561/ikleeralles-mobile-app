@@ -16,6 +16,7 @@ import 'package:ikleeralles/network/models/user_result.dart';
 import 'package:ikleeralles/network/models/folder.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/network/parsing_operation.dart';
+import 'package:ikleeralles/pages/register/registration.dart';
 
 
 
@@ -31,6 +32,28 @@ class Api {
     this.requestHelper = createRequestHelper();
   }
 
+  Future<RegistrationResult> register(Registration registration) async {
+    var map = registration.toMap();
+    var result = await requestHelper.singleObjectRequest<RegistrationResult>(
+      route: Routes.register,
+      body: map,
+      method: RequestMethod.post,
+      toObject: (Map map) {
+        if (map[AuthKeys.accessToken] != null) {
+          return RegistrationResult(
+              map
+          );
+        } else {
+          throw RegistrationException(
+            map
+          );
+        }
+
+
+      }
+    );
+    return result;
+  }
 
   Future<LoginResult> authorize({ String username, String password }) async {
     var result = await requestHelper.singleObjectRequest<LoginResult>(

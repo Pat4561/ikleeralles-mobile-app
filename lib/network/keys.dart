@@ -9,6 +9,9 @@ class UserInfoKeys {
   static String trashCount = "trashCount";
   static String year = "year";
   static String level = "level";
+  static String email = "email";
+  static String role = "role";
+  static String refferal = "refferal";
 }
 
 class AuthKeys {

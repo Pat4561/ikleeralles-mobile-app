@@ -8,6 +8,7 @@ import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/models/login_result.dart';
 import 'package:ikleeralles/pages/home/main.dart';
+import 'package:ikleeralles/pages/register/main.dart';
 import 'package:ikleeralles/pages/webview.dart';
 import 'package:ikleeralles/ui/dialogs/alert.dart';
 import 'package:ikleeralles/ui/hyperlink.dart';
@@ -159,15 +160,6 @@ class LoginPageState extends State<LoginPage> {
               }
           );
 
-        },
-        onRegisteredAccount: (LoginResult loginResult, Credentials credentials) {
-          Navigator.of(webPageContext).pop();
-          loginManager.register(
-            loginResult: loginResult,
-            credentials: credentials
-          ).catchError((e) {
-            showSnackBar(scaffoldKey: scaffoldKey, message: FlutterI18n.translate(context, TranslationKeys.registrationError), isError: true);
-          });
         }
     );
   }
@@ -202,11 +194,7 @@ class LoginPageState extends State<LoginPage> {
   void onCreateAccountPressed() {
     Navigator.of(context).push(MaterialPageRoute(
       builder: (BuildContext context) {
-        return WebViewPage(
-            title: FlutterI18n.translate(context, TranslationKeys.register),
-            url: WebUrls.register,
-            onEventReceived: onWebEventReceived,
-        );
+        return RegisterPage();
       }
     ));
   }

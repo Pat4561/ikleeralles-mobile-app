@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/ui/bottomsheets/options.dart';
 
 
 class ThemedSelect extends StatelessWidget  {
@@ -11,11 +12,41 @@ class ThemedSelect extends StatelessWidget  {
   final double radius;
   final Function onPressed;
   final Color color;
+  final Color textColor;
+  final BoxDecoration boxDecoration;
 
 
-  ThemedSelect ({ @required this.placeholder, this.labelText, this.color = Colors.white, this.height = 24, this.radius = 10, this.iconContainerWidth = 30, this.onPressed });
+  ThemedSelect ({ @required this.placeholder, this.textColor, this.boxDecoration, this.labelText, this.color = Colors.white, this.height = 24, this.radius = 10, this.iconContainerWidth = 30, this.onPressed });
 
-  TextStyle textStyle({ FontWeight fontWeight = FontWeight.bold, double fontSize = 14, Color color = Colors.white}) {
+  static Widget selectBox({ String labelText, ValueNotifier<String> notifier, List<String> options, BoxDecoration boxDecoration, double height = 24, Color textColor, Color color = Colors.white }) {
+    return ValueListenableBuilder(
+        valueListenable: notifier,
+        builder: (BuildContext context, String value, Widget widget) {
+          return ThemedSelect(
+              placeholder: notifier.value,
+              labelText: labelText,
+              boxDecoration: boxDecoration,
+              textColor: textColor,
+              color: color,
+              height: height,
+              onPressed: (BuildContext context) {
+                OptionsBottomSheetPresenter<String>(
+                    title: labelText,
+                    items: options,
+                    selectedItem: notifier.value,
+                    onPressed: (item) {
+                      Navigator.pop(context);
+                      notifier.value = item;
+                    }
+                ).show(context);
+              }
+          );
+        }
+    );
+  }
+
+
+  TextStyle textStyle({ FontWeight fontWeight = FontWeight.w600, double fontSize = 14, Color color = Colors.white}) {
     return TextStyle(
         color: color,
         fontFamily: Fonts.ubuntu,
@@ -29,7 +60,7 @@ class ThemedSelect extends StatelessWidget  {
       margin: EdgeInsets.only(
           top: 10
       ),
-      decoration: BoxDecoration(
+      decoration: boxDecoration ?? BoxDecoration(
           borderRadius: BorderRadius.circular(
               radius
           ),
@@ -38,7 +69,7 @@ class ThemedSelect extends StatelessWidget  {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(radius),
           child: Container(
             height: height,
             child: Row(
@@ -82,7 +113,7 @@ class ThemedSelect extends StatelessWidget  {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(this.labelText, style: textStyle()),
+          Text(this.labelText, style: textStyle(color: textColor ?? Colors.white)),
           button(context)
         ],
       );

@@ -20,3 +20,9 @@ class LoginResult extends ParsableObject {
   }
 
 }
+
+class RegistrationResult extends LoginResult {
+
+  RegistrationResult (Map<String, dynamic> resultDictionary) : super(resultDictionary);
+
+}
