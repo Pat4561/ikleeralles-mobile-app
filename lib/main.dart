@@ -53,6 +53,7 @@ class MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: Constants.appName,
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         // This is the theme of your application.
         //
