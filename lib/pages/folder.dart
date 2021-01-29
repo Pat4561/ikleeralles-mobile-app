@@ -94,7 +94,7 @@ class _FolderPageState extends State<FolderPage> {
               ),
               floatingActionButton: _overviewBuilder.floatingActionButton(context),
               bottomNavigationBar: _overviewBuilder.bottomNavigationBar(context)
-          );;
+          );
         },
       ),
     );

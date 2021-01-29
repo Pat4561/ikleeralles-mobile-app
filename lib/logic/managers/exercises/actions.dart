@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/network/models/folder.dart';
-import 'package:ikleeralles/ui/dialogs/premium_lock.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ExercisesActionsManager extends Model {

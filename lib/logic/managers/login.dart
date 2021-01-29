@@ -3,10 +3,7 @@ import 'package:ikleeralles/pages/register/registration.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/network/auth/service.dart';
-import 'package:ikleeralles/network/keys.dart';
 import 'package:ikleeralles/network/auth/webresponse.dart';
-import 'package:ikleeralles/network/auth/userinfo.dart';
-import 'package:ikleeralles/network/models/login_result.dart';
 
 class LoginManager extends Model {
 

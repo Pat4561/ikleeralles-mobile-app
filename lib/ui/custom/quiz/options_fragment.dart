@@ -3,7 +3,6 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/quiz/options.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
-import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/ui/dialogs/premium_lock.dart';
 import 'package:ikleeralles/ui/extensions/value_controller.dart';
 import 'package:ikleeralles/ui/numeric_input.dart';

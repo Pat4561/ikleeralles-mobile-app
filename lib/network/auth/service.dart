@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/api/base.dart';
-import 'package:ikleeralles/network/models/login_result.dart';
 import 'package:ikleeralles/pages/register/registration.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 class AuthService {

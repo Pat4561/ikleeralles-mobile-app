@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:ikleeralles/network/api/base.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:ikleeralles/network/auth/service.dart';
 
 class SetInputTypeProvider {
 

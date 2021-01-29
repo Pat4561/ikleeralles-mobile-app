@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
-import 'package:ikleeralles/network/auth/service.dart';
-import 'package:ikleeralles/pages/home/main.dart';
 import 'package:ikleeralles/pages/home/premium.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
 

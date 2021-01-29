@@ -5,7 +5,6 @@ import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
-import 'package:ikleeralles/ui/bottomsheets/options.dart';
 import 'package:ikleeralles/ui/themed/select.dart';
 import 'package:ikleeralles/ui/themed/textfield.dart';
 import 'package:scoped_model/scoped_model.dart';

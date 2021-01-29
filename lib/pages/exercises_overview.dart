@@ -7,8 +7,6 @@ import 'package:ikleeralles/logic/managers/exercises/actions.dart';
 import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
-import 'package:ikleeralles/logic/operations/exercises.dart';
-import 'package:ikleeralles/logic/operations/folders.dart';
 import 'package:ikleeralles/logic/quiz/input.dart';
 import 'package:ikleeralles/network/models/exercise_list.dart';
 import 'package:ikleeralles/network/models/folder.dart';
@@ -23,8 +21,6 @@ import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/tables/exercises_overview.dart';
 import 'package:ikleeralles/ui/tables/folders.dart';
 import 'package:ikleeralles/ui/tables/trash.dart';
-import 'package:ikleeralles/ui/themed/appbar.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 
 class SelectionBar extends StatelessWidget {

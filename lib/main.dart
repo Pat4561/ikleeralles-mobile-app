@@ -3,8 +3,6 @@ import 'package:flutter_i18n/flutter_i18n_delegate.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
 import 'package:ikleeralles/constants.dart';
-import 'package:ikleeralles/network/auth/service.dart';
-import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/pages/login.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 

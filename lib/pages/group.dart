@@ -116,7 +116,7 @@ class GroupPageState extends State<GroupPage> {
               ),
               floatingActionButton: _overviewBuilder.floatingActionButton(context),
               bottomNavigationBar: _overviewBuilder.bottomNavigationBar(context),
-          );;
+          );
         },
       ),
     );

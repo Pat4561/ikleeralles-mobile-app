@@ -3,7 +3,6 @@ import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/purchases.dart';
-import 'package:ikleeralles/pages/home/main.dart';
 import 'package:ikleeralles/ui/background_builder.dart';
 import 'package:ikleeralles/ui/navigation_drawer.dart';
 import 'package:ikleeralles/ui/snackbar.dart';

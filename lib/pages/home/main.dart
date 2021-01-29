@@ -1,29 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
-import 'package:ikleeralles/logic/managers/extensions.dart';
-import 'package:ikleeralles/logic/managers/operation.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
-import 'package:ikleeralles/logic/operations/exercises.dart';
-import 'package:ikleeralles/logic/operations/folders.dart';
-import 'package:ikleeralles/logic/operations/search.dart';
-import 'package:ikleeralles/logic/operations/trash.dart';
 import 'package:ikleeralles/network/auth/service.dart';
-import 'package:ikleeralles/network/models/exercise_list.dart';
-import 'package:ikleeralles/pages/exercise_list.dart';
-import 'package:ikleeralles/pages/exercises_overview.dart';
 import 'package:ikleeralles/pages/home/groups.dart';
 import 'package:ikleeralles/pages/home/my_exercises.dart';
 import 'package:ikleeralles/pages/home/premium.dart';
 import 'package:ikleeralles/pages/home/public.dart';
-import 'package:ikleeralles/pages/login.dart';
-import 'package:ikleeralles/ui/dialogs/premium_lock.dart';
 import 'package:ikleeralles/ui/logout_handler.dart';
 import 'package:ikleeralles/ui/navigation_drawer.dart';
-import 'package:ikleeralles/ui/tables/exercises_overview.dart';
-import 'package:ikleeralles/ui/tables/search.dart';
-import 'package:ikleeralles/ui/themed/appbar.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class HomePage extends StatefulWidget {
 
