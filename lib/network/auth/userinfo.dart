@@ -61,11 +61,12 @@ class UserInfo {
   final Credentials credentials;
   final UserResult userResult;
   final AccessToken accessToken;
+  final String iapUserId;
   final List<String> activeIAPSubs;
 
   static const String cachingKey = "userInfoCache";
 
-  UserInfo ({ this.credentials, this.userResult, this.accessToken, this.activeIAPSubs });
+  UserInfo ({ this.credentials, this.userResult, this.accessToken, this.activeIAPSubs, this.iapUserId  });
 
   static UserInfo fromMap(Map map) {
     List activeSubs = map[UserInfoKeys.activeIAPSubs];
@@ -74,7 +75,8 @@ class UserInfo {
       credentials: Credentials.fromMap(map[UserInfoKeys.credentials]),
       accessToken: AccessToken.fromMap(map[UserInfoKeys.accessToken]),
       userResult: UserResult(map[UserInfoKeys.userResult]),
-      activeIAPSubs: activeSubsStrList
+      activeIAPSubs: activeSubsStrList,
+      iapUserId: map[UserInfoKeys.iapUserId]
     );
   }
 
@@ -83,7 +85,8 @@ class UserInfo {
       UserInfoKeys.credentials: credentials.toMap(),
       UserInfoKeys.userResult: userResult.toMap(),
       UserInfoKeys.accessToken: accessToken.toMap(),
-      UserInfoKeys.activeIAPSubs: activeIAPSubs
+      UserInfoKeys.activeIAPSubs: activeIAPSubs,
+      UserInfoKeys.iapUserId: iapUserId
     };
   }
 

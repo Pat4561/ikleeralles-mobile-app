@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ikleeralles/logic/managers/extensions.dart';
 import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/network/models/package.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -17,8 +18,8 @@ class IAPSku {
 
   static const String yearlySubIOS = "yearly_sub_premium_pro";
   static const String monthlySubIOS = "monthly_sub_premium_plus";
-  static const String yearlySubAndroid = "yearly_sub_premium_pro";
-  static const String monthlySubAndroid = "monthly_sub_premium_plus";
+  static const String yearlySubAndroid = "ikl_sub_premium_pro";
+  static const String monthlySubAndroid = "ikl_sub_premium_plus";
 
 }
 
@@ -76,6 +77,7 @@ class IAPManager extends Model {
 
   IAPManagerState _state = IAPManagerState(status: IAPManagerStatus.idle);
 
+
   IAPManagerState get state => _state;
 
   void load() {
@@ -92,26 +94,41 @@ class IAPManager extends Model {
   }
 
 
+  void _sendAsyncToServer(PurchaserInfo purchaserInfo) {
+    try {
+      AuthService().sendPurchaseInfoToServer(purchaserInfo);
+    } catch (e) {
+      print("Could not send purchase to server");
+      print(e);
+    }
+  }
+
   Future purchasePackage(Package package) {
-    return Purchases.purchasePackage(package).then((value) {
-      state.result.updateInfo(value, state.result.webPackageType);
-      AuthService().sendPurchaseInfoToServer(value);
-      AuthService().userInfo.userResult.hasPremium = true;
-      AuthService().userInfo.save();
+    return Purchases.purchasePackage(package).then((purchaserInfo) {
+
+      state.result.updateInfo(purchaserInfo, state.result.webPackageType);
+      _sendAsyncToServer(purchaserInfo);
+
+      notifyListeners();
+
     });
   }
 
   Future restore() {
-    return Future.wait([
+    Future future = Future.wait([
       AuthService().securedApi.getWebPackageType(),
       Purchases.restoreTransactions()
     ]).then((value) {
-      state.result.updateInfo(value[1], value[0]);
-      AuthService().sendPurchaseInfoToServer(value[1]);
-      AuthService().userInfo.userResult.hasPremium = state.result.hasAny;
-      AuthService().userInfo.save();
+
+      WebPackageType webPackageType = value[0];
+      PurchaserInfo purchaserInfo = value[1];
+
+      state.result.updateInfo(purchaserInfo, webPackageType);
+      _sendAsyncToServer(purchaserInfo);
+
       notifyListeners();
     });
+    return future;
   }
 
 }

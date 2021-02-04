@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
             platformDataProvider: platformDataProvider);
       case HomePageNavigator.keyPremium:
         return PremiumInfoSubPage(
-            _navigationDrawerController, HomePageNavigator.keyPremium);
+            _navigationDrawerController, HomePageNavigator.keyPremium, scaffoldKey: scaffoldKey);
     }
     return null;
   }

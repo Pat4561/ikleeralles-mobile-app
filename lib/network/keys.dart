@@ -12,6 +12,7 @@ class UserInfoKeys {
   static String email = "email";
   static String role = "role";
   static String refferal = "refferal";
+  static String iapUserId = "iapUserId";
 }
 
 class AuthKeys {
@@ -48,4 +49,5 @@ class ObjectKeys {
   static String role = "role";
   static String type = "type";
   static String subscriptionType = "subscriptionType";
+  static String iapUserId = "iapUserId";
 }

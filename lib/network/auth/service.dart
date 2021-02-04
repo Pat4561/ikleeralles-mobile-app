@@ -1,10 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/network/auth/userinfo.dart';
 import 'package:ikleeralles/network/api/base.dart';
 import 'package:ikleeralles/pages/register/registration.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+
 class AuthService {
 
 
@@ -52,16 +52,19 @@ class AuthService {
         );
         var accessToken = AccessToken(loginResult.accessToken);
         var userResult = await SecuredApi(accessToken).getUser();
+
         var purchaserInfo = await Purchases.getPurchaserInfo();
+
         var userInfo = UserInfo(
             accessToken: accessToken,
             userResult: userResult,
             credentials: cachedUserInfo.credentials,
+            iapUserId: purchaserInfo.originalAppUserId,
             activeIAPSubs: purchaserInfo.activeSubscriptions
         );
 
-        await userInfo.save();
-        updateUserInfo(userInfo);
+
+        saveNewUserInfo(userInfo);
 
       }
       completer.complete();
@@ -73,6 +76,8 @@ class AuthService {
 
   Future<UserInfo> saveNewUserInfo(UserInfo userInfo) async {
     updateUserInfo(userInfo);
+    if (userInfo.iapUserId != null)
+      sendPurchaseUserToServer(userInfo.iapUserId);
     await userInfo.save();
     return userInfo;
   }
@@ -85,8 +90,12 @@ class AuthService {
         accessToken: accessTokenObj,
         userResult: userResult,
         credentials: credentials,
+        iapUserId: purchaserInfo.originalAppUserId,
         activeIAPSubs: purchaserInfo.activeSubscriptions
     );
+
+    sendPurchaseInfoToServer(purchaserInfo);
+
     return userInfo;
   }
 
@@ -99,6 +108,7 @@ class AuthService {
 
     var credentials = Credentials(usernameOrEmail: usernameOrEmail, password: password);
     var userInfo = await createUserInfo(credentials: credentials, accessToken: loginResult.accessToken);
+
     await saveNewUserInfo(userInfo);
 
   }
@@ -115,6 +125,7 @@ class AuthService {
     );
 
     var userInfo = await createUserInfo(credentials: credentials, accessToken: registerResult.accessToken);
+
     await saveNewUserInfo(userInfo);
 
   }
@@ -125,8 +136,18 @@ class AuthService {
     this._securedApi = null;
   }
 
+  Future sendPurchaseUserToServer(String iapUserId) {
+    userInfoValueNotifier.value.userResult.hasPremium = true;
+    userInfoValueNotifier.value.save();
+
+    return _securedApi.syncPaymentInfo(
+        iapUserId
+    );
+  }
+
   Future sendPurchaseInfoToServer(PurchaserInfo purchaserInfo) {
-    //TODO: Implement sending to server!
+    String iapUserId = purchaserInfo.originalAppUserId;
+    return sendPurchaseUserToServer(iapUserId);
   }
 
 

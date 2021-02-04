@@ -170,12 +170,15 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
 
   final IAPManager _iapManager = IAPManager();
 
-  PremiumInfoSubPage.standalone () : super(null, key: null) {
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  PremiumInfoSubPage.standalone ({ this.scaffoldKey }) : super(null, key: null) {
     _iapManager.load();
   }
 
-  PremiumInfoSubPage (NavigationDrawerController controller, String key) : super(controller, key: key) {
+  PremiumInfoSubPage (NavigationDrawerController controller, String key, { this.scaffoldKey }) : super(controller, key: key) {
     _iapManager.load();
+
   }
 
   Widget _selectionButton(BuildContext context, Package package, { bool isSelected }) {
@@ -216,14 +219,18 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
   
   void _purchasePackage(BuildContext context, Package package) {
     _iapManager.purchasePackage(package).then((value) {
-      showSnackBar(message: FlutterI18n.translate(context, TranslationKeys.successPurchase), isError: false, buildContext: context);
+      showSnackBar(message: FlutterI18n.translate(context, TranslationKeys.successPurchase), isError: false, scaffoldKey: scaffoldKey);
     }).catchError((e) {
-      showSnackBar(message: FlutterI18n.translate(context, TranslationKeys.error), isError: true, buildContext: context);
+      showSnackBar(message: FlutterI18n.translate(context, TranslationKeys.error), isError: true, scaffoldKey: scaffoldKey);
     });
   }
   
-  void _restorePurchases() {
-    _iapManager.restore();
+  void _restorePurchases(BuildContext context) {
+    LoadingMessageHandler loadingMessageHandler = LoadingMessageHandler();
+    loadingMessageHandler.show(context);
+    _iapManager.restore().whenComplete(() {
+      loadingMessageHandler.clear();
+    });
   }
 
   @override
@@ -296,8 +303,9 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
                             color: BrandColors.textColorLighter
                           ),
                           labelColor: BrandColors.textColorLighter,
-                          onPressed: _restorePurchases,
+                          onPressed: () => _restorePurchases(context),
                           borderRadius: BorderRadius.circular(12),
+
                         )
                       ],
                     ),

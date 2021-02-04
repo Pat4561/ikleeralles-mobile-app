@@ -198,7 +198,25 @@ class Api {
 
     return completer.future;
   }
-  
+
+  Future syncPaymentInfo(String iapUserId) {
+    Completer completer = Completer();
+
+    requestHelper.executeRequest(
+        route: Routes.syncPaymentInfo,
+        method: RequestMethod.post,
+        body: {
+          ObjectKeys.iapUserId: iapUserId
+        }
+    ).then((response) {
+      completer.complete();
+    }).catchError((e) {
+      completer.completeError(e);
+    });
+
+    return completer.future;
+  }
+
   Future deleteExerciseLists(List<ExerciseList> exercises) {
     Completer<String> completer = Completer();
 
