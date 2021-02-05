@@ -14,7 +14,7 @@ class Logo extends StatelessWidget {
         Constants.appNameWithUrl,
         textAlign: TextAlign.center,
         style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontSize: this.fontSize ?? 50,
             fontFamily: Fonts.justAnotherHand
         ),

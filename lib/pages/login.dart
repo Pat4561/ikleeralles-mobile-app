@@ -52,8 +52,13 @@ class LoginPageState extends State<LoginPage> {
     return ThemedTextField(
       labelText: FlutterI18n.translate(context, TranslationKeys.usernameOrEmail),
       hintText: FlutterI18n.translate(context, TranslationKeys.usernameHint),
+      borderColor: Colors.white,
+      borderWidth: 1.5,
+      borderRadius: 10,
+      focusedColor: BrandColors.themeColor,
       validator: _validators.notEmptyValidator,
       textEditingController: usernameTextController,
+      labelColor: Colors.black,
     );
   }
 
@@ -62,6 +67,11 @@ class LoginPageState extends State<LoginPage> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         ThemedTextField(
+          labelColor: Colors.black,
+          borderColor: Colors.white,
+          borderWidth: 1.5,
+          borderRadius: 10,
+          focusedColor: BrandColors.themeColor,
           labelText: FlutterI18n.translate(context, TranslationKeys.password),
           hintText: "******",
           textEditingController: passwordTextController,
@@ -71,8 +81,8 @@ class LoginPageState extends State<LoginPage> {
         Align(
           alignment: Alignment.centerRight,
           child: TextHyperlink(
-            baseColor: BrandColors.labelColorYellow,
-            highlightedColor: Colors.white,
+            baseColor: BrandColors.themeColor,
+            highlightedColor: BrandColors.secondaryButtonColor,
             title: FlutterI18n.translate(context, TranslationKeys.forgotPassword),
             onPressed: onForgotPasswordPressed,
           ),
@@ -84,7 +94,7 @@ class LoginPageState extends State<LoginPage> {
   Widget signInButton() {
     return ThemedButton(
       FlutterI18n.translate(context, TranslationKeys.signIn),
-      buttonColor: BrandColors.primaryButtonColor,
+      buttonColor: BrandColors.secondaryButtonColor,
       labelColor: Colors.white,
       fontSize: 20,
       contentPadding: EdgeInsets.all(18),
@@ -97,14 +107,14 @@ class LoginPageState extends State<LoginPage> {
     return ThemedButton(
       FlutterI18n.translate(context, TranslationKeys.createAnAccount),
       buttonColor: Colors.transparent,
-      labelColor: Colors.white,
+      labelColor: BrandColors.secondaryButtonColor,
       contentPadding: EdgeInsets.symmetric(
           vertical: 12,
           horizontal: 24
       ),
       fontSize: 14,
       borderRadius: BorderRadius.all(Radius.circular(20)),
-      borderSide: BorderSide(color: Colors.white),
+      borderSide: BorderSide(color: BrandColors.secondaryButtonColor),
       onPressed: onCreateAccountPressed,
     );
   }
@@ -201,7 +211,7 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
-        backgroundColor: BrandColors  .themeColor,
+        backgroundColor: Color.fromRGBO(245, 245, 245, 1),
         body: Stack(
           children: <Widget>[
             Center(
