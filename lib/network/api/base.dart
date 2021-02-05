@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/environment.dart';
 import 'package:ikleeralles/exceptions.dart';
 import 'package:ikleeralles/logic/managers/platform.dart';
 import 'package:ikleeralles/logic/operations/search.dart';
@@ -202,12 +203,15 @@ class Api {
   Future syncPaymentInfo(String iapUserId) {
     Completer completer = Completer();
 
+    var body = {
+      ObjectKeys.iapUserId: iapUserId,
+      ObjectKeys.platform: Environment.asString(Environment.get())
+    };
+
     requestHelper.executeRequest(
         route: Routes.syncPaymentInfo,
         method: RequestMethod.post,
-        body: {
-          ObjectKeys.iapUserId: iapUserId
-        }
+        body: body
     ).then((response) {
       completer.complete();
     }).catchError((e) {

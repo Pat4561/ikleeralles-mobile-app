@@ -20,7 +20,7 @@ class Routes {
   static String languages = "translate/languages";
   static String myGroups = "group/me";
   static String premiumInfo = "user/premium";
-  static String syncPaymentInfo = "user/premium/sync";
+  static String syncPaymentInfo = "payment/revenuecat/sync";
   static String groupExerciseLists(int groupId) => "group/$groupId";
 
 

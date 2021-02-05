@@ -94,8 +94,6 @@ class AuthService {
         activeIAPSubs: purchaserInfo.activeSubscriptions
     );
 
-    sendPurchaseInfoToServer(purchaserInfo);
-
     return userInfo;
   }
 
