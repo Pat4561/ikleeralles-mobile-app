@@ -1,6 +1,6 @@
 {
   "usernameOrEmail": "Gebruikersnaam of emailadres",
-  "usernameHint": "Bijv. deurmanhimself",
+  "usernameHint": "Gebruikersnaam",
   "password": "Wachtwoord",
   "forgotPassword": "Wachtwoord vergeten?",
   "signIn": "Aanmelden",
