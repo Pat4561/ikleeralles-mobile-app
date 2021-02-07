@@ -30,7 +30,7 @@ class ExerciseSet extends ParsableObject {
     original = strList(dictionary[ObjectKeys.original]);
     translated = strList(dictionary[ObjectKeys.translated]);
     translatedImage = dictionary[ObjectKeys.translatedImage];
-    color = strList(dictionary[ObjectKeys.color]);
+    //color = strList(dictionary[ObjectKeys.color]);
   }
 
   List<String> fieldsBySide (ExerciseSetInputSide side) {

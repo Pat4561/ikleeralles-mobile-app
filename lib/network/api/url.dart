@@ -3,7 +3,7 @@ class ApiUrl {
   final Map<String, String> requestParams;
   final String route;
 
-  static String host = "http://f50ef49b948e.ngrok.io";
+  static String host = "https://api.ikleeralles.nl";
 
   ApiUrl (this.route, { this.requestParams });
 
