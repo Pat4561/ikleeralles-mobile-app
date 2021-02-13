@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:ikleeralles/constants.dart';
+import 'package:ikleeralles/network/auth/service.dart';
 import 'package:ikleeralles/pages/home/premium.dart';
 import 'package:ikleeralles/ui/themed/button.dart';
 
@@ -10,7 +11,7 @@ class PremiumLocker {
   bool _isPresentationScheduled = false;
 
   bool get isPremium {
-    return false;
+    return AuthService().userInfo.hasPremium;
   }
 
   void schedulePresentation(BuildContext context, { Function undoAction }) {
