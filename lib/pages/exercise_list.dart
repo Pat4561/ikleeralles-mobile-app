@@ -265,7 +265,7 @@ class _ExerciseEditorPageState extends State<ExerciseEditorPage> {
   }
 
   void _startTest() {
-    var quizInput = QuizInput([widget.exerciseList], platformDataProvider: widget.platformDataProvider);
+    var quizInput = QuizInput([_exerciseListController.currentList(context)], platformDataProvider: widget.platformDataProvider);
     quizInput.initialize(context);
     QuizOptionsBottomSheetPresenter(
         quizInput: quizInput

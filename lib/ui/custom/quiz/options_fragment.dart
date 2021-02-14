@@ -176,8 +176,8 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
         repeatQuestionsTillAllCorrect: _continueTillSuccessOptionController.value
       ),
       range: QuizSelectionRange(
-        startIndex: _selectionRangeController.value.start.toInt() - 1,
-        endIndex:  _selectionRangeController.value.end.toInt() - 1
+        startIndex: _selectionRangeController.value.start.toInt(),
+        endIndex:  _selectionRangeController.value.end.toInt()
       ),
       visibilityOptions: QuizQuestionVisibilityOptions(
         useEnterToGoToNext: _enterToNextAnswerController.value,
@@ -230,14 +230,14 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
     _timeIncorrectAnswerController = ValueController<int>(2);
 
     _selectionRangeController = ValueController<RangeValues>(RangeValues(
-        1,
+        0,
         widget.quizInput.count(directionType: _directionTypeController.value.key).toDouble()
     ));
 
     _directionTypeController.onChange(() {
       _selectionRangeController.notify(
         value: RangeValues(
-            1,
+            0,
             widget.quizInput.count(directionType: _directionTypeController.value.key).toDouble()
         )
       );
@@ -323,11 +323,11 @@ class QuizOptionsFragmentState extends State<QuizOptionsFragment> with _QuizOpti
                       values: selectedValue,
                       activeColor: BrandColors.secondaryButtonColor,
                       inactiveColor: BrandColors.secondaryButtonColor.withOpacity(0.4),
-                      min: 1,
+                      min: 0,
                       max: max,
                       divisions: widget.quizInput.divisions(directionType: _directionTypeController.value.key),
                       labels: RangeLabels(
-                          selectedValue.start.round().toString(),
+                          (selectedValue.start.round() + 1).toString(),
                           selectedValue.end.round().toString()
                       ),
                       onChanged: (rangeValues) {

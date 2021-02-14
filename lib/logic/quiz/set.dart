@@ -62,7 +62,11 @@ class QuizSet extends Model {
   }
 
   int get upcomingQuestionsCount {
-    return _upcomingQuestions.length;
+    int count = _upcomingQuestions.length - 1;
+    if (count < 0) {
+      return 0;
+    }
+    return count;
   }
 
   int get errorCount {
@@ -154,7 +158,10 @@ class QuizSet extends Model {
 
   void nextQuestion() {
     _upcomingQuestions.remove(currentQuestion);
-    _askedQuestionsCount += 1;
+
+    if (_upcomingQuestions.length > 0)
+      _askedQuestionsCount += 1;
+
     if (!_lastAnswered.isCorrect) {
       if (this.repeatQuestionsTillAllCorrect) {
         repeatQuestionSomewhere(_lastAnswered.question);

@@ -76,8 +76,9 @@ class ExerciseListController {
   }
 
 
+
   ExerciseList currentList(BuildContext context) {
-    var sets = _setsController.sets;
+    var sets = _setsController.filteredSets();
     List<Map<String, dynamic>> mapList = sets.map((set) => set.toMap()).toList();
     var newContent = json.encode(mapList);
     return ExerciseList.create(
@@ -227,6 +228,28 @@ class ExerciseSetsController extends Model {
       _isEdited = true;
       notifyListeners();
     }
+  }
+
+  List<ExerciseSet> filteredSets() {
+    return sets.where((element) {
+
+      bool originalPopulated = false;
+      bool translatedPopulated = false;
+
+      element.original.forEach((element) {
+        if (element != "" && element != null) {
+          originalPopulated = true;
+        }
+      });
+
+      element.translated.forEach((element) {
+        if (element != "" && element != null) {
+          translatedPopulated = true;
+        }
+      });
+
+      return (translatedPopulated && originalPopulated);
+    }).toList();
   }
 
   void remove(ExerciseSet set) {
