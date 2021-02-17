@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/purchases.dart';
 import 'package:ikleeralles/ui/background_builder.dart';
+import 'package:ikleeralles/ui/hyperlink.dart';
 import 'package:ikleeralles/ui/navigation_drawer.dart';
 import 'package:ikleeralles/ui/snackbar.dart';
 import 'package:ikleeralles/ui/themed/appbar.dart';
@@ -233,6 +234,15 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
     });
   }
 
+
+  void _onTermsOfUseClicked() {
+    print("On terms of use clicked");
+  }
+
+  void _onPrivacyLinkClicked() {
+    print("On privacy link clicked");
+  }
+
   @override
   Widget body(BuildContext context) {
     return Container(
@@ -306,6 +316,41 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
                           onPressed: () => _restorePurchases(context),
                           borderRadius: BorderRadius.circular(12),
 
+                        )
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                      top: 10,
+                      bottom: 20
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 5,
+                              horizontal: 20
+                          ),
+                          child: TextHyperlink(
+                              baseColor: Colors.black45,
+                              highlightedColor: BrandColors.secondaryButtonColor,
+                              title: "Gebruikersvoorwaarden",
+                              onPressed: _onTermsOfUseClicked,
+                          )
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 5,
+                            horizontal: 20
+                          ),
+                          child: TextHyperlink(
+                              baseColor: Colors.black45,
+                              highlightedColor: BrandColors.secondaryButtonColor,
+                              title: "Privacy",
+                              onPressed: _onPrivacyLinkClicked
+                          )
                         )
                       ],
                     ),
