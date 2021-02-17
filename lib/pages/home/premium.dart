@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_i18n/flutter_i18n.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ikleeralles/constants.dart';
 import 'package:ikleeralles/logic/managers/purchases.dart';
 import 'package:ikleeralles/ui/background_builder.dart';
@@ -236,11 +237,11 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
 
 
   void _onTermsOfUseClicked() {
-    print("On terms of use clicked");
+    launch("https://www.ikleeralles.nl/pp.pdf");
   }
 
   void _onPrivacyLinkClicked() {
-    print("On privacy link clicked");
+    launch("https://www.ikleeralles.nl/av.pdf");
   }
 
   @override
