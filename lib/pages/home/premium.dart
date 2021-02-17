@@ -337,7 +337,7 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
                           child: TextHyperlink(
                               baseColor: Colors.black45,
                               highlightedColor: BrandColors.secondaryButtonColor,
-                              title: "Gebruikersvoorwaarden",
+                              title: FlutterI18n.translate(context, TranslationKeys.termsOfUse),
                               onPressed: _onTermsOfUseClicked,
                           )
                         ),
@@ -349,7 +349,7 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
                           child: TextHyperlink(
                               baseColor: Colors.black45,
                               highlightedColor: BrandColors.secondaryButtonColor,
-                              title: "Privacy",
+                              title: FlutterI18n.translate(context, TranslationKeys.privacy),
                               onPressed: _onPrivacyLinkClicked
                           )
                         )

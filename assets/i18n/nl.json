@@ -119,5 +119,7 @@
   "teacher": "Docent",
   "username": "Gebruikersnaam",
   "email": "Email",
-  "successPurchase": "Je aankoop was succesvol, je bent nu een Premium-member!"
+  "successPurchase": "Je aankoop was succesvol, je bent nu een Premium-member!",
+  "termsOfUse": "Gebruikersvoorwaarden",
+  "privacy": "Privacy"
 }

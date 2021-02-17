@@ -158,6 +158,8 @@ class TranslationKeys {
   static const String teacher = "teacher";
   static const String username = "username";
   static const String email = "email";
+  static const String privacy = "privacy";
+  static const String termsOfUse = "termsOfUse";
 
 }
 
