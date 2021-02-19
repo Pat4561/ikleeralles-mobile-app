@@ -283,7 +283,7 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
               return ListView(
                 children: [
                   PremiumInfoCard(
-                    title: "Plus abonnement",
+                    title: FlutterI18n.translate(context, TranslationKeys.plusPackageTitle),
                     pricingLabel: "€${PriceUtil.formatPrice(monthlyPackage.product.price)}",
                     pricingPeriodLabel: FlutterI18n.translate(context, TranslationKeys.pricingMonthly),
                     assetPath: AssetPaths.subPlus,
@@ -302,7 +302,7 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
                     )
                   ),
                   PremiumInfoCard(
-                    title: "Pro abonnement",
+                    title: FlutterI18n.translate(context, TranslationKeys.proPackageTitle),
                     pricingLabel: "€${PriceUtil.formatPrice(yearlyPackage.product.price)}",
                     pricingPeriodLabel: FlutterI18n.translate(context, TranslationKeys.pricingAnnual),
                     benefits: [

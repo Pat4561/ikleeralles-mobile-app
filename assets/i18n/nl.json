@@ -121,5 +121,7 @@
   "email": "Email",
   "successPurchase": "Je aankoop was succesvol, je bent nu een Premium-member!",
   "termsOfUse": "Gebruikersvoorwaarden",
-  "privacy": "Privacy"
+  "privacy": "Privacy",
+  "plusPackageTitle": "Plus abonnement",
+  "proPackageTitle":"Pro abonnement"
 }

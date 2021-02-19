@@ -160,6 +160,8 @@ class TranslationKeys {
   static const String email = "email";
   static const String privacy = "privacy";
   static const String termsOfUse = "termsOfUse";
+  static const String plusPackageTitle = "plusPackageTitle";
+  static const String proPackageTitle = "proPackageTitle";
 
 }
 
