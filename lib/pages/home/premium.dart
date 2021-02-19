@@ -22,11 +22,13 @@ class PremiumInfoCard extends StatelessWidget {
 
   final String pricingPeriodLabel;
 
+  final String title;
+
   final Widget actionButton;
 
   final List<String> benefits;
 
-  PremiumInfoCard ({ this.assetPath, this.pricingLabel, this.pricingPeriodLabel, this.actionButton, this.benefits });
+  PremiumInfoCard ({ this.title, this.assetPath, this.pricingLabel, this.pricingPeriodLabel, this.actionButton, this.benefits });
 
   Widget _benefitLabel(String text) {
     return Container(
@@ -75,7 +77,9 @@ class PremiumInfoCard extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10
+                  ),
                   child: SizedBox(
                     width: 120,
                     height: 120,
@@ -111,6 +115,20 @@ class PremiumInfoCard extends StatelessWidget {
                   ),
                 )
               ],
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                bottom: 10,
+                left: 10
+              ),
+              child: Text(
+                this.title,
+                style: TextStyle(
+                    fontFamily: Fonts.ubuntu,
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold
+                )
+              ),
             ),
             Container(
               padding: EdgeInsets.symmetric(
@@ -265,6 +283,7 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
               return ListView(
                 children: [
                   PremiumInfoCard(
+                    title: "Plus abonnement",
                     pricingLabel: "€${PriceUtil.formatPrice(monthlyPackage.product.price)}",
                     pricingPeriodLabel: FlutterI18n.translate(context, TranslationKeys.pricingMonthly),
                     assetPath: AssetPaths.subPlus,
@@ -283,6 +302,7 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
                     )
                   ),
                   PremiumInfoCard(
+                    title: "Pro abonnement",
                     pricingLabel: "€${PriceUtil.formatPrice(yearlyPackage.product.price)}",
                     pricingPeriodLabel: FlutterI18n.translate(context, TranslationKeys.pricingAnnual),
                     benefits: [
