@@ -1,0 +1,76 @@
+{
+  "products" : [
+
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "A3E91DB0",
+      "localizations" : [
+
+      ],
+      "name" : "sub_group_1",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "11.98",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "9101EAE9",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "yearly_sub_premium_pro",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Ikleeralles Premium Pro",
+          "subscriptionGroupID" : "A3E91DB0",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    },
+    {
+      "id" : "812BD6BA",
+      "localizations" : [
+
+      ],
+      "name" : "sub_group_2",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "1.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "0FF3C496",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "monthly_sub_premium_plus",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Ikleeralles Premium Plus",
+          "subscriptionGroupID" : "812BD6BA",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 0
+  }
+}
