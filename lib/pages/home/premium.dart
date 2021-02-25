@@ -241,7 +241,7 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
     _iapManager.purchasePackage(package).then((value) {
       showSnackBar(message: FlutterI18n.translate(context, TranslationKeys.successPurchase), isError: false, scaffoldKey: scaffoldKey);
     }).catchError((e) {
-      showSnackBar(message: FlutterI18n.translate(context, TranslationKeys.error), isError: true, scaffoldKey: scaffoldKey);
+      showSnackBar(message: e.toString(), isError: true, scaffoldKey: scaffoldKey);
     });
   }
   
