@@ -97,7 +97,7 @@ class ExerciseEditorList extends StatelessWidget {
                         labelColor: BrandColors.textColorLighter,
                         fontSize: 15,
                         icon: Icons.add_circle_outline,
-                        iconSize: 24,
+                        iconSize: 20,
                         contentPadding: EdgeInsets.all(12),
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                         borderSide: BorderSide(

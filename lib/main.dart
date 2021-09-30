@@ -16,7 +16,7 @@ Future main() async {
   Stetho.initialize();
 
   await Purchases.setDebugLogsEnabled(true);
-  await Purchases.setup("lZwNhhpJqSOiIzyEtooQCAJyqLNikxuD");
+  await Purchases.setup("wmqHagfoeldlZmKjMLSktkbCWQRwrhKT");
 
   await flutterI18nDelegate.load(null);
 

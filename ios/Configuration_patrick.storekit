@@ -1,4 +1,8 @@
 {
+  "identifier" : "A018FF9A",
+  "nonRenewingSubscriptions" : [
+
+  ],
   "products" : [
 
   ],
@@ -6,10 +10,44 @@
 
   },
   "subscriptionGroups" : [
+    {
+      "id" : "8E84271C",
+      "localizations" : [
 
+      ],
+      "name" : "subscription_group",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "displayPrice" : "1.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "BAEE11C3",
+          "introductoryOffer" : {
+            "internalID" : "6248E69A",
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1W"
+          },
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "monthly_sub_premium_plus",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Monthly plus",
+          "subscriptionGroupID" : "8E84271C",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
   ],
   "version" : {
     "major" : 1,
-    "minor" : 0
+    "minor" : 1
   }
 }

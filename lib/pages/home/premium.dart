@@ -275,6 +275,7 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
             if (status == IAPManagerStatus.loading) {
               return BackgroundBuilder.defaults.loadingDetailed(context);
             } else if (status == IAPManagerStatus.ready) {
+
               Package monthlyPackage = _iapManager.state.result.offerings.current.monthly;
               Package yearlyPackage = _iapManager.state.result.offerings.current.annual;
 
@@ -301,25 +302,25 @@ class PremiumInfoSubPage extends NavigationDrawerContentChild {
                       ),
                     )
                   ),
-                  PremiumInfoCard(
-                    title: FlutterI18n.translate(context, TranslationKeys.proPackageTitle),
-                    pricingLabel: "€${PriceUtil.formatPrice(yearlyPackage.product.price)}",
-                    pricingPeriodLabel: FlutterI18n.translate(context, TranslationKeys.pricingAnnual),
-                    benefits: [
-                      FlutterI18n.translate(context, TranslationKeys.benefitUnlimitedScans),
-                      FlutterI18n.translate(context, TranslationKeys.benefitAdvancedQuizOptions),
-                      FlutterI18n.translate(context, TranslationKeys.benefitCombineQuiz)
-                    ],
-                    assetPath: AssetPaths.subPro,
-                    actionButton: Visibility(
-                      visible: _iapManager.state.result.hasPro || !_iapManager.state.result.hasAny,
-                      child: _selectionButton(
-                        context,
-                        yearlyPackage,
-                        isSelected: _iapManager.state.result.hasPro
-                      ),
-                    )
-                  ),
+                  // PremiumInfoCard(
+                  //   title: FlutterI18n.translate(context, TranslationKeys.proPackageTitle),
+                  //   pricingLabel: "€${PriceUtil.formatPrice(yearlyPackage.product.price)}",
+                  //   pricingPeriodLabel: FlutterI18n.translate(context, TranslationKeys.pricingAnnual),
+                  //   benefits: [
+                  //     FlutterI18n.translate(context, TranslationKeys.benefitUnlimitedScans),
+                  //     FlutterI18n.translate(context, TranslationKeys.benefitAdvancedQuizOptions),
+                  //     FlutterI18n.translate(context, TranslationKeys.benefitCombineQuiz)
+                  //   ],
+                  //   assetPath: AssetPaths.subPro,
+                  //   actionButton: Visibility(
+                  //     visible: _iapManager.state.result.hasPro || !_iapManager.state.result.hasAny,
+                  //     child: _selectionButton(
+                  //       context,
+                  //       yearlyPackage,
+                  //       isSelected: _iapManager.state.result.hasPro
+                  //     ),
+                  //   )
+                  // ),
                   Container(
                     padding: EdgeInsets.symmetric(
                       vertical: 5
